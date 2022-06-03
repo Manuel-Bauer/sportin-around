@@ -8,25 +8,18 @@ import {
 import googleLogo from '../assets/google.svg';
 import { FC } from 'react';
 
-interface props {
-  setCurrentUser: Function;
-}
-
 const { auth } = getFirebase();
 
-const SignIn: FC<props> = (props) => {
-  const signInWithGoogle = () => {
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider);
-  };
+interface props {
+  setAuthed: Function;
+}
 
-  onAuthStateChanged(auth, (user: any) => {
-    props.setCurrentUser({
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-    });
-  });
+const SignIn: FC<props> = ({ setAuthed }) => {
+  const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+    setAuthed(true);
+  };
 
   return (
     <Flex h='100vh' justify='center' align='center'>
