@@ -11,17 +11,21 @@ function initialize() {
 }
 
 function connectToEmulators({ firebaseApp, auth, firestore }: any) {
-  if ((location.hostname = 'localhost')) {
-    connectAuthEmulator(auth, 'http://localhost:9099', {
-      disableWarnings: true,
-    });
-    connectFirestoreEmulator(firestore, 'localhost', 8080);
-  }
-  return { firebaseApp: firebaseApp, auth, firestore };
+  // if ((location.hostname = 'localhost')) {
+  //   connectAuthEmulator(auth, 'http://localhost:9099', {
+  //     disableWarnings: true,
+  //   });
+  //   connectFirestoreEmulator(firestore, 'localhost', 8080);
+  // }
+  connectAuthEmulator(auth, 'http://localhost:9099', {
+    disableWarnings: true,
+  });
+  connectFirestoreEmulator(firestore, 'localhost', 8080);
+  return { firebaseApp, auth, firestore };
 }
 
 export function getFirebase() {
-  const existingApp = getApps().at(0);
-  if (existingApp) return initialize();
+  // const existingApp = getApps().at(0);
+  // if (existingApp) return initialize();
   return connectToEmulators(initialize());
 }
