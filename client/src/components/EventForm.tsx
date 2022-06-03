@@ -46,11 +46,8 @@ const EventForm: FC = () => {
         >
           <FormLabel>Title</FormLabel>
           <Input
-            name='title'
             placeholder='Enter Title...'
-            onChange={formik.handleChange}
-            value={formik.values.title}
-            onBlur={formik.handleBlur}
+            {...formik.getFieldProps('title')}
           ></Input>
           <FormErrorMessage>{formik.errors.title}</FormErrorMessage>
         </FormControl>
@@ -59,11 +56,8 @@ const EventForm: FC = () => {
         >
           <FormLabel>Venue</FormLabel>
           <Input
-            name='venue'
             placeholder='Enter Venue...'
-            onChange={formik.handleChange}
-            value={formik.values.venue}
-            onBlur={formik.handleBlur}
+            {...formik.getFieldProps('venue')}
           ></Input>
           <FormErrorMessage>{formik.errors.venue}</FormErrorMessage>
         </FormControl>
