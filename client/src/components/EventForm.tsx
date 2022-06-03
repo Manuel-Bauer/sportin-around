@@ -11,6 +11,10 @@ import {
   Button,
   FormErrorMessage,
 } from '@chakra-ui/react';
+import { getFirebase } from '../firebase';
+import { collection, doc, setDoc } from 'firebase/firestore';
+
+const { firestore } = getFirebase();
 
 const EventForm: FC = () => {
   const formik = useFormik({
@@ -27,7 +31,9 @@ const EventForm: FC = () => {
         .min(6, 'Venue is too short'),
     }),
     onSubmit: (values: any, actions: any) => {
-      alert(JSON.stringify(values, null, 2));
+      const newEvent = doc(firestore, 'events/1');
+      setDoc(newEvent, values);
+
       actions.resetForm();
     },
   });
