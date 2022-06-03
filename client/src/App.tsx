@@ -1,23 +1,22 @@
-import * as React from 'react';
-import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-} from '@chakra-ui/react';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { Logo } from './Logo';
+import { ChakraProvider, Box } from '@chakra-ui/react';
 import SignIn from './components/SignIn';
+import SignOut from './components/SignOut';
+import { useState } from 'react';
 
-export const App = () => (
-  <ChakraProvider theme={theme}>
-    <Box>
-      <div>Hallo</div>
-      <SignIn />
-    </Box>
-  </ChakraProvider>
-);
+export const App = () => {
+  const [currentUser, setCurrentUser] = useState({
+    uid: '',
+    email: '',
+    displayName: '',
+  });
+
+  return (
+    <ChakraProvider>
+      <Box>
+        {!currentUser.uid && <SignIn setCurrentUser={setCurrentUser} />}
+        <h1>{currentUser.displayName}</h1>
+        <SignOut />
+      </Box>
+    </ChakraProvider>
+  );
+};
