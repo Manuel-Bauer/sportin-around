@@ -1,8 +1,11 @@
-import { ChakraProvider, Box } from '@chakra-ui/react';
-import SignIn from './components/SignIn';
-import SignOut from './components/SignOut';
 import { useState } from 'react';
 import { getFirebase } from './firebase';
+import { ChakraProvider } from '@chakra-ui/react';
+
+import SignIn from './components/SignIn';
+
+import SignOut from './components/SignOut';
+import EventForm from './components/EventForm';
 
 const { auth } = getFirebase();
 
@@ -11,14 +14,12 @@ export const App = () => {
 
   return (
     <ChakraProvider>
-      <Box>
-        {!auth.currentUser ? (
-          <SignIn setAuthed={setAuthed} />
-        ) : (
-          <SignOut setAuthed={setAuthed} />
-        )}
-        <h1>{auth.currentUser?.email}</h1>
-      </Box>
+      {!auth.currentUser ? (
+        <SignIn setAuthed={setAuthed} />
+      ) : (
+        <SignOut setAuthed={setAuthed} />
+      )}
+      {auth.currentUser && <EventForm />}
     </ChakraProvider>
   );
 };

@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "firebase": "^9.8.2"
+    "firebase": "^9.8.2",
+    "formik": "^2.2.9"
   }
 }
