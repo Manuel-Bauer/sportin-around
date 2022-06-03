@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import {
   VStack,
   Box,
@@ -8,6 +9,7 @@ import {
   FormControl,
   Input,
   Button,
+  FormErrorMessage,
 } from '@chakra-ui/react';
 
 const EventForm: FC = () => {
@@ -16,6 +18,14 @@ const EventForm: FC = () => {
       title: '',
       venue: '',
     },
+    validationSchema: Yup.object({
+      title: Yup.string()
+        .required('Title required')
+        .min(6, 'Title is too short'),
+      venue: Yup.string()
+        .required('Venue required')
+        .min(6, 'Venue is too short'),
+    }),
     onSubmit: (values: any, actions: any) => {
       alert(JSON.stringify(values, null, 2));
       actions.resetForm();
@@ -31,23 +41,31 @@ const EventForm: FC = () => {
         h='100vh'
       >
         <Heading>Create New Event</Heading>
-        <FormControl>
+        <FormControl
+          isInvalid={formik.errors.title && formik.touched.title ? true : false}
+        >
           <FormLabel>Title</FormLabel>
           <Input
             name='title'
             placeholder='Enter Title...'
             onChange={formik.handleChange}
             value={formik.values.title}
+            onBlur={formik.handleBlur}
           ></Input>
+          <FormErrorMessage>{formik.errors.title}</FormErrorMessage>
         </FormControl>
-        <FormControl>
+        <FormControl
+          isInvalid={formik.errors.venue && formik.touched.venue ? true : false}
+        >
           <FormLabel>Venue</FormLabel>
           <Input
             name='venue'
             placeholder='Enter Venue...'
             onChange={formik.handleChange}
             value={formik.values.venue}
+            onBlur={formik.handleBlur}
           ></Input>
+          <FormErrorMessage>{formik.errors.venue}</FormErrorMessage>
         </FormControl>
         <Button type='submit' variant='outline'>
           Create Event
