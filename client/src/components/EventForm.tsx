@@ -12,7 +12,8 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 import { getFirebase } from '../firebase';
-import { collection, doc, setDoc } from 'firebase/firestore';
+import { collection, doc, getFirestore, setDoc } from 'firebase/firestore';
+import { nanoid } from 'nanoid';
 
 const { firestore } = getFirebase();
 
@@ -30,9 +31,13 @@ const EventForm: FC = () => {
         .required('Venue required')
         .min(6, 'Venue is too short'),
     }),
-    onSubmit: (values: any, actions: any) => {
-      const newEvent = doc(firestore, 'events/1');
-      setDoc(newEvent, values);
+    onSubmit: async (values: any, actions: any) => {
+      const newID = nanoid();
+      // Works but you need to specify document name
+      // For now: Client side ID generation
+
+      const newDoc = doc(firestore, `events/${newID}`);
+      setDoc(newDoc, values);
 
       actions.resetForm();
     },
