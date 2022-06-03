@@ -2,6 +2,7 @@ import { FC, useState } from 'react';
 import { useFormik } from 'formik';
 import {
   VStack,
+  Box,
   Heading,
   FormLabel,
   FormControl,
@@ -22,36 +23,37 @@ const EventForm: FC = () => {
   });
 
   return (
-    <VStack
-      as='form'
-      mx='auto'
-      w={{ base: '90%', md: 500 }}
-      h='100vh'
-      justifyContent='center'
-    >
-      <Heading>Create New Event</Heading>
-      <FormControl>
-        <FormLabel>Title</FormLabel>
-        <Input
-          name='title'
-          placeholder='Enter Title...'
-          onChange={formik.handleChange}
-          value={formik.values.title}
-        ></Input>
-      </FormControl>
-      <FormControl>
-        <FormLabel>Venue</FormLabel>
-        <Input
-          name='venue'
-          placeholder='Enter Venue...'
-          onChange={formik.handleChange}
-          value={formik.values.venue}
-        ></Input>
-      </FormControl>
-      <Button type='submit' variant='outline'>
-        Create Event
-      </Button>
-    </VStack>
+    <form onSubmit={formik.handleSubmit}>
+      <VStack
+        mx='auto'
+        w={{ base: '90%', md: 500 }}
+        justifyContent='center'
+        h='100vh'
+      >
+        <Heading>Create New Event</Heading>
+        <FormControl>
+          <FormLabel>Title</FormLabel>
+          <Input
+            name='title'
+            placeholder='Enter Title...'
+            onChange={formik.handleChange}
+            value={formik.values.title}
+          ></Input>
+        </FormControl>
+        <FormControl>
+          <FormLabel>Venue</FormLabel>
+          <Input
+            name='venue'
+            placeholder='Enter Venue...'
+            onChange={formik.handleChange}
+            value={formik.values.venue}
+          ></Input>
+        </FormControl>
+        <Button type='submit' variant='outline'>
+          Create Event
+        </Button>
+      </VStack>
+    </form>
   );
 };
 
