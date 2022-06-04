@@ -20,13 +20,13 @@ export interface match {
 }
 
 export interface score {
-  userId?: String;
+  uid?: String;
   score: Number;
   points: Number;
 }
 
 export interface result {
-  userId?: String;
+  uid: String;
   totalPoints: Number;
   totalScored: Number;
   totalConceded: Number;
