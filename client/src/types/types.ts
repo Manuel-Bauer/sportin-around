@@ -15,8 +15,8 @@ export interface match {
   matchId?: String;
   ownerId: String;
   matchday: Number;
-  home: score;
-  away: score;
+  home: score | undefined;
+  away: score | undefined;
 }
 
 export interface score {
