@@ -10,6 +10,9 @@ import {
   Input,
   Button,
   FormErrorMessage,
+  Stack,
+  Radio,
+  RadioGroup,
 } from '@chakra-ui/react';
 import { getFirebase } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
@@ -25,7 +28,7 @@ const EventForm: FC = () => {
       title: '',
       venue: '',
       date: '',
-      type: 'Single-Round-Robin',
+      type: '',
     },
     validationSchema: Yup.object({
       title: Yup.string()
@@ -35,6 +38,7 @@ const EventForm: FC = () => {
         .required('Venue required')
         .min(6, 'Venue is too short'),
       date: Yup.date().required('Date required'),
+      type: Yup.string().required('Type required'),
     }),
     onSubmit: async (values: any, actions: any) => {
       const newID = nanoid();
@@ -87,6 +91,7 @@ const EventForm: FC = () => {
           ></Input>
           <FormErrorMessage>{formik.errors.venue}</FormErrorMessage>
         </FormControl>
+
         <FormControl
           isInvalid={formik.errors.date && formik.touched.date ? true : false}
         >
@@ -94,6 +99,30 @@ const EventForm: FC = () => {
           <Input type='date' {...formik.getFieldProps('date')}></Input>
           <FormErrorMessage>{formik.errors.date}</FormErrorMessage>
         </FormControl>
+
+        <FormControl
+          isInvalid={formik.errors.type && formik.touched.type ? true : false}
+        >
+          <FormLabel>Type</FormLabel>
+          <RadioGroup>
+            <Stack direction='column'>
+              <Radio
+                {...formik.getFieldProps('type')}
+                value='Single Round-Robin'
+              >
+                Single Round-Robin
+              </Radio>
+              <Radio
+                {...formik.getFieldProps('type')}
+                value='Double Round-Robin'
+              >
+                Double Round-Robin
+              </Radio>
+            </Stack>
+          </RadioGroup>
+          <FormErrorMessage>{formik.errors.type}</FormErrorMessage>
+        </FormControl>
+
         <Button type='submit' variant='outline'>
           Create Event
         </Button>
