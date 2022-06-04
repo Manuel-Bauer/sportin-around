@@ -12,8 +12,10 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 import { getFirebase } from '../firebase';
-import { collection, doc, getFirestore, setDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { nanoid } from 'nanoid';
+
+import { eve } from '../types/types';
 
 const { firestore, auth } = getFirebase();
 
@@ -22,6 +24,8 @@ const EventForm: FC = () => {
     initialValues: {
       title: '',
       venue: '',
+      date: '',
+      type: 'Single-Round-Robin',
     },
     validationSchema: Yup.object({
       title: Yup.string()
@@ -30,18 +34,25 @@ const EventForm: FC = () => {
       venue: Yup.string()
         .required('Venue required')
         .min(6, 'Venue is too short'),
+      date: Yup.date().required('Date required'),
     }),
     onSubmit: async (values: any, actions: any) => {
       const newID = nanoid();
+
       // Works but you need to specify document name
       // For now: Client side ID generation
-
       const newDoc = doc(firestore, `events/${newID}`);
-      setDoc(newDoc, {
+      const newEvent: eve = {
         title: values.title,
         venue: values.venue,
-        owner: auth.currentUser.uid,
-      });
+        ownerId: auth.currentUser.uid,
+        date: values.date,
+        started: false,
+        completed: false,
+        type: values.type,
+      };
+
+      setDoc(newDoc, newEvent);
 
       actions.resetForm();
     },
@@ -75,6 +86,13 @@ const EventForm: FC = () => {
             {...formik.getFieldProps('venue')}
           ></Input>
           <FormErrorMessage>{formik.errors.venue}</FormErrorMessage>
+        </FormControl>
+        <FormControl
+          isInvalid={formik.errors.date && formik.touched.date ? true : false}
+        >
+          <FormLabel>Date</FormLabel>
+          <Input type='date' {...formik.getFieldProps('date')}></Input>
+          <FormErrorMessage>{formik.errors.date}</FormErrorMessage>
         </FormControl>
         <Button type='submit' variant='outline'>
           Create Event

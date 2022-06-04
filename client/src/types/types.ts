@@ -1,5 +1,5 @@
-interface eve {
-  eventId: String;
+export interface eve {
+  eventId?: String;
   ownerId: String;
   title: String;
   venue: String;
@@ -11,26 +11,24 @@ interface eve {
   result?: result[];
 }
 
-interface match {
-  matchId: String;
+export interface match {
+  matchId?: String;
   ownerId: String;
   matchday: Number;
   home: score;
   away: score;
 }
 
-interface score {
-  userId: String;
+export interface score {
+  userId?: String;
   score: Number;
   points: Number;
 }
 
-interface result {
-  userId: String;
+export interface result {
+  userId?: String;
   totalPoints: Number;
   totalScored: Number;
   totalConceded: Number;
   rank: Number;
 }
-
-export { eve, match, score, result };
