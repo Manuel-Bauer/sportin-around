@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { getFirebase } from './firebase';
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, Button } from '@chakra-ui/react';
 
 import SignIn from './components/SignIn';
 
@@ -11,6 +11,8 @@ const { auth } = getFirebase();
 
 export const App = () => {
   const [authed, setAuthed] = useState(false);
+  const [showEventForm, setShowEventForm] = useState(false);
+
   return (
     <ChakraProvider>
       {!auth.currentUser ? (
@@ -19,7 +21,10 @@ export const App = () => {
         <SignOut setAuthed={setAuthed} />
       )}
       {auth.currentUser && <h1>{auth.currentUser.email}</h1>}
-      {auth.currentUser && <EventForm />}
+      <Button onClick={() => setShowEventForm((prev) => !prev)}>
+        Create new Event
+      </Button>
+      {auth.currentUser && showEventForm && <EventForm />}
     </ChakraProvider>
   );
 };
