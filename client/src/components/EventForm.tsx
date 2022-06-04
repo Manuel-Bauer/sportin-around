@@ -15,7 +15,7 @@ import { getFirebase } from '../firebase';
 import { collection, doc, getFirestore, setDoc } from 'firebase/firestore';
 import { nanoid } from 'nanoid';
 
-const { firestore } = getFirebase();
+const { firestore, auth } = getFirebase();
 
 const EventForm: FC = () => {
   const formik = useFormik({
@@ -37,7 +37,11 @@ const EventForm: FC = () => {
       // For now: Client side ID generation
 
       const newDoc = doc(firestore, `events/${newID}`);
-      setDoc(newDoc, values);
+      setDoc(newDoc, {
+        title: values.title,
+        venue: values.venue,
+        owner: auth.currentUser.uid,
+      });
 
       actions.resetForm();
     },

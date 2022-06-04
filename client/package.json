@@ -31,7 +31,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev": "npx firebase emulators:start --import=./local --export-on-exit"
+    "dev": "npx firebase init emulators"
   },
   "eslintConfig": {
     "extends": "react-app"
