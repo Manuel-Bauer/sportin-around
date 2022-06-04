@@ -5,9 +5,10 @@ import { addPlayer, createSchedule } from '../utils/firestore';
 
 interface Props {
   eve: eve;
+  setCurrentEvent: Function;
 }
 
-const EventListItem: FC<Props> = ({ eve }) => {
+const EventListItem: FC<Props> = ({ eve, setCurrentEvent }) => {
   // Add User and Start result to event when user wants to compete
 
   // Save match in event document
@@ -18,7 +19,7 @@ const EventListItem: FC<Props> = ({ eve }) => {
       <h3>{eve.venue}</h3>
       <Button onClick={() => addPlayer(eve.eventId)}>Compete</Button>
       <Button onClick={() => createSchedule(eve)}>Start Event</Button>
-      <Button>Event Details</Button>
+      <Button onClick={() => setCurrentEvent(eve)}>Event Details</Button>
     </Box>
   );
 };

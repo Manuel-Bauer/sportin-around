@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { getFirebase } from './firebase';
-import { ChakraProvider, Button } from '@chakra-ui/react';
+import { ChakraProvider, Button, Flex } from '@chakra-ui/react';
 import SignIn from './components/SignIn';
 import SignOut from './components/SignOut';
 import EventForm from './components/EventForm';
 import EventList from './components/EventList';
+import EventDetails from './components/EventDetails';
 import { FC } from 'react';
+import { eve } from './types/types';
 
 import { onSnapshot, collection, doc } from 'firebase/firestore';
-import { eve } from './types/types';
 
 const { auth, firestore } = getFirebase();
 
@@ -18,6 +19,7 @@ export const App: FC = () => {
   const [showEventList, setShowEventList] = useState(false);
   // If I not use any it says: Argument of type 'DocumentData[]' is not assignable to parameter of type 'SetStateAction<undefined>'. How to deal with that within typescript react?
   const [eves, setEves] = useState<any>();
+  const [currentEvent, setCurrentEvent] = useState<any>();
 
   // Get also IDs
   const getAllEvents = () => {
@@ -47,7 +49,10 @@ export const App: FC = () => {
       </Button>
       {auth.currentUser && showEventForm && <EventForm />}
       <Button onClick={getAllEvents}>Show all Events</Button>
-      <EventList eves={eves} />
+      <Flex>
+        <EventList eves={eves} setCurrentEvent={setCurrentEvent} />
+        <EventDetails currentEvent={currentEvent} />
+      </Flex>
     </ChakraProvider>
   );
 };
