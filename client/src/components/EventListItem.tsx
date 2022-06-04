@@ -42,22 +42,9 @@ const EventListItem: FC<Props> = ({ eve }) => {
   };
 
   // Save match in event document
-  const saveMatch = async (match: match) => {
+  const saveMatch = async (matches: match[]) => {
     const thisEvent = doc(firestore, `events/${eve.eventId}`);
-
-    try {
-      await runTransaction(firestore, async (transaction) => {
-        const eventDoc = await transaction.get(thisEvent);
-        if (!eventDoc.exists()) throw 'Event does not exist!';
-
-        const data = eventDoc.data();
-        const matches = data.matches ? [...data.matches, match] : [match];
-
-        transaction.update(thisEvent, { matches });
-      });
-    } catch (e) {
-      console.log('Transaction failed: ', e);
-    }
+    updateDoc(thisEvent, { matches });
   };
 
   // Creates schedule based on signed up participant for Event and if it is single round robin or double round robin
@@ -65,7 +52,7 @@ const EventListItem: FC<Props> = ({ eve }) => {
     if (!eve.result) throw 'Must have at least two entries';
     const numEntries = eve.result.length;
 
-    let scheduler;
+    let scheduler: any;
 
     if (eve.type === 'Single Round-Robin') {
       scheduler = robin(numEntries);
@@ -75,10 +62,12 @@ const EventListItem: FC<Props> = ({ eve }) => {
       scheduler = [...robin(numEntries), ...robin(numEntries)];
     }
 
+    const matches: match[] = [];
+
     scheduler.forEach((matchRef: number[], matchdayIdx: number) => {
       const matchday = matchdayIdx + 1;
       // Why can I not use array of numbers here
-      matchRef.forEach((players: any) => {
+      matchRef.forEach(async (players: any) => {
         // Why can I not assign them to type score
         let home;
         let away;
@@ -126,7 +115,9 @@ const EventListItem: FC<Props> = ({ eve }) => {
           away: away,
         };
 
-        saveMatch(match);
+        matches.push(match);
+
+        await saveMatch(matches);
       });
     });
   };
