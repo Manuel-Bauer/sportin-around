@@ -5,6 +5,7 @@ import { getFirebase } from '../firebase';
 import { result, score, match } from '../types/types';
 import { collection, doc, updateDoc, runTransaction } from 'firebase/firestore';
 import { nanoid } from 'nanoid';
+import { addPlayer } from '../utils/firestore';
 const robin = require('roundrobin');
 
 const { auth, firestore } = getFirebase();
@@ -15,31 +16,6 @@ interface Props {
 
 const EventListItem: FC<Props> = ({ eve }) => {
   // Add User and Start result to event when user wants to compete
-  const addEntry = async () => {
-    const thisEvent = doc(firestore, `events/${eve.eventId}`);
-
-    const newResult: any = {
-      uid: auth.currentUser.uid,
-      totalPoints: 0,
-      totalScored: 0,
-      totalConceded: 0,
-      rank: 0,
-    };
-
-    try {
-      await runTransaction(firestore, async (transaction) => {
-        const eventDoc = await transaction.get(thisEvent);
-        if (!eventDoc.exists()) throw 'Event does not exist!';
-
-        const data = eventDoc.data();
-        const result = data.result ? [...data.result, newResult] : [newResult];
-
-        transaction.update(thisEvent, { result });
-      });
-    } catch (e) {
-      console.log('Transaction failed: ', e);
-    }
-  };
 
   // Save match in event document
   const saveMatch = async (matches: match[]) => {
@@ -126,7 +102,7 @@ const EventListItem: FC<Props> = ({ eve }) => {
     <Box border='1px'>
       <h1>{eve.title}</h1>
       <h3>{eve.venue}</h3>
-      <Button onClick={addEntry}>Compete</Button>
+      <Button onClick={() => addPlayer(eve.eventId)}>Compete</Button>
       <Button onClick={createSchedule}>Start Event</Button>
       <Button>Event Details</Button>
     </Box>
