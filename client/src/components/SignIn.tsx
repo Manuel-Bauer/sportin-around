@@ -7,6 +7,7 @@ import {
 } from 'firebase/auth';
 import googleLogo from '../assets/google.svg';
 import { FC } from 'react';
+import { addUser } from '../utils/firestore';
 
 const { auth } = getFirebase();
 
@@ -19,6 +20,8 @@ const SignIn: FC<props> = ({ setAuthed }) => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
     setAuthed(true);
+    const { createdAt, lastLoginAt } = auth.currentUser.metadata;
+    if (createdAt === lastLoginAt) addUser();
   };
 
   return (

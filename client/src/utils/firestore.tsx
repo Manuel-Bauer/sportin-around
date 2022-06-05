@@ -1,5 +1,10 @@
 import { getFirebase } from '../firebase';
-import { doc, updateDoc, runTransaction } from 'firebase/firestore';
+import {
+  doc,
+  updateDoc,
+  runTransaction,
+  setDoc
+} from 'firebase/firestore';
 import { MatchInterface, EventInterface } from '../types/types';
 import { nanoid } from 'nanoid';
 
@@ -7,11 +12,19 @@ const robin = require('roundrobin');
 
 const { auth, firestore } = getFirebase();
 
-// Add User to Firestore on first login
+// Add User to Firestore on first login. Again: How to add Firebase types
 export const addUser = () => {
-  const user = auth.currentUser.uid;
-  const userDoc = doc(firestore, `users/${auth.currentUser.uid}`);
+  const user = auth.currentUser;
+  const userDoc = doc(firestore, `users/${user.uid}`);
+  const newUser = {
+    uid: user.uid,
+    username: user.displayName,
+    avatar: '',
+    stats: [],
+  };
+  setDoc(userDoc, newUser);
 };
+
 
 // Add User to Event
 export const addPlayer = async (eventId: String | undefined) => {

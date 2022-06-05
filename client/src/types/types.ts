@@ -20,7 +20,7 @@ export interface MatchInterface {
 }
 
 export interface ScoreInterface {
-  uid?: String;
+  uid: String;
   score: Number;
   points: Number;
 }
