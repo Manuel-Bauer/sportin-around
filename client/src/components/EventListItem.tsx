@@ -3,7 +3,14 @@ import { EventInterface, MatchInterface } from '../types/types';
 import { Box, Button } from '@chakra-ui/react';
 import { addPlayer, createSchedule } from '../utils/firestore';
 import { getFirebase } from '../firebase';
-import { doc, onSnapshot } from 'firebase/firestore';
+import {
+  doc,
+  onSnapshot,
+  collection,
+  query,
+  where,
+  getDocs,
+} from 'firebase/firestore';
 
 const { firestore } = getFirebase();
 
@@ -18,14 +25,25 @@ const EventListItem: FC<Props> = ({
   setCurrentEvent,
   setCurrentMatches,
 }) => {
-  const setEventAndMatches = (eve: EventInterface) => {
+  const setEventAndMatches = async (eve: EventInterface) => {
+    console.log('setevendandmatches');
+    // Set Current Event
     setCurrentEvent(eve);
 
-    const matchDoc = doc(firestore, `matches/${eve.eventId}`);
+    // Set Current Matches
 
-    onSnapshot(matchDoc, (snapshot) => {
-      setCurrentMatches(snapshot.data()?.matches);
+    const matchesCol = collection(firestore, 'matches');
+
+    const matchQuery = query(matchesCol, where('eventId', '==', eve.eventId));
+    console.log(matchQuery, 'matchQuery');
+
+    // Again document data issue
+    const matches: any = [];
+    const querySnapshot = await getDocs(matchQuery);
+    querySnapshot.forEach((doc) => {
+      matches.push(doc.data());
     });
+    setCurrentMatches(matches);
   };
 
   return (

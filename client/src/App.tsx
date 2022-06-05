@@ -37,9 +37,6 @@ export const App: FC = () => {
     });
   };
 
-  console.log(currentEvent);
-  console.log(currentMatches);
-
   return (
     <ChakraProvider>
       {!auth.currentUser ? (

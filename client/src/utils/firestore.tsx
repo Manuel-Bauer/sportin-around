@@ -1,5 +1,12 @@
 import { getFirebase } from '../firebase';
-import { doc, updateDoc, runTransaction, setDoc } from 'firebase/firestore';
+import {
+  doc,
+  updateDoc,
+  runTransaction,
+  setDoc,
+  collection,
+  addDoc,
+} from 'firebase/firestore';
 import { MatchInterface, EventInterface } from '../types/types';
 import { nanoid } from 'nanoid';
 
@@ -48,14 +55,15 @@ export const addPlayer = async (eventId: String | undefined) => {
   }
 };
 
+// CREATE MATCH
 // Add match to event. Called in create Schedule
-const saveMatches = async (
-  matches: MatchInterface[],
+const saveMatch = async (
+  match: MatchInterface,
   eventId: String | undefined
 ) => {
-  console.log('saveMatches', eventId);
-  const matchesDoc = doc(firestore, `matches/${eventId}`);
-  setDoc(matchesDoc, { matches });
+  const matchToAdd = { ...match, eventId: eventId };
+  const matchesCol = collection(firestore, 'matches');
+  await addDoc(matchesCol, matchToAdd);
 };
 
 // Creates schedule based on signed up participant for Event and if it is single round robin or double round robin
@@ -72,8 +80,6 @@ export const createSchedule = (eve: EventInterface) => {
   if (eve.type === 'Double Round-Robin') {
     scheduler = [...robin(numEntries), ...robin(numEntries)];
   }
-
-  const matches: MatchInterface[] = [];
 
   scheduler.forEach((matchRef: number[], matchdayIdx: number) => {
     const matchday = matchdayIdx + 1;
@@ -127,9 +133,35 @@ export const createSchedule = (eve: EventInterface) => {
         eventId: eve.eventId,
       };
 
-      matches.push(match);
-
-      await saveMatches(matches, eve.eventId);
+      await saveMatch(match, eve.eventId);
     });
   });
+};
+
+// Update Match
+const updateMatch = async (matchId: string, score: number, side: string) => {
+  const matchToUpdate = doc(firestore, `matches/${matchId}`);
+
+  try {
+    await runTransaction(firestore, async (transaction) => {
+      const matchDoc = await transaction.get(matchToUpdate);
+      if (!matchDoc.exists()) throw 'Match does not exist!';
+
+      const data = matchDoc.data();
+
+      if (side === 'home') {
+        const newHome = { ...data.home, score: score };
+        const newMatch = { ...data, home: newHome };
+        transaction.update(matchToUpdate, { newMatch });
+      }
+
+      if (side === 'away') {
+        const newAway = { ...data.away, score: score };
+        const newMatch = { ...data, home: newAway };
+        transaction.update(matchToUpdate, { newMatch });
+      }
+    });
+  } catch (e) {
+    console.log('Transaction failed: ', e);
+  }
 };
