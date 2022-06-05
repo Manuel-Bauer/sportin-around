@@ -20,6 +20,7 @@ export const App: FC = () => {
   // If I not use any it says: Argument of type 'DocumentData[]' is not assignable to parameter of type 'SetStateAction<undefined>'. How to deal with that within typescript react?
   const [eves, setEves] = useState<any>();
   const [currentEvent, setCurrentEvent] = useState<any>();
+  const [currentMatches, setCurrentMatches] = useState<any>();
 
   // Get also IDs
   const getAllEvents = () => {
@@ -36,6 +37,9 @@ export const App: FC = () => {
     });
   };
 
+  console.log(currentEvent);
+  console.log(currentMatches);
+
   return (
     <ChakraProvider>
       {!auth.currentUser ? (
@@ -50,8 +54,16 @@ export const App: FC = () => {
       {auth.currentUser && showEventForm && <EventForm />}
       <Button onClick={getAllEvents}>Show all Events</Button>
       <Flex>
-        <EventList eves={eves} setCurrentEvent={setCurrentEvent} />
-        <EventDetails currentEvent={currentEvent} />
+        <EventList
+          eves={eves}
+          currentMatches={currentMatches}
+          setCurrentEvent={setCurrentEvent}
+          setCurrentMatches={setCurrentMatches}
+        />
+        <EventDetails
+          currentEvent={currentEvent}
+          currentMatches={currentMatches}
+        />
       </Flex>
     </ChakraProvider>
   );

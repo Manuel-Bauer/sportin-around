@@ -16,12 +16,13 @@ const { firestore } = getFirebase();
 
 interface Props {
   match: MatchInterface;
-  setMatches: Function;
 }
 
-const Match: FC<Props> = ({ match, setMatches }) => {
+const Match: FC<Props> = ({ match }) => {
   const [homeProfile, setHomeProfile] = useState<any>({});
   const [awayProfile, setAwayProfile] = useState<any>({});
+
+  console.log('MATCH', match);
 
   useEffect(() => {
     const userDocHome = doc(firestore, `users/${match?.home?.uid}`);
