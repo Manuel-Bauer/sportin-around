@@ -41,7 +41,7 @@ const EventListItem: FC<Props> = ({
     const matches: any = [];
     const querySnapshot = await getDocs(matchQuery);
     querySnapshot.forEach((doc) => {
-      matches.push(doc.data());
+      matches.push({ ...doc.data(), matchId: doc.id });
     });
     setCurrentMatches(matches);
   };

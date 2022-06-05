@@ -11,6 +11,7 @@ import {
   EditableTextarea,
   EditablePreview,
 } from '@chakra-ui/react';
+import { updateMatch } from '../utils/firestore';
 
 const { firestore } = getFirebase();
 
@@ -35,17 +36,14 @@ const Match: FC<Props> = ({ match }) => {
     });
   }, []);
 
-  // Side is home or away
-  const updateScore = (newValue: number, side: string) => {
-    console.log('update');
-  };
-
   return (
     <Flex w='100%' justify='space-between'>
       <Flex>
         <Text>{homeProfile.username}</Text>
         <Editable
-          onChange={(value) => updateScore(Number(value), 'home')}
+          onChange={(value) =>
+            updateMatch(match.matchId, Number(value), 'home')
+          }
           defaultValue={match?.home?.score.toString()}
         >
           <EditablePreview />
@@ -53,7 +51,10 @@ const Match: FC<Props> = ({ match }) => {
         </Editable>
       </Flex>
       <Flex>{awayProfile.username}</Flex>
-      <Editable defaultValue={match?.home?.score.toString()}>
+      <Editable
+        onChange={(value) => updateMatch(match.matchId, Number(value), 'away')}
+        defaultValue={match?.away?.score.toString()}
+      >
         <EditablePreview />
         <EditableInput />
       </Editable>

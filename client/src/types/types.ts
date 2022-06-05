@@ -1,41 +1,41 @@
 export interface EventInterface {
-  eventId?: String;
-  ownerId: String;
-  title: String;
-  venue: String;
+  eventId?: string;
+  ownerId: string;
+  title: string;
+  venue: string;
   date: Date;
-  started: Boolean;
-  completed: Boolean;
-  type: String;
+  started: boolean;
+  completed: boolean;
+  type: string;
   result?: ResultInterface[];
 }
 
 export interface MatchInterface {
-  matchId?: String;
-  eventId?: String;
-  ownerId: String;
-  matchday: Number;
+  matchId?: string;
+  eventId?: string;
+  ownerId: string;
+  matchday: number;
   home: ScoreInterface | undefined;
   away: ScoreInterface | undefined;
 }
 
 export interface ScoreInterface {
-  uid: String;
-  score: Number;
-  points: Number;
+  uid: string;
+  score: number;
+  points: number;
 }
 
 export interface ResultInterface {
-  uid: String;
-  totalPoints: Number;
-  totalScored: Number;
-  totalConceded: Number;
-  rank: Number;
+  uid: string;
+  totalPoints: number;
+  totalScored: number;
+  totalConceded: number;
+  rank: number;
 }
 
 export interface User {
-  uid: String;
-  username: String;
-  avatar: String;
+  uid: string;
+  username: string;
+  avatar: string;
   stats: [];
 }

@@ -125,7 +125,6 @@ export const createSchedule = (eve: EventInterface) => {
       }
 
       const match: MatchInterface = {
-        matchId: nanoid(),
         ownerId: eve.ownerId,
         matchday: matchday,
         home: home,
@@ -139,7 +138,12 @@ export const createSchedule = (eve: EventInterface) => {
 };
 
 // Update Match
-const updateMatch = async (matchId: string, score: number, side: string) => {
+export const updateMatch = async (
+  matchId: string | undefined,
+  score: number,
+  side: string
+) => {
+  console.log('matchid', matchId);
   const matchToUpdate = doc(firestore, `matches/${matchId}`);
 
   try {
@@ -148,17 +152,18 @@ const updateMatch = async (matchId: string, score: number, side: string) => {
       if (!matchDoc.exists()) throw 'Match does not exist!';
 
       const data = matchDoc.data();
+      console.log('data', data);
 
       if (side === 'home') {
         const newHome = { ...data.home, score: score };
-        const newMatch = { ...data, home: newHome };
-        transaction.update(matchToUpdate, { newMatch });
+        transaction.update(matchToUpdate, { home: newHome });
       }
 
       if (side === 'away') {
         const newAway = { ...data.away, score: score };
-        const newMatch = { ...data, home: newAway };
-        transaction.update(matchToUpdate, { newMatch });
+        transaction.update(matchToUpdate, {
+          away: newAway,
+        });
       }
     });
   } catch (e) {
