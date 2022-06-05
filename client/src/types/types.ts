@@ -7,12 +7,12 @@ export interface EventInterface {
   started: Boolean;
   completed: Boolean;
   type: String;
-  matches?: MatchInterface[];
   result?: ResultInterface[];
 }
 
 export interface MatchInterface {
   matchId?: String;
+  eventId?: String;
   ownerId: String;
   matchday: Number;
   home: ScoreInterface | undefined;

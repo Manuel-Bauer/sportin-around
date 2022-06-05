@@ -1,15 +1,25 @@
-import { MatchInterface } from '../types/types';
+import { MatchInterface, EventInterface } from '../types/types';
 import { useState, useEffect, FC } from 'react';
 import { getFirebase } from '../firebase';
-import { doc, onSnapshot } from 'firebase/firestore'; 
+import { doc, onSnapshot } from 'firebase/firestore';
+import {
+  Box,
+  Flex,
+  Text,
+  Editable,
+  EditableInput,
+  EditableTextarea,
+  EditablePreview,
+} from '@chakra-ui/react';
 
 const { firestore } = getFirebase();
 
 interface Props {
   match: MatchInterface;
+  setMatches: Function;
 }
 
-const Match: FC<Props> = ({ match }) => {
+const Match: FC<Props> = ({ match, setMatches }) => {
   const [homeProfile, setHomeProfile] = useState<any>({});
   const [awayProfile, setAwayProfile] = useState<any>({});
 
@@ -24,11 +34,29 @@ const Match: FC<Props> = ({ match }) => {
     });
   }, []);
 
+  // Side is home or away
+  const updateScore = (newValue: number, side: string) => {
+    console.log('update');
+  };
+
   return (
-    <div>
-      <div>{match?.away?.uid}</div>
-      <div>{homeProfile.username}</div>
-    </div>
+    <Flex w='100%' justify='space-between'>
+      <Flex>
+        <Text>{homeProfile.username}</Text>
+        <Editable
+          onChange={(value) => updateScore(Number(value), 'home')}
+          defaultValue={match?.home?.score.toString()}
+        >
+          <EditablePreview />
+          <EditableInput />
+        </Editable>
+      </Flex>
+      <Flex>{awayProfile.username}</Flex>
+      <Editable defaultValue={match?.home?.score.toString()}>
+        <EditablePreview />
+        <EditableInput />
+      </Editable>
+    </Flex>
   );
 };
 

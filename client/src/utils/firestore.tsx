@@ -1,10 +1,5 @@
 import { getFirebase } from '../firebase';
-import {
-  doc,
-  updateDoc,
-  runTransaction,
-  setDoc
-} from 'firebase/firestore';
+import { doc, updateDoc, runTransaction, setDoc } from 'firebase/firestore';
 import { MatchInterface, EventInterface } from '../types/types';
 import { nanoid } from 'nanoid';
 
@@ -24,7 +19,6 @@ export const addUser = () => {
   };
   setDoc(userDoc, newUser);
 };
-
 
 // Add User to Event
 export const addPlayer = async (eventId: String | undefined) => {
@@ -55,12 +49,13 @@ export const addPlayer = async (eventId: String | undefined) => {
 };
 
 // Add match to event. Called in create Schedule
-const saveMatch = async (
+const saveMatches = async (
   matches: MatchInterface[],
   eventId: String | undefined
 ) => {
-  const thisEvent = doc(firestore, `events/${eventId}`);
-  updateDoc(thisEvent, { matches });
+  console.log('saveMatches', eventId);
+  const matchesDoc = doc(firestore, `matches/${eventId}`);
+  setDoc(matchesDoc, { matches });
 };
 
 // Creates schedule based on signed up participant for Event and if it is single round robin or double round robin
@@ -129,11 +124,12 @@ export const createSchedule = (eve: EventInterface) => {
         matchday: matchday,
         home: home,
         away: away,
+        eventId: eve.eventId,
       };
 
       matches.push(match);
 
-      await saveMatch(matches, eve.eventId);
+      await saveMatches(matches, eve.eventId);
     });
   });
 };

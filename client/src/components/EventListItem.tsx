@@ -9,10 +9,6 @@ interface Props {
 }
 
 const EventListItem: FC<Props> = ({ eve, setCurrentEvent }) => {
-  // Add User and Start result to event when user wants to compete
-
-  // Save match in event document
-
   return (
     <Box border='1px'>
       <h1>{eve.title}</h1>
