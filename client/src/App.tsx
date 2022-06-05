@@ -7,7 +7,7 @@ import EventForm from './components/EventForm';
 import EventList from './components/EventList';
 import EventDetails from './components/EventDetails';
 import { FC } from 'react';
-import { eve } from './types/types';
+import { EventInterface } from './types/types';
 
 import { onSnapshot, collection, doc } from 'firebase/firestore';
 

@@ -1,11 +1,11 @@
 import { FC } from 'react';
-import { eve } from '../types/types';
+import { EventInterface } from '../types/types';
 import EventListItem from './EventListItem';
 import { nanoid } from 'nanoid';
 import { Box } from '@chakra-ui/react';
 
 interface Props {
-  eves: eve[];
+  eves: EventInterface[];
   setCurrentEvent: Function;
 }
 

@@ -1,15 +1,20 @@
 import { getFirebase } from '../firebase';
 import { doc, updateDoc, runTransaction } from 'firebase/firestore';
-import { match, eve } from '../types/types';
+import { MatchInterface, EventInterface } from '../types/types';
 import { nanoid } from 'nanoid';
 
 const robin = require('roundrobin');
 
 const { auth, firestore } = getFirebase();
 
+// Add User to Firestore on first login
+export const addUser = () => {
+  const user = auth.currentUser.uid;
+  const userDoc = doc(firestore, `users/${auth.currentUser.uid}`);
+};
+
 // Add User to Event
 export const addPlayer = async (eventId: String | undefined) => {
-  console.log('add player');
   const thisEvent = doc(firestore, `events/${eventId}`);
 
   const newResult: any = {
@@ -37,13 +42,16 @@ export const addPlayer = async (eventId: String | undefined) => {
 };
 
 // Add match to event. Called in create Schedule
-const saveMatch = async (matches: match[], eventId: String | undefined) => {
+const saveMatch = async (
+  matches: MatchInterface[],
+  eventId: String | undefined
+) => {
   const thisEvent = doc(firestore, `events/${eventId}`);
   updateDoc(thisEvent, { matches });
 };
 
 // Creates schedule based on signed up participant for Event and if it is single round robin or double round robin
-export const createSchedule = (eve: eve) => {
+export const createSchedule = (eve: EventInterface) => {
   if (!eve.result) throw 'Must have at least two entries';
   const numEntries = eve.result.length;
 
@@ -57,7 +65,7 @@ export const createSchedule = (eve: eve) => {
     scheduler = [...robin(numEntries), ...robin(numEntries)];
   }
 
-  const matches: match[] = [];
+  const matches: MatchInterface[] = [];
 
   scheduler.forEach((matchRef: number[], matchdayIdx: number) => {
     const matchday = matchdayIdx + 1;
@@ -102,7 +110,7 @@ export const createSchedule = (eve: eve) => {
         };
       }
 
-      const match: match = {
+      const match: MatchInterface = {
         matchId: nanoid(),
         ownerId: eve.ownerId,
         matchday: matchday,

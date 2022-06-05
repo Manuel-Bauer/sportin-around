@@ -1,10 +1,10 @@
 import { FC } from 'react';
-import { eve } from '../types/types';
+import { EventInterface } from '../types/types';
 import { Box, Button } from '@chakra-ui/react';
 import { addPlayer, createSchedule } from '../utils/firestore';
 
 interface Props {
-  eve: eve;
+  eve: EventInterface;
   setCurrentEvent: Function;
 }
 

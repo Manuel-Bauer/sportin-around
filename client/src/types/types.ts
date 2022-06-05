@@ -1,4 +1,4 @@
-export interface eve {
+export interface EventInterface {
   eventId?: String;
   ownerId: String;
   title: String;
@@ -7,28 +7,35 @@ export interface eve {
   started: Boolean;
   completed: Boolean;
   type: String;
-  matches?: match[];
-  result?: result[];
+  matches?: MatchInterface[];
+  result?: ResultInterface[];
 }
 
-export interface match {
+export interface MatchInterface {
   matchId?: String;
   ownerId: String;
   matchday: Number;
-  home: score | undefined;
-  away: score | undefined;
+  home: ScoreInterface | undefined;
+  away: ScoreInterface | undefined;
 }
 
-export interface score {
+export interface ScoreInterface {
   uid?: String;
   score: Number;
   points: Number;
 }
 
-export interface result {
+export interface ResultInterface {
   uid: String;
   totalPoints: Number;
   totalScored: Number;
   totalConceded: Number;
   rank: Number;
+}
+
+export interface User {
+  uid: String;
+  username: String;
+  avatar: String;
+  stats: [];
 }

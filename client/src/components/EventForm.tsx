@@ -18,7 +18,7 @@ import { getFirebase } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { nanoid } from 'nanoid';
 
-import { eve } from '../types/types';
+import { EventInterface } from '../types/types';
 
 const { firestore, auth } = getFirebase();
 
@@ -46,7 +46,7 @@ const EventForm: FC = () => {
       // Works but you need to specify document name
       // For now: Client side ID generation
       const newDoc = doc(firestore, `events/${newID}`);
-      const newEvent: eve = {
+      const newEvent: EventInterface = {
         title: values.title,
         venue: values.venue,
         ownerId: auth.currentUser.uid,

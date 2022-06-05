@@ -1,10 +1,11 @@
 import { FC } from 'react';
-import { eve, match } from '../types/types';
+import { EventInterface, MatchInterface } from '../types/types';
 import { Box, Text, VStack } from '@chakra-ui/react';
+import { nanoid } from 'nanoid';
 import Match from '../components/Match';
 
 interface Props {
-  currentEvent: eve | undefined;
+  currentEvent: EventInterface | undefined;
 }
 
 const EventDetails: FC<Props> = ({ currentEvent }) => {
@@ -13,8 +14,8 @@ const EventDetails: FC<Props> = ({ currentEvent }) => {
       {currentEvent && <Text fontSize='3xl'>{currentEvent?.title}</Text>}
       <VStack>
         {currentEvent?.matches &&
-          currentEvent?.matches.map((match: match) => {
-            return <Match match={match} />;
+          currentEvent?.matches.map((match: MatchInterface) => {
+            return <Match key={nanoid()} match={match} />;
           })}
       </VStack>
     </Box>
