@@ -15,6 +15,7 @@ export interface MatchInterface {
   eventId?: string;
   ownerId: string;
   matchday: number;
+  started: boolean;
   home: ScoreInterface | undefined;
   away: ScoreInterface | undefined;
 }

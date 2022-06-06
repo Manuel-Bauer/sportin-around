@@ -130,6 +130,7 @@ export const createSchedule = (eve: EventInterface) => {
         home: home,
         away: away,
         eventId: eve.eventId,
+        started: false,
       };
 
       await saveMatch(match, eve.eventId);
@@ -137,13 +138,23 @@ export const createSchedule = (eve: EventInterface) => {
   });
 };
 
+const updateStandings = async (eventId: string | undefined) => {};
+
+const calcPoints = (score1: number, score2: number) => {
+  if (score1 > score2) return 3;
+  else if (score1 === score2) return 1;
+  else return 0;
+};
+
 // Update Match
 export const updateMatch = async (
   matchId: string | undefined,
   score: number,
-  side: string
+  side: string,
+  eventId: string | undefined
 ) => {
-  console.log('matchid', matchId);
+  // Difference in standings
+
   const matchToUpdate = doc(firestore, `matches/${matchId}`);
 
   try {
@@ -152,16 +163,27 @@ export const updateMatch = async (
       if (!matchDoc.exists()) throw 'Match does not exist!';
 
       const data = matchDoc.data();
-      console.log('data', data);
 
       if (side === 'home') {
-        const newHome = { ...data.home, score: score };
-        transaction.update(matchToUpdate, { home: newHome });
+        const homePoints = calcPoints(score, data.away.score);
+        const awayPoints = calcPoints(data.away.score, score);
+        const newHome = { ...data.home, score: score, points: homePoints };
+        const newAway = { ...data.away, points: awayPoints };
+        transaction.update(matchToUpdate, {
+          started: true,
+          home: newHome,
+          away: newAway,
+        });
       }
 
       if (side === 'away') {
-        const newAway = { ...data.away, score: score };
+        const awayPoints = calcPoints(score, data.away.score);
+        const homePoints = calcPoints(data.away.score, score);
+        const newAway = { ...data.away, score: score, points: awayPoints };
+        const newHome = { ...data.home, points: homePoints };
         transaction.update(matchToUpdate, {
+          started: true,
+          home: newHome,
           away: newAway,
         });
       }

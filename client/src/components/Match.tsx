@@ -23,8 +23,6 @@ const Match: FC<Props> = ({ match }) => {
   const [homeProfile, setHomeProfile] = useState<any>({});
   const [awayProfile, setAwayProfile] = useState<any>({});
 
-  console.log('MATCH', match);
-
   useEffect(() => {
     const userDocHome = doc(firestore, `users/${match?.home?.uid}`);
     const userDocAway = doc(firestore, `users/${match?.away?.uid}`);
@@ -42,7 +40,7 @@ const Match: FC<Props> = ({ match }) => {
         <Text>{homeProfile.username}</Text>
         <Editable
           onChange={(value) =>
-            updateMatch(match.matchId, Number(value), 'home')
+            updateMatch(match.matchId, Number(value), 'home', match.eventId)
           }
           defaultValue={match?.home?.score.toString()}
         >
@@ -52,7 +50,9 @@ const Match: FC<Props> = ({ match }) => {
       </Flex>
       <Flex>{awayProfile.username}</Flex>
       <Editable
-        onChange={(value) => updateMatch(match.matchId, Number(value), 'away')}
+        onChange={(value) =>
+          updateMatch(match.matchId, Number(value), 'away', match.eventId)
+        }
         defaultValue={match?.away?.score.toString()}
       >
         <EditablePreview />
