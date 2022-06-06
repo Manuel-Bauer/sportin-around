@@ -26,14 +26,11 @@ const EventListItem: FC<Props> = ({
   setCurrentMatches,
 }) => {
   const setEventAndMatches = async (eve: EventInterface) => {
-    console.log('setevendandmatches');
     // Set Current Event
     setCurrentEvent(eve);
 
     // Set Current Matches
-
     const matchesCol = collection(firestore, 'matches');
-
     const matchQuery = query(matchesCol, where('eventId', '==', eve.eventId));
 
     // Again document data issue

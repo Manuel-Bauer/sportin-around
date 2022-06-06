@@ -7,9 +7,8 @@ import {
   collection,
   addDoc,
 } from 'firebase/firestore';
-import { MatchInterface, EventInterface } from '../types/types';
+import { MatchInterface, EventInterface, ResultInterface} from '../types/types';
 import { nanoid } from 'nanoid';
-import { ECDH } from 'crypto';
 
 const robin = require('roundrobin');
 
@@ -77,8 +76,8 @@ const saveStanding = async (eve: EventInterface) => {
     standing: results,
   };
 
-  const standingCol = collection(firestore, 'standings');
-  await addDoc(standingCol, standingToAdd);
+  const standingDoc = doc(firestore, `standings/${eve.eventId}`);
+  setDoc(standingDoc, standingToAdd);
 };
 
 // Creates schedule based on signed up participant for Event and if it is single round robin or double round robin
@@ -152,12 +151,45 @@ export const createSchedule = async (eve: EventInterface) => {
       };
 
       // Save Individual Matches to Match document
-      await saveMatch(match, eve.eventId);
+      await saveMatch(match, eve.eventId)
     });
   });
 };
 
-const updateStandings = async (eventId: string | undefined) => {};
+const updateStandings = async (eventId: string | undefined) => {
+
+  const standingToUpdate = doc(firestore, `events/${eventId}`);
+
+  try {
+    await runTransaction(firestore, async (transaction) => {
+      const standingDoc = await transaction.get(standingToUpdate)
+      if(!standingDoc.exists()) throw "Event does not exist!"
+      const data = standingDoc.data()
+
+      
+
+      const newStanding = data.standing.map((player: ResultInterface) => {
+        // Loop through all the matches and whereever player.id === home.id or away.id add up the points 
+      })
+    })
+  }
+
+
+  // get standing by id
+  // try {
+  //   await runTransaction(firestore, async (transaction) => {
+  //     const eventDoc = await transaction.get(thisEvent);
+  //     if (!eventDoc.exists()) throw 'Event does not exist!';
+  //     const data = eventDoc.data();
+  //     const newEntries = data.entries
+  //       ? [...data.entries, auth.currentUser.uid]
+  //       : [auth.currentUser.uid];
+  //     transaction.update(thisEvent, { entries: newEntries });
+  //   });
+  // } catch (e) {
+  //   console.log('Transaction failed: ', e);
+  // }
+};
 
 const calcPoints = (score1: number, score2: number) => {
   if (score1 > score2) return 3;
