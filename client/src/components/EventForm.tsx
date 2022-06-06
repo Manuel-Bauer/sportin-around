@@ -41,6 +41,9 @@ const EventForm: FC = () => {
       type: Yup.string().required('Type required'),
     }),
     onSubmit: async (values: any, actions: any) => {
+      // Use server side saving of IDs
+      // Create Result array
+
       const newID = nanoid();
 
       // Works but you need to specify document name
@@ -54,6 +57,7 @@ const EventForm: FC = () => {
         started: false,
         completed: false,
         type: values.type,
+        entries: [],
       };
 
       setDoc(newDoc, newEvent);

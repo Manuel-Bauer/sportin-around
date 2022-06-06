@@ -35,7 +35,6 @@ const EventListItem: FC<Props> = ({
     const matchesCol = collection(firestore, 'matches');
 
     const matchQuery = query(matchesCol, where('eventId', '==', eve.eventId));
-    console.log(matchQuery, 'matchQuery');
 
     // Again document data issue
     const matches: any = [];

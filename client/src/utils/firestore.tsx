@@ -9,6 +9,7 @@ import {
 } from 'firebase/firestore';
 import { MatchInterface, EventInterface } from '../types/types';
 import { nanoid } from 'nanoid';
+import { ECDH } from 'crypto';
 
 const robin = require('roundrobin');
 
@@ -31,14 +32,6 @@ export const addUser = () => {
 export const addPlayer = async (eventId: String | undefined) => {
   const thisEvent = doc(firestore, `events/${eventId}`);
 
-  const newResult: any = {
-    uid: auth.currentUser.uid,
-    totalPoints: 0,
-    totalScored: 0,
-    totalConceded: 0,
-    rank: 0,
-  };
-
   try {
     await runTransaction(firestore, async (transaction) => {
       const eventDoc = await transaction.get(thisEvent);
@@ -46,9 +39,11 @@ export const addPlayer = async (eventId: String | undefined) => {
 
       const data = eventDoc.data();
 
-      const result = !data.result ? [newResult] : [...data.result, newResult];
+      const newEntries = data.entries
+        ? [...data.entries, auth.currentUser.uid]
+        : [auth.currentUser.uid];
 
-      transaction.update(thisEvent, { result });
+      transaction.update(thisEvent, { entries: newEntries });
     });
   } catch (e) {
     console.log('Transaction failed: ', e);
@@ -56,7 +51,6 @@ export const addPlayer = async (eventId: String | undefined) => {
 };
 
 // CREATE MATCH
-// Add match to event. Called in create Schedule
 const saveMatch = async (
   match: MatchInterface,
   eventId: String | undefined
@@ -66,10 +60,34 @@ const saveMatch = async (
   await addDoc(matchesCol, matchToAdd);
 };
 
+// CREATE STANDING
+const saveStanding = async (eve: EventInterface) => {
+  const results = eve.entries.map((entry) => {
+    return {
+      uid: entry,
+      totalPoints: 0,
+      totalScored: 0,
+      totalConceded: 0,
+      totalPlayed: 0,
+    };
+  });
+  const standingToAdd = {
+    completed: false,
+    eventId: eve.eventId,
+    standing: results,
+  };
+
+  const standingCol = collection(firestore, 'standings');
+  await addDoc(standingCol, standingToAdd);
+};
+
 // Creates schedule based on signed up participant for Event and if it is single round robin or double round robin
-export const createSchedule = (eve: EventInterface) => {
-  if (!eve.result) throw 'Must have at least two entries';
-  const numEntries = eve.result.length;
+export const createSchedule = async (eve: EventInterface) => {
+  // Save Standings for Tournaement in Standings collection
+  await saveStanding(eve);
+
+  if (!eve.entries) throw 'Must have at least two entries';
+  const numEntries = eve.entries.length;
 
   let scheduler: any;
 
@@ -89,36 +107,36 @@ export const createSchedule = (eve: EventInterface) => {
       let home;
       let away;
 
-      if (eve.type === 'Single Round-Robin' && eve.result) {
+      if (eve.type === 'Single Round-Robin' && eve.entries) {
         // Here I would like to indicate that home should have type score but it gives me an error if I try
         // We need to adjust indexes because robin library starts with 1
         home = {
-          uid: eve.result[players[0] - 1].uid,
+          uid: eve.entries[players[0] - 1],
           score: 0,
           points: 0,
         };
         away = {
-          uid: eve.result[players[1] - 1].uid,
+          uid: eve.entries[players[1] - 1],
           score: 0,
           points: 0,
         };
       }
 
       // Create first and second lag if its a double round robin format
-      if (eve.type === 'Double Round-Robin' && eve.result) {
+      if (eve.type === 'Double Round-Robin' && eve.entries) {
         home = {
           uid:
             matchday <= (scheduler.length + 1) / 2
-              ? eve.result[players[0] - 1].uid
-              : eve.result[players[1] - 1].uid,
+              ? eve.entries[players[0] - 1]
+              : eve.entries[players[1] - 1],
           score: 0,
           points: 0,
         };
         away = {
           uid:
             matchday <= (scheduler.length + 1) / 2
-              ? eve.result[players[1] - 1].uid
-              : eve.result[players[0] - 1].uid,
+              ? eve.entries[players[1] - 1]
+              : eve.entries[players[0] - 1],
           score: 0,
           points: 0,
         };
@@ -133,6 +151,7 @@ export const createSchedule = (eve: EventInterface) => {
         started: false,
       };
 
+      // Save Individual Matches to Match document
       await saveMatch(match, eve.eventId);
     });
   });
