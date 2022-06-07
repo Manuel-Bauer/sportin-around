@@ -227,30 +227,13 @@ const updateStandings = async (eventId: string | undefined) => {
         }
       );
 
-      Promise.all(newStanding).then((values) => {
-        console.log(values);
-        console.log(standingToUpdate);
+      return Promise.all(newStanding).then((values) => {
         transaction.update(standingToUpdate, { standing: values });
       });
     });
   } catch (err) {
     console.log('Transaction failed: ', err);
   }
-
-  // get standing by id
-  // try {
-  //   await runTransaction(firestore, async (transaction) => {
-  //     const eventDoc = await transaction.get(thisEvent);
-  //     if (!eventDoc.exists()) throw 'Event does not exist!';
-  //     const data = eventDoc.data();
-  //     const newEntries = data.entries
-  //       ? [...data.entries, auth.currentUser.uid]
-  //       : [auth.currentUser.uid];
-  //     transaction.update(thisEvent, { entries: newEntries });
-  //   });
-  // } catch (e) {
-  //   console.log('Transaction failed: ', e);
-  // }
 };
 
 const calcPoints = (score1: number, score2: number) => {
