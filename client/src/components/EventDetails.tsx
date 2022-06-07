@@ -11,8 +11,6 @@ interface Props {
 }
 
 const EventDetails: FC<Props> = ({ currentEvent, currentMatches }) => {
-  console.log('currentMATCHES', currentMatches);
-  console.log(currentMatches?.length);
   return (
     <Box mx='auto'>
       {currentEvent && <Text fontSize='3xl'>{currentEvent?.title}</Text>}

@@ -6,9 +6,10 @@ import SignOut from './components/SignOut';
 import EventForm from './components/EventForm';
 import EventList from './components/EventList';
 import EventDetails from './components/EventDetails';
+import Header from './components/Header';
 import { FC } from 'react';
 import { EventInterface } from './types/types';
-
+import theme from './theme';
 import { onSnapshot, collection, doc } from 'firebase/firestore';
 
 const { auth, firestore } = getFirebase();
@@ -38,7 +39,8 @@ export const App: FC = () => {
   };
 
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
+      <Header />
       {!auth.currentUser ? (
         <SignIn setAuthed={setAuthed} />
       ) : (

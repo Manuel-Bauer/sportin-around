@@ -163,18 +163,6 @@ export const createSchedule = async (eve: EventInterface) => {
   });
 };
 
-// // Set Current Matches
-// const matchesCol = collection(firestore, 'matches');
-// const matchQuery = query(matchesCol, where('eventId', '==', eve.eventId));
-
-// // Again document data issue
-// const matches: any = [];
-// const querySnapshot = await getDocs(matchQuery);
-// querySnapshot.forEach((doc) => {
-//   matches.push({ ...doc.data(), matchId: doc.id });
-// });
-// setCurrentMatches(matches);
-
 const updateStandings = async (eventId: string | undefined) => {
   const standingToUpdate = doc(firestore, `standings/${eventId}`);
 
@@ -249,8 +237,6 @@ export const updateMatch = async (
   side: string,
   eventId: string | undefined
 ) => {
-  // Difference in standings
-
   const matchToUpdate = doc(firestore, `matches/${matchId}`);
 
   try {
