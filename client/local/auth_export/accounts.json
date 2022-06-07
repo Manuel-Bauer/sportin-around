@@ -1,1 +1,1 @@
-{"kind":"identitytoolkit#DownloadAccountResponse","users":[{"localId":"C7NPdZMXUYAXLJaPqlCHK37Jjo5B","createdAt":"1654528046828","lastLoginAt":"1654528046828","displayName":"Sammy","email":"sam@gmail.com","emailVerified":true,"providerUserInfo":[{"providerId":"google.com","rawId":"5359795764145308598782217480065862141142","federatedId":"5359795764145308598782217480065862141142","displayName":"Sammy","email":"sam@gmail.com"}],"lastRefreshAt":"2022-06-06T15:07:26.828Z"}]}
+{"kind":"identitytoolkit#DownloadAccountResponse","users":[]}

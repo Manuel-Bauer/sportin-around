@@ -6,8 +6,15 @@ import {
   setDoc,
   collection,
   addDoc,
+  query,
+  where,
+  getDocs,
 } from 'firebase/firestore';
-import { MatchInterface, EventInterface, ResultInterface} from '../types/types';
+import {
+  MatchInterface,
+  EventInterface,
+  ResultInterface,
+} from '../types/types';
 import { nanoid } from 'nanoid';
 
 const robin = require('roundrobin');
@@ -151,29 +158,84 @@ export const createSchedule = async (eve: EventInterface) => {
       };
 
       // Save Individual Matches to Match document
-      await saveMatch(match, eve.eventId)
+      await saveMatch(match, eve.eventId);
     });
   });
 };
 
-const updateStandings = async (eventId: string | undefined) => {
+// // Set Current Matches
+// const matchesCol = collection(firestore, 'matches');
+// const matchQuery = query(matchesCol, where('eventId', '==', eve.eventId));
 
-  const standingToUpdate = doc(firestore, `events/${eventId}`);
+// // Again document data issue
+// const matches: any = [];
+// const querySnapshot = await getDocs(matchQuery);
+// querySnapshot.forEach((doc) => {
+//   matches.push({ ...doc.data(), matchId: doc.id });
+// });
+// setCurrentMatches(matches);
+
+const updateStandings = async (eventId: string | undefined) => {
+  const standingToUpdate = doc(firestore, `standings/${eventId}`);
 
   try {
     await runTransaction(firestore, async (transaction) => {
-      const standingDoc = await transaction.get(standingToUpdate)
-      if(!standingDoc.exists()) throw "Event does not exist!"
-      const data = standingDoc.data()
+      const standingDoc = await transaction.get(standingToUpdate);
+      if (!standingDoc.exists()) throw 'Event does not exist!';
+      const data = standingDoc.data();
 
-      
+      const newStanding = await data.standing.map(
+        async (player: ResultInterface) => {
+          let totalPlayed = 0;
+          let totalPoints = 0;
+          let totalScored = 0;
+          let totalConceded = 0;
+          let uid = player.uid;
 
-      const newStanding = data.standing.map((player: ResultInterface) => {
-        // Loop through all the matches and whereever player.id === home.id or away.id add up the points 
-      })
-    })
+          // Query through all matches with the given event id
+          const matchesCol = collection(firestore, 'matches');
+          const matchQuery = query(matchesCol, where('eventId', '==', eventId));
+          const querySnapshot = await getDocs(matchQuery);
+
+          querySnapshot.forEach((match: any) => {
+            const data = match.data();
+            if (
+              (data.home.uid === uid || data.away.uid === uid) &&
+              data.started
+            ) {
+              totalPlayed++;
+            }
+            if (data.home.uid === uid) {
+              totalPoints += data.home.points;
+              totalScored += data.home.score;
+              totalConceded += data.away.score;
+            }
+            if (data.away.uid === uid) {
+              totalPoints += data.away.points;
+              totalScored += data.away.score;
+              totalConceded += data.home.score;
+            }
+          });
+
+          return {
+            uid,
+            totalPlayed,
+            totalPoints,
+            totalScored,
+            totalConceded,
+          };
+        }
+      );
+
+      Promise.all(newStanding).then((values) => {
+        console.log(values);
+        console.log(standingToUpdate);
+        transaction.update(standingToUpdate, { standing: values });
+      });
+    });
+  } catch (err) {
+    console.log('Transaction failed: ', err);
   }
-
 
   // get standing by id
   // try {
@@ -242,4 +304,5 @@ export const updateMatch = async (
   } catch (e) {
     console.log('Transaction failed: ', e);
   }
+  updateStandings(eventId);
 };
