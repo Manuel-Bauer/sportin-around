@@ -46,3 +46,9 @@ export interface User {
   avatar: string;
   stats: [];
 }
+
+export interface MainContextInterface {
+  currentEvent: EventInterface | undefined;
+  currentMatches: MatchInterface[];
+  updateCurrent: Function;
+}

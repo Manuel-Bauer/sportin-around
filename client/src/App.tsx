@@ -15,23 +15,29 @@ import EventList from './components/EventList';
 import EventDetails from './components/EventDetails';
 import Header from './components/Header';
 import { FC, useContext, createContext } from 'react';
-import { EventInterface } from './types/types';
+import { EventInterface, MainContextInterface } from './types/types';
 import theme from './theme';
-import { onSnapshot, collection, doc } from 'firebase/firestore';
+import {
+  onSnapshot,
+  collection,
+  doc,
+  query,
+  where,
+  getDocs,
+} from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 
 const { auth, firestore } = getFirebase();
 
-export const MainContext = createContext({});
+export const MainContext = createContext<any>(null);
 
 export const App: FC = () => {
   const [authed, setAuthed] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [showEventForm, setShowEventForm] = useState(false);
-  const [showEventList, setShowEventList] = useState(false);
   // If I not use any it says: Argument of type 'DocumentData[]' is not assignable to parameter of type 'SetStateAction<undefined>'. How to deal with that within typescript react?
   const [eves, setEves] = useState<any>();
-  const [currentEvent, setCurrentEvent] = useState<any>();
+  const [currentEvent, setCurrentEvent] = useState<any>(null);
   const [currentMatches, setCurrentMatches] = useState<any>();
 
   // Set current User on auth change
@@ -41,7 +47,6 @@ export const App: FC = () => {
   });
 
   // Load all existing Events on initial render
-
   useEffect(() => {
     getAllEvents();
   }, []);
@@ -56,15 +61,35 @@ export const App: FC = () => {
         };
       });
       setEves(data);
-      setShowEventList(true);
     });
   };
 
-  console.log(currentUser);
+  const updateCurrent = async (eve: EventInterface) => {
+    setCurrentEvent(eve);
+
+    //updating current Matches
+
+    const matchesCol = collection(firestore, 'matches');
+    const matchQuery = query(matchesCol, where('eventId', '==', eve.eventId));
+
+    // Again document data issue
+    const matches: any = [];
+    const querySnapshot = await getDocs(matchQuery);
+    querySnapshot.forEach((doc) => {
+      matches.push({ ...doc.data(), matchId: doc.id });
+    });
+    setCurrentMatches(matches);
+  };
+
+  const value: MainContextInterface = {
+    currentEvent,
+    currentMatches,
+    updateCurrent,
+  };
 
   return (
     <ChakraProvider theme={theme}>
-      <MainContext.Provider value={currentUser}>
+      <MainContext.Provider value={value}>
         {!currentUser && <SignIn setAuthed={setAuthed} />}
         {currentUser && (
           <Box>
@@ -73,16 +98,13 @@ export const App: FC = () => {
               <GridItem colSpan={3}>
                 <EventList
                   eves={eves}
-                  currentMatches={currentMatches}
-                  setCurrentEvent={setCurrentEvent}
-                  setCurrentMatches={setCurrentMatches}
+                  // currentMatches={currentMatches}
+                  // setCurrentEvent={setCurrentEvent}
+                  // setCurrentMatches={setCurrentMatches}
                 />
               </GridItem>
               <GridItem colStart={5} colEnd={13}>
-                <EventDetails
-                  currentEvent={currentEvent}
-                  currentMatches={currentMatches}
-                />
+                <EventDetails />
               </GridItem>
             </Grid>
           </Box>
@@ -91,8 +113,6 @@ export const App: FC = () => {
         <Button onClick={() => setShowEventForm((prev) => !prev)}>
           Create new Event
         </Button>
-        {auth.currentUser && showEventForm && <EventForm />}
-        <Button onClick={getAllEvents}>Show all Events</Button>
       </MainContext.Provider>
     </ChakraProvider>
   );
