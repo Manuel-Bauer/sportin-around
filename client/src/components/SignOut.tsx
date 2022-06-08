@@ -14,7 +14,16 @@ const SignOut: FC<props> = ({ setAuthed }) => {
     setAuthed(false);
   };
 
-  return <Button onClick={() => signOut()}>Sign Out</Button>;
+  return (
+    <Button
+      size='xs'
+      colorScheme='gray'
+      variant='outline'
+      onClick={() => signOut()}
+    >
+      Sign Out
+    </Button>
+  );
 };
 
 export default SignOut;

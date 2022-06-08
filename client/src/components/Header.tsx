@@ -2,15 +2,15 @@ import { FC } from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { Avatar } from '@chakra-ui/react';
 import { getFirebase } from '../firebase';
+import SignOut from '../components/SignOut';
 
 const { auth } = getFirebase();
 
-// Flexbox
-// Logo on the left
-// Title in the center
-// Avatar on the left
+interface Props {
+  setAuthed: Function;
+}
 
-const Header: FC = () => {
+const Header: FC<Props> = ({ setAuthed }) => {
   return (
     <Flex
       mx='auto'
@@ -18,14 +18,15 @@ const Header: FC = () => {
       h={50}
       align='center'
       paddingX={6}
-      justify='flex-end'
+      justify='space-between'
     >
       <Avatar
         width={8}
-        height='auto'
-        name='Might Guy'
+        maxH={8}
+        name={auth?.currentUser?.displayName}
         src={auth?.currentUser?.photoURL}
       />
+      <SignOut setAuthed={setAuthed} />
     </Flex>
   );
 };
