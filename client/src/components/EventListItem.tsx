@@ -11,17 +11,15 @@ import {
   where,
   getDocs,
 } from 'firebase/firestore';
-import { MainContext } from '../App';
 
 const { firestore } = getFirebase();
 
 interface Props {
   eve: EventInterface;
+  updateCurrent: Function;
 }
 
-const EventListItem: FC<Props> = ({ eve }) => {
-  const { updateCurrent } = useContext(MainContext);
-
+const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
   return (
     <Box border='1px'>
       <h1>{eve.title}</h1>

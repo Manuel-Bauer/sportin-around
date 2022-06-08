@@ -4,15 +4,17 @@ import { Box, Text, VStack } from '@chakra-ui/react';
 import { nanoid } from 'nanoid';
 import Match from '../components/Match';
 import { getFirebase } from '../firebase';
-import { MainContext } from '../App';
 
-const EventDetails: FC = () => {
-  const { currentEvent, currentMatches } = useContext(MainContext);
+interface Props {
+  currentEvent: EventInterface;
+  currentMatches: MatchInterface[];
+}
 
+const EventDetails: FC<Props> = ({ currentEvent, currentMatches }) => {
   return (
     <Box mx='auto'>
+      <Text fontSize='3xl'>{currentEvent?.title}</Text>
       <VStack>
-        {currentEvent && <Text fontSize='3xl'>{currentEvent?.title}</Text>}
         {currentMatches?.length > 0 &&
           currentMatches.map((match: MatchInterface) => {
             return <Match key={nanoid()} match={match} />;

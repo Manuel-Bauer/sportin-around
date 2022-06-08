@@ -3,14 +3,14 @@ import { EventInterface, MatchInterface } from '../types/types';
 import EventListItem from './EventListItem';
 import { nanoid } from 'nanoid';
 import { Box } from '@chakra-ui/react';
-import { MainContext } from '../App';
 
 interface Props {
   eves: EventInterface[];
+
+  updateCurrent: Function;
 }
 
-const EventList: FC<Props> = ({ eves }) => {
-
+const EventList: FC<Props> = ({ eves, updateCurrent }) => {
   return (
     <Box>
       {eves &&
@@ -18,6 +18,7 @@ const EventList: FC<Props> = ({ eves }) => {
           return (
             <EventListItem
               eve={eve}
+              updateCurrent={updateCurrent}
               key={nanoid()}
             />
           );

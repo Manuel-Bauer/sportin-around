@@ -29,16 +29,14 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 const { auth, firestore } = getFirebase();
 
-export const MainContext = createContext<any>(null);
-
 export const App: FC = () => {
   const [authed, setAuthed] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [showEventForm, setShowEventForm] = useState(false);
   // If I not use any it says: Argument of type 'DocumentData[]' is not assignable to parameter of type 'SetStateAction<undefined>'. How to deal with that within typescript react?
   const [eves, setEves] = useState<any>();
-  const [currentEvent, setCurrentEvent] = useState<any>(null);
-  const [currentMatches, setCurrentMatches] = useState<any>();
+  const [currentEvent, setCurrentEvent] = useState<any>();
+  const [currentMatches, setCurrentMatches] = useState<any>({});
 
   // Set current User on auth change
   onAuthStateChanged(auth, (user) => {
@@ -50,6 +48,10 @@ export const App: FC = () => {
   useEffect(() => {
     getAllEvents();
   }, []);
+
+  useEffect(() => {
+    console.log('useEffect', currentEvent);
+  }, [currentEvent]);
 
   const getAllEvents = () => {
     const eventsCol = collection(firestore, 'events');
@@ -65,7 +67,8 @@ export const App: FC = () => {
   };
 
   const updateCurrent = async (eve: EventInterface) => {
-    setCurrentEvent(eve);
+    // setCurrentEvent(eve);
+    // console.log(eve);
 
     //updating current Matches
 
@@ -78,42 +81,35 @@ export const App: FC = () => {
     querySnapshot.forEach((doc) => {
       matches.push({ ...doc.data(), matchId: doc.id });
     });
-    setCurrentMatches(matches);
-  };
-
-  const value: MainContextInterface = {
-    currentEvent,
-    currentMatches,
-    updateCurrent,
+    console.log(matches);
+    setCurrentMatches({ matches, eve });
   };
 
   return (
     <ChakraProvider theme={theme}>
-      <MainContext.Provider value={value}>
-        {!currentUser && <SignIn setAuthed={setAuthed} />}
-        {currentUser && (
-          <Box>
-            <Header setAuthed={setAuthed} />
-            <Grid m='20px' templateColumns='repeat(12, 1fr)' gap='20px'>
-              <GridItem colSpan={3}>
-                <EventList
-                  eves={eves}
-                  // currentMatches={currentMatches}
-                  // setCurrentEvent={setCurrentEvent}
-                  // setCurrentMatches={setCurrentMatches}
+      {!currentUser && <SignIn setAuthed={setAuthed} />}
+      {currentUser && (
+        <Box>
+          <Header setAuthed={setAuthed} />
+          <Grid m='20px' templateColumns='repeat(12, 1fr)' gap='20px'>
+            <GridItem colSpan={3}>
+              <EventList eves={eves} updateCurrent={updateCurrent} />
+            </GridItem>
+            <GridItem colStart={5} colEnd={13}>
+              {currentMatches && (
+                <EventDetails
+                  currentEvent={currentMatches.eve}
+                  currentMatches={currentMatches.matches}
                 />
-              </GridItem>
-              <GridItem colStart={5} colEnd={13}>
-                <EventDetails />
-              </GridItem>
-            </Grid>
-          </Box>
-        )}
+              )}
+            </GridItem>
+          </Grid>
+        </Box>
+      )}
 
-        <Button onClick={() => setShowEventForm((prev) => !prev)}>
-          Create new Event
-        </Button>
-      </MainContext.Provider>
+      <Button onClick={() => setShowEventForm((prev) => !prev)}>
+        Create new Event
+      </Button>
     </ChakraProvider>
   );
 };
