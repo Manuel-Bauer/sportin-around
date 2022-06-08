@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getFirebase } from './firebase';
 import {
   ChakraProvider,
@@ -40,7 +40,12 @@ export const App: FC = () => {
     else setCurrentUser(null);
   });
 
-  // Get also IDs
+  // Load all existing Events on initial render
+
+  useEffect(() => {
+    getAllEvents();
+  }, []);
+
   const getAllEvents = () => {
     const eventsCol = collection(firestore, 'events');
     onSnapshot(eventsCol, (snapshot) => {
@@ -88,18 +93,6 @@ export const App: FC = () => {
         </Button>
         {auth.currentUser && showEventForm && <EventForm />}
         <Button onClick={getAllEvents}>Show all Events</Button>
-        <Flex>
-          <EventList
-            eves={eves}
-            currentMatches={currentMatches}
-            setCurrentEvent={setCurrentEvent}
-            setCurrentMatches={setCurrentMatches}
-          />
-          <EventDetails
-            currentEvent={currentEvent}
-            currentMatches={currentMatches}
-          />
-        </Flex>
       </MainContext.Provider>
     </ChakraProvider>
   );

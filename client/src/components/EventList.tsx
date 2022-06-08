@@ -18,7 +18,7 @@ const EventList: FC<Props> = ({
   setCurrentMatches,
 }) => {
   return (
-    <Box w='30%'>
+    <Box>
       {eves &&
         eves.map((eve) => {
           return (
