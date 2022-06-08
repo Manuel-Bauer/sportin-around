@@ -67,11 +67,6 @@ export const App: FC = () => {
   };
 
   const updateCurrent = async (eve: EventInterface) => {
-    // setCurrentEvent(eve);
-    // console.log(eve);
-
-    //updating current Matches
-
     const matchesCol = collection(firestore, 'matches');
     const matchQuery = query(matchesCol, where('eventId', '==', eve.eventId));
 
@@ -96,7 +91,7 @@ export const App: FC = () => {
               <EventList eves={eves} updateCurrent={updateCurrent} />
             </GridItem>
             <GridItem colStart={5} colEnd={13}>
-              {currentMatches && (
+              {currentMatches.eve && (
                 <EventDetails
                   currentEvent={currentMatches.eve}
                   currentMatches={currentMatches.matches}
