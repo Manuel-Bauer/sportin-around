@@ -1,7 +1,7 @@
 import { FC, useEffect, useState, useContext } from 'react';
 import { EventInterface, MatchInterface } from '../types/types';
 import { Box, Text, VStack, Grid, GridItem, Flex } from '@chakra-ui/react';
-import { ArrowLeftIcon, ArrowRightIcon } from '@chakra-ui/icons';
+import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { nanoid } from 'nanoid';
 import Match from '../components/Match';
 import { getFirebase } from '../firebase';
@@ -26,22 +26,26 @@ const EventDetails: FC<Props> = ({ currentEvent, currentMatches }) => {
     if (matchday < maxMatchday) setMatchday((prev) => prev + 1);
   };
 
-  console.log(maxMatchday);
+  const prevMatchday = () => {
+    if (matchday > 1) setMatchday((prev) => prev - 1);
+  };
 
   return (
     <Box>
       <Text align='center' fontSize='3xl'>
         {currentEvent?.title}
       </Text>
-      <Grid templateColumns='repeat(8, 1fr)' gap='20px'>
+      <Grid mt={5} templateColumns='repeat(8, 1fr)' gap='20px'>
         <GridItem colSpan={4}>
-          <Flex>
-            <ArrowLeftIcon />
-            <Text align='center'>Matchday {matchday}</Text>
-            <ArrowRightIcon onClick={() => nextMatchday()} />
+          <Flex justify='center' align='center'>
+            <ChevronLeftIcon onClick={() => prevMatchday()} />
+            <Text align='center'>
+              Matchday {matchday} / {maxMatchday}
+            </Text>
+            <ChevronRightIcon onClick={() => nextMatchday()} />
           </Flex>
 
-          <VStack>
+          <VStack mt={3}>
             {currentMatches?.length > 0 &&
               currentMatches
                 .filter((match) => match.matchday === matchday)
