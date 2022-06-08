@@ -6,7 +6,6 @@ import { Box } from '@chakra-ui/react';
 
 interface Props {
   eves: EventInterface[];
-
   updateCurrent: Function;
 }
 
