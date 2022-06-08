@@ -21,6 +21,15 @@ const robin = require('roundrobin');
 
 const { auth, firestore } = getFirebase();
 
+export const getUser = async (uid: string) => {
+  const usersCol = collection(firestore, 'users');
+  const userQuery = query(usersCol, where('uid', '==', uid));
+  const querySnapshot = await getDocs(userQuery);
+  querySnapshot.forEach((doc) => {
+    return doc.data();
+  });
+};
+
 // Add User to Firestore on first login. Again: How to add Firebase types
 export const addUser = () => {
   const user = auth.currentUser;

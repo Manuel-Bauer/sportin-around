@@ -2,8 +2,9 @@ import { FC, useState, useContext, useEffect } from 'react';
 import { EventInterface, MatchInterface } from '../types/types';
 import { Box, Button, Stack, Text, Avatar } from '@chakra-ui/react';
 import { LockIcon, TimeIcon, UnlockIcon } from '@chakra-ui/icons';
-import { addPlayer, createSchedule } from '../utils/firestore';
+import { addPlayer, createSchedule, getUser } from '../utils/firestore';
 import { getFirebase } from '../firebase';
+import moment from 'moment';
 
 const { firestore } = getFirebase();
 
@@ -13,8 +14,10 @@ interface Props {
 }
 
 const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
+  const [owner, setOwner] = useState<any>(null);
+
   useEffect(() => {
-    console.log(eve);
+    getUser(eve.ownerId).then((res) => setOwner(res));
   }, []);
 
   return (
@@ -29,6 +32,10 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
         {eve.title}
       </Text>
       <Text fontSize={['xs', 'xs', 'xs', 'xs', 'md']}>{eve.venue}</Text>
+      <Text fontSize={['xs', 'xs', 'xs', 'xs', 'md']}>
+        {moment(eve.date).format('YYYY-MM-DD')}
+      </Text>
+      <Text fontSize={['xs', 'xs', 'xs', 'xs', 'md']}>{owner}</Text>
 
       <Box mt={2}>
         {eve.entries.map((entry) => {
