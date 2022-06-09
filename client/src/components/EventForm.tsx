@@ -38,10 +38,12 @@ const EventForm: FC<Props> = ({ setShowEventForm }) => {
     validationSchema: Yup.object({
       title: Yup.string()
         .required('Title required')
-        .min(6, 'Title is too short'),
+        .min(6, 'Title is too short')
+        .max(23, 'Title is too long'),
       venue: Yup.string()
         .required('Venue required')
-        .min(6, 'Venue is too short'),
+        .min(6, 'Venue is too short')
+        .max(23, 'Title is too long'),
       date: Yup.date().required('Date required'),
       type: Yup.string().required('Type required'),
     }),

@@ -4,7 +4,15 @@ import {
   MatchInterface,
   StandingsInterface,
 } from '../types/types';
-import { Box, Text, VStack, Grid, GridItem, Flex } from '@chakra-ui/react';
+import {
+  Box,
+  Text,
+  VStack,
+  Grid,
+  GridItem,
+  Flex,
+  Badge,
+} from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { nanoid } from 'nanoid';
 import Match from '../components/Match';

@@ -1,6 +1,6 @@
 import { FC, useState, useContext, useEffect } from 'react';
 import { EventInterface, MatchInterface } from '../types/types';
-import { Box, Button, Stack, Text, Avatar } from '@chakra-ui/react';
+import { Box, Button, Stack, Text, Avatar, Badge } from '@chakra-ui/react';
 import { LockIcon, TimeIcon, UnlockIcon } from '@chakra-ui/icons';
 import { addPlayer, createSchedule, getUser } from '../utils/firestore';
 import { getFirebase } from '../firebase';
@@ -17,9 +17,11 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
   return (
     <Box bgColor='gray.100' boxShadow='base' mb={3} p={2} position='relative'>
       <Box position='absolute' top='5px' right='5px'>
-        {eve.completed && <LockIcon h='15px' />}
-        {eve.started && <TimeIcon h='15px' />}
-        {!eve.started && !eve.completed && <UnlockIcon h='15px' />}
+        {eve.completed && <Badge colorScheme='gray'>Done</Badge>}
+        {eve.started && <Badge colorScheme='yellow'>Runs</Badge>}
+        {!eve.started && !eve.completed && (
+          <Badge colorScheme='green'>Open</Badge>
+        )}
       </Box>
 
       <Text fontSize={['sm', 'sm', 'sm', 'md', '2xl']} fontWeight='bold'>
