@@ -1,5 +1,9 @@
 import { FC, useEffect, useState, useContext } from 'react';
-import { EventInterface, MatchInterface } from '../types/types';
+import {
+  EventInterface,
+  MatchInterface,
+  StandingsInterface,
+} from '../types/types';
 import { Box, Text, VStack, Grid, GridItem, Flex } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { nanoid } from 'nanoid';
@@ -9,9 +13,14 @@ import { getFirebase } from '../firebase';
 interface Props {
   currentEvent: EventInterface;
   currentMatches: MatchInterface[];
+  currentStandings: StandingsInterface;
 }
 
-const EventDetails: FC<Props> = ({ currentEvent, currentMatches }) => {
+const EventDetails: FC<Props> = ({
+  currentEvent,
+  currentMatches,
+  currentStandings,
+}) => {
   const [matchday, setMatchday] = useState(1);
   const [maxMatchday, setMaxMatchday] = useState(0);
 
@@ -54,7 +63,7 @@ const EventDetails: FC<Props> = ({ currentEvent, currentMatches }) => {
                 })}
           </VStack>
         </GridItem>
-        <GridItem>Standings</GridItem>
+        <GridItem>{currentStandings.eventId}</GridItem>
       </Grid>
     </Box>
   );

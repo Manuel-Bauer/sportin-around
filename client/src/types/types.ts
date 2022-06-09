@@ -26,7 +26,7 @@ export interface ScoreInterface {
   points: number;
 }
 
-export interface Standings {
+export interface StandingsInterface {
   completed: boolean;
   eventId: string;
   standing: ResultInterface[];

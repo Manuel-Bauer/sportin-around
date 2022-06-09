@@ -36,7 +36,7 @@ export const App: FC = () => {
   // If I not use any it says: Argument of type 'DocumentData[]' is not assignable to parameter of type 'SetStateAction<undefined>'. How to deal with that within typescript react?
   const [eves, setEves] = useState<any>();
   const [currentEvent, setCurrentEvent] = useState<any>();
-  const [currentMatches, setCurrentMatches] = useState<any>({});
+  const [current, setCurrent] = useState<any>({});
 
   // Set current User on auth change
   onAuthStateChanged(auth, (user) => {
@@ -72,12 +72,24 @@ export const App: FC = () => {
 
     // Again document data issue
     const matches: any = [];
-    const querySnapshot = await getDocs(matchQuery);
-    querySnapshot.forEach((doc) => {
+    const matchSnapshot = await getDocs(matchQuery);
+    matchSnapshot.forEach((doc) => {
       matches.push({ ...doc.data(), matchId: doc.id });
     });
-    console.log(matches);
-    setCurrentMatches({ matches, eve });
+
+    const standingsCol = collection(firestore, 'standings');
+    const standingsQuery = query(
+      standingsCol,
+      where('eventId', '==', eve.eventId)
+    );
+
+    let standings: any = {};
+    const standingsSnapshot = await getDocs(standingsQuery);
+    standingsSnapshot.forEach((doc) => {
+      standings = doc.data();
+    });
+
+    setCurrent({ matches, eve, standings });
   };
 
   return (
@@ -91,10 +103,11 @@ export const App: FC = () => {
               <EventList eves={eves} updateCurrent={updateCurrent} />
             </GridItem>
             <GridItem colStart={5} colEnd={13}>
-              {currentMatches.eve && (
+              {current.eve && (
                 <EventDetails
-                  currentEvent={currentMatches.eve}
-                  currentMatches={currentMatches.matches}
+                  currentEvent={current.eve}
+                  currentMatches={current.matches}
+                  currentStandings={current.standings}
                 />
               )}
             </GridItem>
