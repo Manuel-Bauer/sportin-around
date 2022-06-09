@@ -32,7 +32,7 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
 
       <Box mt={2}>
         {eve.entries.map((entry: any) => {
-          return <Avatar width={3} maxH={3} />;
+          return <Avatar key={entry.uid} width={3} maxH={3} />;
         })}
       </Box>
 

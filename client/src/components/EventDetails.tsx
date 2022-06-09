@@ -52,10 +52,15 @@ const EventDetails: FC<Props> = ({
       </Text>
       <Grid mt={5} templateColumns='repeat(8, 1fr)' gap='20px'>
         <GridItem colSpan={4}>
-          <Flex justify='center' align='center'>
+          <Flex
+            justify='center'
+            align='center'
+            bgColor='gray.100'
+            shadow='base'
+          >
             <ChevronLeftIcon onClick={() => prevMatchday()} />
-            <Text align='center'>
-              Matchday {matchday} / {maxMatchday}
+            <Text mx={5} align='center'>
+              Matchday {matchday}
             </Text>
             <ChevronRightIcon onClick={() => nextMatchday()} />
           </Flex>
@@ -77,7 +82,12 @@ const EventDetails: FC<Props> = ({
           </VStack>
         </GridItem>
         <GridItem colSpan={4}>
-          {currentStandings && <Standings entries={currentEvent.entries }standings={currentStandings} />}
+          {currentStandings && (
+            <Standings
+              entries={currentEvent.entries}
+              standings={currentStandings}
+            />
+          )}
         </GridItem>
       </Grid>
     </Box>

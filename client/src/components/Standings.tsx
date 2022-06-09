@@ -11,6 +11,7 @@ import {
   Td,
   TableCaption,
   TableContainer,
+  Avatar,
 } from '@chakra-ui/react';
 import { StandingsInterface, UserInterface } from '../types/types';
 import { sortStandings } from '../utils/helpers';
@@ -23,7 +24,7 @@ interface Props {
 const Standings: FC<Props> = ({ entries, standings }) => {
   return (
     <TableContainer>
-      <Table>
+      <Table size={['sm', 'sm', 'sm', 'sm', 'md']} variant='striped'>
         <Thead>
           <Tr>
             <Th>Player</Th>
@@ -36,7 +37,11 @@ const Standings: FC<Props> = ({ entries, standings }) => {
           {sortStandings(standings.standing).map((player) => {
             return (
               <Tr>
-                <Td>{player.user.username}</Td>
+                <Td>
+                  {<Avatar width={[3, 3, 3, 5, 7]} maxH={[3, 3, 3, 5, 7]} />}
+                  {'  '}
+                  {player.user.username}
+                </Td>
                 <Td isNumeric>{player.totalPlayed}</Td>
                 <Td isNumeric>{player.totalScored - player.totalConceded}</Td>
                 <Td isNumeric>{player.totalPoints}</Td>

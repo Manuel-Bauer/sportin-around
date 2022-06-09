@@ -10,6 +10,8 @@ import {
   EditableInput,
   EditableTextarea,
   EditablePreview,
+  Grid,
+  GridItem,
 } from '@chakra-ui/react';
 import { updateMatch, updateStandings } from '../utils/firestore';
 
@@ -55,39 +57,43 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
     } catch (err) {
       console.log(err);
     }
-    // post Match and Standings to Database
-
-    // Get current from database
-
-    // Update Match state. Not needed
-    // updateMatchProfiles();
   };
 
   return (
-    <Flex w='100%' justify='space-between'>
-      <Flex>
-        <Text>{homeProfile.username}</Text>
-        <Editable
-          onSubmit={(value) =>
-            update(match.matchId, Number(value), 'home', match.eventId)
-          }
-          defaultValue={match?.home?.score.toString()}
-        >
-          <EditablePreview />
-          <EditableInput />
-        </Editable>
-      </Flex>
-      <Flex>{awayProfile.username}</Flex>
-      <Editable
-        onSubmit={(value) =>
-          update(match.matchId, Number(value), 'away', match.eventId)
-        }
-        defaultValue={match?.away?.score.toString()}
-      >
-        <EditablePreview />
-        <EditableInput />
-      </Editable>
-    </Flex>
+    <Grid
+      templateColumns='repeat(2, 1fr)'
+      fontSize={['sm', 'sm', 'sm', 'sm', 'md']}
+    >
+      <GridItem>
+        <Flex justify='end' align='center'>
+          <Text mr={3}>{homeProfile.username}</Text>
+          <Editable
+            onSubmit={(value) =>
+              update(match.matchId, Number(value), 'home', match.eventId)
+            }
+            defaultValue={match?.home?.score.toString()}
+          >
+            <EditablePreview />
+            <EditableInput w={[2, 2, 2, 3, 5]} />
+          </Editable>
+          <Text>:</Text>
+        </Flex>
+      </GridItem>
+      <GridItem>
+        <Flex justify='start' align='center'>
+          <Editable
+            onSubmit={(value) =>
+              update(match.matchId, Number(value), 'away', match.eventId)
+            }
+            defaultValue={match?.away?.score.toString()}
+          >
+            <EditablePreview />
+            <EditableInput w={[2, 2, 2, 3, 5]} />
+          </Editable>
+          <Text ml={3}>{awayProfile.username}</Text>
+        </Flex>
+      </GridItem>
+    </Grid>
   );
 };
 

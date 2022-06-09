@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex, Text, Button } from '@chakra-ui/react';
 import { Avatar } from '@chakra-ui/react';
 import { getFirebase } from '../firebase';
 import SignOut from '../components/SignOut';
@@ -8,9 +8,10 @@ const { auth } = getFirebase();
 
 interface Props {
   setAuthed: Function;
+  currentUser: any;
 }
 
-const Header: FC<Props> = ({ setAuthed }) => {
+const Header: FC<Props> = ({ setAuthed, currentUser }) => {
   return (
     <Flex
       mx='auto'
@@ -23,9 +24,10 @@ const Header: FC<Props> = ({ setAuthed }) => {
       <Avatar
         width={8}
         maxH={8}
-        name={auth.currentUser.displayName}
-        src={auth.currentUser.photoURL}
+        name={currentUser.displayName}
+        src={currentUser.photoURL}
       />
+
       <SignOut setAuthed={setAuthed} />
     </Flex>
   );
