@@ -21,6 +21,22 @@ const robin = require('roundrobin');
 
 const { auth, firestore } = getFirebase();
 
+
+export const getStanding = async (eventId: string | undefined) => {
+  const standingsCol = collection(firestore, 'standings');
+  const standingsQuery = query(
+    standingsCol,
+    where('eventId', '==', eventId)
+  );
+
+  let standings: any = {};
+  const standingsSnapshot = await getDocs(standingsQuery);
+  standingsSnapshot.forEach((doc) => {
+    standings = doc.data();
+  });
+  return standings;
+};
+
 export const getUser = async (uid: string) => {
   const usersCol = collection(firestore, 'users');
   const userQuery = query(usersCol, where('uid', '==', uid));
@@ -172,7 +188,7 @@ export const createSchedule = async (eve: EventInterface) => {
   });
 };
 
-const updateStandings = async (eventId: string | undefined) => {
+export const updateStandings = async (eventId: string | undefined) => {
   const standingToUpdate = doc(firestore, `standings/${eventId}`);
 
   try {
@@ -282,5 +298,5 @@ export const updateMatch = async (
   } catch (e) {
     console.log('Transaction failed: ', e);
   }
-  updateStandings(eventId);
+  
 };

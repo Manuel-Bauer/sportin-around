@@ -49,10 +49,6 @@ export const App: FC = () => {
     getAllEvents();
   }, []);
 
-  useEffect(() => {
-    console.log('useEffect', currentEvent);
-  }, [currentEvent]);
-
   const getAllEvents = () => {
     const eventsCol = collection(firestore, 'events');
     onSnapshot(eventsCol, (snapshot) => {
@@ -92,32 +88,35 @@ export const App: FC = () => {
     setCurrent({ matches, eve, standings });
   };
 
+  console.log(current);
+
   return (
     <ChakraProvider theme={theme}>
       {!currentUser && <SignIn setAuthed={setAuthed} />}
       {currentUser && (
         <Box>
           <Header setAuthed={setAuthed} />
+          {/* <Button onClick={() => setShowEventForm((prev) => !prev)}>
+            Create new Event
+          </Button> */}
+          {/* <EventForm /> */}
           <Grid m='20px' templateColumns='repeat(12, 1fr)' gap='20px'>
             <GridItem colSpan={3}>
               <EventList eves={eves} updateCurrent={updateCurrent} />
             </GridItem>
-            <GridItem colStart={5} colEnd={13}>
+            <GridItem colStart={4} colEnd={13}>
               {current.eve && (
                 <EventDetails
                   currentEvent={current.eve}
                   currentMatches={current.matches}
                   currentStandings={current.standings}
+                  updateCurrent={updateCurrent}
                 />
               )}
             </GridItem>
           </Grid>
         </Box>
       )}
-
-      <Button onClick={() => setShowEventForm((prev) => !prev)}>
-        Create new Event
-      </Button>
     </ChakraProvider>
   );
 };

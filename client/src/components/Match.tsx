@@ -11,19 +11,21 @@ import {
   EditableTextarea,
   EditablePreview,
 } from '@chakra-ui/react';
-import { updateMatch } from '../utils/firestore';
+import { updateMatch, updateStandings } from '../utils/firestore';
 
 const { firestore } = getFirebase();
 
 interface Props {
   match: MatchInterface;
+  eve: EventInterface;
+  updateCurrent: Function;
 }
 
-const Match: FC<Props> = ({ match }) => {
+const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
   const [homeProfile, setHomeProfile] = useState<any>({});
   const [awayProfile, setAwayProfile] = useState<any>({});
 
-  useEffect(() => {
+  const updateMatchProfiles = async () => {
     const userDocHome = doc(firestore, `users/${match?.home?.uid}`);
     const userDocAway = doc(firestore, `users/${match?.away?.uid}`);
     onSnapshot(userDocHome, (snapshot) => {
@@ -32,7 +34,36 @@ const Match: FC<Props> = ({ match }) => {
     onSnapshot(userDocAway, (snapshot) => {
       setAwayProfile(snapshot.data());
     });
+  };
+
+  useEffect(() => {
+    updateMatchProfiles();
   }, []);
+
+  console.log(match);
+
+  const update = async (
+    matchId: string | undefined,
+    value: number,
+    side: string,
+    eventId: string | undefined
+  ) => {
+    try {
+      // post Match and Standings to Database
+      await updateMatch(matchId, value, side, eventId);
+      await updateStandings(eventId);
+      // get current from database
+      await updateCurrent(eve);
+    } catch (err) {
+      console.log(err);
+    }
+    // post Match and Standings to Database
+
+    // Get current from database
+
+    // Update Match state. Not needed
+    // updateMatchProfiles();
+  };
 
   return (
     <Flex w='100%' justify='space-between'>
@@ -40,7 +71,7 @@ const Match: FC<Props> = ({ match }) => {
         <Text>{homeProfile.username}</Text>
         <Editable
           onChange={(value) =>
-            updateMatch(match.matchId, Number(value), 'home', match.eventId)
+            update(match.matchId, Number(value), 'home', match.eventId)
           }
           defaultValue={match?.home?.score.toString()}
         >
@@ -51,7 +82,7 @@ const Match: FC<Props> = ({ match }) => {
       <Flex>{awayProfile.username}</Flex>
       <Editable
         onChange={(value) =>
-          updateMatch(match.matchId, Number(value), 'away', match.eventId)
+          update(match.matchId, Number(value), 'away', match.eventId)
         }
         defaultValue={match?.away?.score.toString()}
       >
@@ -63,5 +94,3 @@ const Match: FC<Props> = ({ match }) => {
 };
 
 export default Match;
-
-// Get Userprofile by ID

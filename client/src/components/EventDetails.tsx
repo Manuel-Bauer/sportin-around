@@ -9,20 +9,28 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { nanoid } from 'nanoid';
 import Match from '../components/Match';
 import { getFirebase } from '../firebase';
+import Standings from './Standings';
+import { getStanding } from '../utils/firestore';
+
+const { firestore } = getFirebase();
 
 interface Props {
   currentEvent: EventInterface;
   currentMatches: MatchInterface[];
   currentStandings: StandingsInterface;
+  updateCurrent: Function;
 }
 
 const EventDetails: FC<Props> = ({
   currentEvent,
   currentMatches,
   currentStandings,
+  updateCurrent,
 }) => {
   const [matchday, setMatchday] = useState(1);
   const [maxMatchday, setMaxMatchday] = useState(0);
+
+  // Trigger
 
   useEffect(() => {
     const max = currentMatches
@@ -59,11 +67,20 @@ const EventDetails: FC<Props> = ({
               currentMatches
                 .filter((match) => match.matchday === matchday)
                 .map((match: MatchInterface) => {
-                  return <Match key={nanoid()} match={match} />;
+                  return (
+                    <Match
+                      key={nanoid()}
+                      match={match}
+                      eve={currentEvent}
+                      updateCurrent={updateCurrent}
+                    />
+                  );
                 })}
           </VStack>
         </GridItem>
-        <GridItem>{currentStandings.eventId}</GridItem>
+        <GridItem colSpan={4}>
+          {currentStandings && <Standings standings={currentStandings} />}
+        </GridItem>
       </Grid>
     </Box>
   );
