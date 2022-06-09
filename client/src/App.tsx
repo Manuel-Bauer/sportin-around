@@ -88,8 +88,6 @@ export const App: FC = () => {
     setCurrent({ matches, eve, standings });
   };
 
-  console.log(current);
-
   return (
     <ChakraProvider theme={theme}>
       {!currentUser && <SignIn setAuthed={setAuthed} />}

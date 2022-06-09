@@ -40,8 +40,6 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
     updateMatchProfiles();
   }, []);
 
-  console.log(match);
-
   const update = async (
     matchId: string | undefined,
     value: number,
@@ -70,7 +68,7 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
       <Flex>
         <Text>{homeProfile.username}</Text>
         <Editable
-          onChange={(value) =>
+          onSubmit={(value) =>
             update(match.matchId, Number(value), 'home', match.eventId)
           }
           defaultValue={match?.home?.score.toString()}
@@ -81,7 +79,7 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
       </Flex>
       <Flex>{awayProfile.username}</Flex>
       <Editable
-        onChange={(value) =>
+        onSubmit={(value) =>
           update(match.matchId, Number(value), 'away', match.eventId)
         }
         defaultValue={match?.away?.score.toString()}

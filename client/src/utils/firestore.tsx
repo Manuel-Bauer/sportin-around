@@ -21,13 +21,9 @@ const robin = require('roundrobin');
 
 const { auth, firestore } = getFirebase();
 
-
 export const getStanding = async (eventId: string | undefined) => {
   const standingsCol = collection(firestore, 'standings');
-  const standingsQuery = query(
-    standingsCol,
-    where('eventId', '==', eventId)
-  );
+  const standingsQuery = query(standingsCol, where('eventId', '==', eventId));
 
   let standings: any = {};
   const standingsSnapshot = await getDocs(standingsQuery);
@@ -250,8 +246,10 @@ export const updateStandings = async (eventId: string | undefined) => {
 };
 
 const calcPoints = (score1: number, score2: number) => {
+  console.log('score1', score1);
+  console.log('score2', score2);
   if (score1 > score2) return 3;
-  else if (score1 === score2) return 1;
+  if (score1 === score2) return 1;
   else return 0;
 };
 
@@ -273,9 +271,11 @@ export const updateMatch = async (
 
       if (side === 'home') {
         const homePoints = calcPoints(score, data.away.score);
-        const awayPoints = calcPoints(data.away.score, score);
+        const awayPoints = calcPoints(data.home.score, score);
         const newHome = { ...data.home, score: score, points: homePoints };
         const newAway = { ...data.away, points: awayPoints };
+        console.log('home', newHome);
+        console.log('away', newAway);
         transaction.update(matchToUpdate, {
           started: true,
           home: newHome,
@@ -298,5 +298,4 @@ export const updateMatch = async (
   } catch (e) {
     console.log('Transaction failed: ', e);
   }
-  
 };
