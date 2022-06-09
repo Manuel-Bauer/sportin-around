@@ -13,6 +13,7 @@ import {
   Stack,
   Radio,
   RadioGroup,
+  Flex,
 } from '@chakra-ui/react';
 import { getFirebase } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
@@ -22,7 +23,11 @@ import { EventInterface } from '../types/types';
 
 const { firestore, auth } = getFirebase();
 
-const EventForm: FC = () => {
+interface Props {
+  setShowEventForm: Function;
+}
+
+const EventForm: FC<Props> = ({ setShowEventForm }) => {
   const formik = useFormik({
     initialValues: {
       title: '',
@@ -61,77 +66,94 @@ const EventForm: FC = () => {
       };
 
       setDoc(newDoc, newEvent);
+      setShowEventForm(false);
 
       actions.resetForm();
     },
   });
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <VStack
-        mx='auto'
-        w={{ base: '90%', md: 500 }}
-        justifyContent='center'
-        h='100vh'
-      >
-        <Heading>Create New Event</Heading>
-        <FormControl
-          isInvalid={formik.errors.title && formik.touched.title ? true : false}
+    <Box
+      mx='auto'
+      backgroundColor='#ffffff'
+      shadow='2xl'
+      borderRadius={5}
+      px={5}
+      w={{ md: 500 }}
+    >
+      <form onSubmit={formik.handleSubmit}>
+        <VStack
+          mx='auto'
+          w={{ base: '90%', md: 300 }}
+          maxH='600px'
+          justifyContent='center'
+          h='100vh'
         >
-          <FormLabel>Title</FormLabel>
-          <Input
-            placeholder='Enter Title...'
-            {...formik.getFieldProps('title')}
-          ></Input>
-          <FormErrorMessage>{formik.errors.title}</FormErrorMessage>
-        </FormControl>
-        <FormControl
-          isInvalid={formik.errors.venue && formik.touched.venue ? true : false}
-        >
-          <FormLabel>Venue</FormLabel>
-          <Input
-            placeholder='Enter Venue...'
-            {...formik.getFieldProps('venue')}
-          ></Input>
-          <FormErrorMessage>{formik.errors.venue}</FormErrorMessage>
-        </FormControl>
+          <Heading mb={5} fontSize={{ md: '2xl' }}>
+            Create New Tournament
+          </Heading>
+          <FormControl
+            isInvalid={
+              formik.errors.title && formik.touched.title ? true : false
+            }
+          >
+            <FormLabel>Title</FormLabel>
+            <Input
+              placeholder='Enter Title...'
+              {...formik.getFieldProps('title')}
+            ></Input>
+            <FormErrorMessage>{formik.errors.title}</FormErrorMessage>
+          </FormControl>
+          <FormControl
+            isInvalid={
+              formik.errors.venue && formik.touched.venue ? true : false
+            }
+          >
+            <FormLabel>Venue</FormLabel>
+            <Input
+              placeholder='Enter Venue...'
+              {...formik.getFieldProps('venue')}
+            ></Input>
+            <FormErrorMessage>{formik.errors.venue}</FormErrorMessage>
+          </FormControl>
 
-        <FormControl
-          isInvalid={formik.errors.date && formik.touched.date ? true : false}
-        >
-          <FormLabel>Date</FormLabel>
-          <Input type='date' {...formik.getFieldProps('date')}></Input>
-          <FormErrorMessage>{formik.errors.date}</FormErrorMessage>
-        </FormControl>
+          <FormControl
+            isInvalid={formik.errors.date && formik.touched.date ? true : false}
+          >
+            <FormLabel>Date</FormLabel>
+            <Input type='date' {...formik.getFieldProps('date')}></Input>
+            <FormErrorMessage>{formik.errors.date}</FormErrorMessage>
+          </FormControl>
 
-        <FormControl
-          isInvalid={formik.errors.type && formik.touched.type ? true : false}
-        >
-          <FormLabel>Type</FormLabel>
-          <RadioGroup>
-            <Stack direction='column'>
-              <Radio
-                {...formik.getFieldProps('type')}
-                value='Single Round-Robin'
-              >
-                Single Round-Robin
-              </Radio>
-              <Radio
-                {...formik.getFieldProps('type')}
-                value='Double Round-Robin'
-              >
-                Double Round-Robin
-              </Radio>
-            </Stack>
-          </RadioGroup>
-          <FormErrorMessage>{formik.errors.type}</FormErrorMessage>
-        </FormControl>
+          <FormControl
+            isInvalid={formik.errors.type && formik.touched.type ? true : false}
+          >
+            <FormLabel>Type</FormLabel>
+            <RadioGroup>
+              <Stack direction='column'>
+                <Radio
+                  {...formik.getFieldProps('type')}
+                  value='Single Round-Robin'
+                >
+                  Single Round-Robin
+                </Radio>
+                <Radio
+                  {...formik.getFieldProps('type')}
+                  value='Double Round-Robin'
+                >
+                  Double Round-Robin
+                </Radio>
+              </Stack>
+            </RadioGroup>
+            <FormErrorMessage>{formik.errors.type}</FormErrorMessage>
+          </FormControl>
 
-        <Button type='submit' variant='outline'>
-          Create Event
-        </Button>
-      </VStack>
-    </form>
+          <Button type='submit' variant='outline'>
+            Create Event
+          </Button>
+        </VStack>
+      </form>
+    </Box>
   );
 };
 

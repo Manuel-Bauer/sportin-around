@@ -7,7 +7,10 @@ import {
   Grid,
   GridItem,
   Box,
+  IconButton,
+  position,
 } from '@chakra-ui/react';
+import { AddIcon } from '@chakra-ui/icons';
 import SignIn from './components/SignIn';
 import SignOut from './components/SignOut';
 import EventForm from './components/EventForm';
@@ -93,7 +96,12 @@ export const App: FC = () => {
       {currentUser && (
         <Box>
           <Header setAuthed={setAuthed} currentUser={currentUser} />
-          <Button
+
+          <IconButton
+            ml={5}
+            mt={5}
+            aria-label='Create Tournament'
+            icon={<AddIcon />}
             onClick={() => {
               setShowEventForm((prev) => {
                 return !prev;
@@ -101,24 +109,26 @@ export const App: FC = () => {
             }}
           >
             Create new Event
-          </Button>
-          {showEventForm && <EventForm />}
+          </IconButton>
+          {showEventForm && <EventForm setShowEventForm={setShowEventForm}/>}
 
-          <Grid m='20px' templateColumns='repeat(12, 1fr)' gap='20px'>
-            <GridItem colSpan={3}>
-              <EventList eves={eves} updateCurrent={updateCurrent} />
-            </GridItem>
-            <GridItem colStart={4} colEnd={13}>
-              {current.eve && (
-                <EventDetails
-                  currentEvent={current.eve}
-                  currentMatches={current.matches}
-                  currentStandings={current.standings}
-                  updateCurrent={updateCurrent}
-                />
-              )}
-            </GridItem>
-          </Grid>
+          {!showEventForm && (
+            <Grid m='20px' templateColumns='repeat(12, 1fr)' gap='20px'>
+              <GridItem colSpan={3}>
+                <EventList eves={eves} updateCurrent={updateCurrent} />
+              </GridItem>
+              <GridItem colStart={4} colEnd={13}>
+                {current.eve && (
+                  <EventDetails
+                    currentEvent={current.eve}
+                    currentMatches={current.matches}
+                    currentStandings={current.standings}
+                    updateCurrent={updateCurrent}
+                  />
+                )}
+              </GridItem>
+            </Grid>
+          )}
         </Box>
       )}
     </ChakraProvider>
