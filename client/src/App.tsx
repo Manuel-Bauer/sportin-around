@@ -96,8 +96,8 @@ export const App: FC = () => {
           <Header setAuthed={setAuthed} />
           {/* <Button onClick={() => setShowEventForm((prev) => !prev)}>
             Create new Event
-          </Button> */}
-          {/* <EventForm /> */}
+          </Button>
+          <EventForm /> */}
           <Grid m='20px' templateColumns='repeat(12, 1fr)' gap='20px'>
             <GridItem colSpan={3}>
               <EventList eves={eves} updateCurrent={updateCurrent} />

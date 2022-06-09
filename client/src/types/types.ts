@@ -7,7 +7,7 @@ export interface EventInterface {
   started: boolean;
   completed: boolean;
   type: string;
-  entries: string[];
+  entries: any;
 }
 
 export interface MatchInterface {
@@ -33,14 +33,14 @@ export interface StandingsInterface {
 }
 
 export interface ResultInterface {
-  uid: string;
+  user: UserInterface;
   totalPoints: number;
   totalScored: number;
   totalConceded: number;
   totalPlayed: number;
 }
 
-export interface User {
+export interface UserInterface {
   uid: string;
   username: string;
   avatar: string;

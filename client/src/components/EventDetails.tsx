@@ -10,7 +10,7 @@ import { nanoid } from 'nanoid';
 import Match from '../components/Match';
 import { getFirebase } from '../firebase';
 import Standings from './Standings';
-import { getStanding } from '../utils/firestore';
+import { getUser } from '../utils/firestore';
 
 const { firestore } = getFirebase();
 
@@ -29,8 +29,6 @@ const EventDetails: FC<Props> = ({
 }) => {
   const [matchday, setMatchday] = useState(1);
   const [maxMatchday, setMaxMatchday] = useState(0);
-
-  // Trigger
 
   useEffect(() => {
     const max = currentMatches
@@ -79,7 +77,7 @@ const EventDetails: FC<Props> = ({
           </VStack>
         </GridItem>
         <GridItem colSpan={4}>
-          {currentStandings && <Standings standings={currentStandings} />}
+          {currentStandings && <Standings entries={currentEvent.entries }standings={currentStandings} />}
         </GridItem>
       </Grid>
     </Box>

@@ -12,14 +12,15 @@ import {
   TableCaption,
   TableContainer,
 } from '@chakra-ui/react';
-import { StandingsInterface } from '../types/types';
+import { StandingsInterface, UserInterface } from '../types/types';
 import { sortStandings } from '../utils/helpers';
 
 interface Props {
   standings: StandingsInterface;
+  entries: UserInterface[];
 }
 
-const Standings: FC<Props> = ({ standings }) => {
+const Standings: FC<Props> = ({ entries, standings }) => {
   return (
     <TableContainer>
       <Table>
@@ -35,7 +36,7 @@ const Standings: FC<Props> = ({ standings }) => {
           {sortStandings(standings.standing).map((player) => {
             return (
               <Tr>
-                <Td>playerName</Td>
+                <Td>{player.user.username}</Td>
                 <Td isNumeric>{player.totalPlayed}</Td>
                 <Td isNumeric>{player.totalScored - player.totalConceded}</Td>
                 <Td isNumeric>{player.totalPoints}</Td>

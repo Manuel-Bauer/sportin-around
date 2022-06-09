@@ -9,6 +9,7 @@ import {
   query,
   where,
   getDocs,
+  getDoc,
 } from 'firebase/firestore';
 import {
   MatchInterface,
@@ -33,13 +34,11 @@ export const getStanding = async (eventId: string | undefined) => {
   return standings;
 };
 
+// Get User
 export const getUser = async (uid: string) => {
-  const usersCol = collection(firestore, 'users');
-  const userQuery = query(usersCol, where('uid', '==', uid));
-  const querySnapshot = await getDocs(userQuery);
-  querySnapshot.forEach((doc) => {
-    return doc.data();
-  });
+  const userRef = doc(firestore, 'users', uid);
+  const snap = await getDoc(userRef);
+  if (snap.exists()) return snap.data();
 };
 
 // Add User to Firestore on first login. Again: How to add Firebase types
@@ -65,10 +64,9 @@ export const addPlayer = async (eventId: String | undefined) => {
       if (!eventDoc.exists()) throw 'Event does not exist!';
 
       const data = eventDoc.data();
+      const user = await getUser(auth.currentUser.uid);
 
-      const newEntries = data.entries
-        ? [...data.entries, auth.currentUser.uid]
-        : [auth.currentUser.uid];
+      const newEntries = data.entries ? [...data.entries, user] : [user];
 
       transaction.update(thisEvent, { entries: newEntries });
     });
@@ -89,9 +87,9 @@ const saveMatch = async (
 
 // CREATE STANDING
 const saveStanding = async (eve: EventInterface) => {
-  const results = eve.entries.map((entry) => {
+  const results = eve.entries.map((entry: any) => {
     return {
-      uid: entry,
+      user: entry,
       totalPoints: 0,
       totalScored: 0,
       totalConceded: 0,
@@ -138,12 +136,12 @@ export const createSchedule = async (eve: EventInterface) => {
         // Here I would like to indicate that home should have type score but it gives me an error if I try
         // We need to adjust indexes because robin library starts with 1
         home = {
-          uid: eve.entries[players[0] - 1],
+          uid: eve.entries[players[0] - 1].uid,
           score: 0,
           points: 0,
         };
         away = {
-          uid: eve.entries[players[1] - 1],
+          uid: eve.entries[players[1] - 1].uid,
           score: 0,
           points: 0,
         };
@@ -154,16 +152,16 @@ export const createSchedule = async (eve: EventInterface) => {
         home = {
           uid:
             matchday <= (scheduler.length + 1) / 2
-              ? eve.entries[players[0] - 1]
-              : eve.entries[players[1] - 1],
+              ? eve.entries[players[0] - 1].uid
+              : eve.entries[players[1] - 1].uid,
           score: 0,
           points: 0,
         };
         away = {
           uid:
             matchday <= (scheduler.length + 1) / 2
-              ? eve.entries[players[1] - 1]
-              : eve.entries[players[0] - 1],
+              ? eve.entries[players[1] - 1].uid
+              : eve.entries[players[0] - 1].uid,
           score: 0,
           points: 0,
         };
@@ -199,7 +197,7 @@ export const updateStandings = async (eventId: string | undefined) => {
           let totalPoints = 0;
           let totalScored = 0;
           let totalConceded = 0;
-          let uid = player.uid;
+          let user = player.user;
 
           // Query through all matches with the given event id
           const matchesCol = collection(firestore, 'matches');
@@ -209,17 +207,17 @@ export const updateStandings = async (eventId: string | undefined) => {
           querySnapshot.forEach((match: any) => {
             const data = match.data();
             if (
-              (data.home.uid === uid || data.away.uid === uid) &&
+              (data.home.uid === user.uid || data.away.uid === user.uid) &&
               data.started
             ) {
               totalPlayed++;
             }
-            if (data.home.uid === uid) {
+            if (data.home.uid === user.uid) {
               totalPoints += data.home.points;
               totalScored += data.home.score;
               totalConceded += data.away.score;
             }
-            if (data.away.uid === uid) {
+            if (data.away.uid === user.uid) {
               totalPoints += data.away.points;
               totalScored += data.away.score;
               totalConceded += data.home.score;
@@ -227,7 +225,7 @@ export const updateStandings = async (eventId: string | undefined) => {
           });
 
           return {
-            uid,
+            user,
             totalPlayed,
             totalPoints,
             totalScored,

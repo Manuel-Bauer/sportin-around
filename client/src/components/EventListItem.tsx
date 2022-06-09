@@ -14,12 +14,6 @@ interface Props {
 }
 
 const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
-  const [owner, setOwner] = useState<any>(null);
-
-  useEffect(() => {
-    getUser(eve.ownerId).then((res) => setOwner(res));
-  }, []);
-
   return (
     <Box bgColor='gray.100' boxShadow='base' mb={3} p={2} position='relative'>
       <Box position='absolute' top='5px' right='5px'>
@@ -35,10 +29,9 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
       <Text fontSize={['xs', 'xs', 'xs', 'xs', 'md']}>
         {moment(eve.date).format('YYYY-MM-DD')}
       </Text>
-      <Text fontSize={['xs', 'xs', 'xs', 'xs', 'md']}>{owner}</Text>
 
       <Box mt={2}>
-        {eve.entries.map((entry) => {
+        {eve.entries.map((entry: any) => {
           return <Avatar width={3} maxH={3} />;
         })}
       </Box>
