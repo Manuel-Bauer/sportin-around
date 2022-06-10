@@ -96,20 +96,21 @@ export const App: FC = () => {
       {currentUser && (
         <Box>
           <Header setAuthed={setAuthed} currentUser={currentUser} />
-
-          <IconButton
-            ml={5}
+          <Button
+            leftIcon={<AddIcon />}
+            colorScheme='twitter'
+            size='md'
+            ml={4}
             mt={5}
-            aria-label='Create Tournament'
-            icon={<AddIcon />}
             onClick={() => {
               setShowEventForm((prev) => {
                 return !prev;
               });
             }}
           >
-            Create new Event
-          </IconButton>
+            Create new Tournament
+          </Button>
+
           {showEventForm && <EventForm setShowEventForm={setShowEventForm} />}
 
           {!showEventForm && (

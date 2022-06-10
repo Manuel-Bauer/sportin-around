@@ -55,7 +55,7 @@ const EventDetails: FC<Props> = ({
 
   return (
     <Box>
-      <Grid mt={5} templateColumns='repeat(8, 1fr)' gap='20px'>
+      <Grid templateColumns='repeat(8, 1fr)' gap='20px'>
         <GridItem colSpan={4}>
           <Flex
             justify='center'
