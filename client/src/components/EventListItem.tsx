@@ -14,7 +14,7 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import { ExternalLinkIcon, SmallAddIcon, CheckIcon } from '@chakra-ui/icons';
-import { addPlayer, createSchedule, getUser } from '../utils/firestore';
+import { addPlayer, createSchedule, deleteEntry } from '../utils/firestore';
 import { getFirebase } from '../firebase';
 import moment from 'moment';
 
@@ -69,7 +69,11 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
                 fontWeight='bold'
               >
                 <TagLabel>{entry.username}</TagLabel>
-                <TagCloseButton />
+                {!eve.started && (
+                  <TagCloseButton
+                    onClick={() => deleteEntry(eve.eventId, entry.uid)}
+                  />
+                )}
               </Tag>
             );
           }
@@ -83,7 +87,11 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
                 colorScheme='green'
               >
                 <TagLabel>{entry.username}</TagLabel>
-                <TagCloseButton />
+                {!eve.started && (
+                  <TagCloseButton
+                    onClick={() => deleteEntry(eve.eventId, entry.uid)}
+                  />
+                )}
               </Tag>
             );
           } else {

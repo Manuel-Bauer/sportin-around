@@ -16,6 +16,7 @@ import {
   MatchInterface,
   EventInterface,
   ResultInterface,
+  UserInterface,
 } from '../types/types';
 import { nanoid } from 'nanoid';
 
@@ -185,13 +186,31 @@ export const createSchedule = async (eve: EventInterface) => {
   });
 };
 
+export const deleteEntry = async (
+  eventId: string | undefined,
+  uid: string | undefined
+) => {
+  const eventToUpdate = doc(firestore, `events/${eventId}`);
+  try {
+    await runTransaction(firestore, async (transaction) => {
+      const eventDoc = await transaction.get(eventToUpdate);
+      if (!eventDoc.exists()) throw 'Tournament does not exist!';
+      const data = eventDoc.data();
+      const newEntries = data.entries.filter(
+        (entry: UserInterface) => entry.uid !== uid
+      );
+      transaction.update(eventToUpdate, { ...data, entries: newEntries });
+    });
+  } catch (err) {
+    console.log('Transaction failed: ', err);
+  }
+};
+
 export const updateEvent = async (
   eventId: string | undefined,
   updateField: string,
   updateValue: any
 ) => {
-  console.log('update Event');
-  console.log(eventId);
   const eventToUpdate = doc(firestore, `events/${eventId}`);
 
   try {
