@@ -25,5 +25,10 @@ export const sortEventList = (
 };
 
 export const isUserSignedUp = (eve: EventInterface, uid: string) => {
-  return eve.entries.map((entry) => entry.uid).includes(uid);
+  if (
+    eve.entries.map((entry) => entry.uid).includes(uid) ||
+    eve.owner.uid === uid
+  ) {
+    return true;
+  } else return false;
 };

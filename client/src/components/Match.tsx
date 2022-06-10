@@ -3,19 +3,18 @@ import { useState, useEffect, FC } from 'react';
 import { getFirebase } from '../firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 import {
-  Box,
   Flex,
   Text,
   Editable,
   EditableInput,
-  EditableTextarea,
   EditablePreview,
   Grid,
   GridItem,
+  Avatar,
 } from '@chakra-ui/react';
 import { updateMatch, updateStandings } from '../utils/firestore';
 
-const { firestore } = getFirebase();
+const { auth } = getFirebase();
 
 interface Props {
   match: MatchInterface;
@@ -24,24 +23,6 @@ interface Props {
 }
 
 const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
-  const [homeProfile, setHomeProfile] = useState<any>({});
-  const [awayProfile, setAwayProfile] = useState<any>({});
-
-  const updateMatchProfiles = async () => {
-    const userDocHome = doc(firestore, `users/${match?.home?.uid}`);
-    const userDocAway = doc(firestore, `users/${match?.away?.uid}`);
-    onSnapshot(userDocHome, (snapshot) => {
-      setHomeProfile(snapshot.data());
-    });
-    onSnapshot(userDocAway, (snapshot) => {
-      setAwayProfile(snapshot.data());
-    });
-  };
-
-  useEffect(() => {
-    updateMatchProfiles();
-  }, []);
-
   const update = async (
     matchId: string | undefined,
     value: number,
@@ -66,15 +47,24 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
     >
       <GridItem>
         <Flex justify='end' align='center'>
-          <Text mr={3}>{homeProfile.username}</Text>
+          <Avatar w={5} maxH={5} mr={2} src={match?.home?.user.avatar} />
+          <Text
+            fontWeight={
+              auth.currentUser.uid === match.home?.user.uid ? 'bold' : 'normal'
+            }
+            mr={3}
+          >
+            {match?.home?.user.username}
+          </Text>
           <Editable
             onSubmit={(value) =>
               update(match.matchId, Number(value), 'home', match.eventId)
             }
             defaultValue={match?.home?.score.toString()}
           >
-            <EditablePreview />
-            <EditableInput w={[2, 2, 2, 3, 5]} />
+            {' '}
+            <EditablePreview w='100%' />
+            <EditableInput backgroundColor='twitter.400' w={[2, 2, 2, 3, 5]} />
           </Editable>
           <Text>:</Text>
         </Flex>
@@ -90,7 +80,15 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
             <EditablePreview />
             <EditableInput w={[2, 2, 2, 3, 5]} />
           </Editable>
-          <Text ml={3}>{awayProfile.username}</Text>
+          <Text
+            fontWeight={
+              auth.currentUser.uid === match.away?.user.uid ? 'bold' : 'normal'
+            }
+            ml={3}
+          >
+            {match?.away?.user.username}
+          </Text>
+          <Avatar w={5} maxH={5} ml={2} src={match?.away?.user.avatar} />
         </Flex>
       </GridItem>
     </Grid>

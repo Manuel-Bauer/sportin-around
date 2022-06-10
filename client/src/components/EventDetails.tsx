@@ -11,17 +11,14 @@ import {
   Grid,
   GridItem,
   Flex,
-  Badge,
+  Button,
   IconButton,
 } from '@chakra-ui/react';
-import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import { ChevronLeftIcon, ChevronRightIcon, LockIcon } from '@chakra-ui/icons';
 import { nanoid } from 'nanoid';
 import Match from '../components/Match';
-import { getFirebase } from '../firebase';
 import Standings from './Standings';
-import { getUser } from '../utils/firestore';
-
-const { firestore } = getFirebase();
+import { endTournament } from '../utils/firestore';
 
 interface Props {
   currentEvent: EventInterface;
@@ -55,7 +52,7 @@ const EventDetails: FC<Props> = ({
   };
 
   return (
-    <Box>
+    <Box backgroundColor='white' boxShadow='sm'>
       <Grid templateColumns='repeat(8, 1fr)' gap='20px'>
         <GridItem colSpan={4}>
           <Flex
@@ -113,6 +110,18 @@ const EventDetails: FC<Props> = ({
           {currentStandings && <Standings standings={currentStandings} />}
         </GridItem>
       </Grid>
+      <Flex justify='end' align='center' mt={5} mr={5} pb='20px'>
+        <Button
+          leftIcon={<LockIcon />}
+          border='1px'
+          colorScheme='gray'
+          variant='solid'
+          onClick={() => endTournament(currentEvent.eventId)}
+          size='sm'
+        >
+          Lock Tournament
+        </Button>
+      </Flex>
     </Box>
   );
 };

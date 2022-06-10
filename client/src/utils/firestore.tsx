@@ -9,6 +9,7 @@ import {
   where,
   getDocs,
   getDoc,
+  updateDoc,
 } from 'firebase/firestore';
 import {
   MatchInterface,
@@ -137,13 +138,13 @@ export const createSchedule = async (eve: EventInterface) => {
         // Here I would like to indicate that home should have type score but it gives me an error if I try
         // We need to adjust indexes because robin library starts with 1
         home = {
-          uid: eve.entries[players[0] - 1].uid,
-          score: 0,
+          user: eve.entries[players[0] - 1],
+          score: '-',
           points: 0,
         };
         away = {
-          uid: eve.entries[players[1] - 1].uid,
-          score: 0,
+          user: eve.entries[players[1] - 1],
+          score: '-',
           points: 0,
         };
       }
@@ -151,18 +152,18 @@ export const createSchedule = async (eve: EventInterface) => {
       // Create first and second lag if its a double round robin format
       if (eve.type === 'Double Round-Robin' && eve.entries) {
         home = {
-          uid:
+          user:
             matchday <= (scheduler.length + 1) / 2
-              ? eve.entries[players[0] - 1].uid
-              : eve.entries[players[1] - 1].uid,
+              ? eve.entries[players[0] - 1]
+              : eve.entries[players[1] - 1],
           score: 0,
           points: 0,
         };
         away = {
-          uid:
+          user:
             matchday <= (scheduler.length + 1) / 2
-              ? eve.entries[players[1] - 1].uid
-              : eve.entries[players[0] - 1].uid,
+              ? eve.entries[players[1] - 1]
+              : eve.entries[players[0] - 1],
           score: 0,
           points: 0,
         };
@@ -253,20 +254,21 @@ export const updateStandings = async (eventId: string | undefined) => {
           querySnapshot.forEach((match: any) => {
             const data = match.data();
             if (
-              (data.home.uid === user.uid || data.away.uid === user.uid) &&
+              (data.home.user.uid === user.uid ||
+                data.away.user.uid === user.uid) &&
               data.started
             ) {
               totalPlayed++;
             }
-            if (data.home.uid === user.uid) {
+            if (data.home.user.uid === user.uid) {
               totalPoints += data.home.points;
-              totalScored += data.home.score;
-              totalConceded += data.away.score;
+              totalScored += data.home.score === '-' ? 0 : data.home.score;
+              totalConceded += data.away.score === '-' ? 0 : data.away.score;
             }
-            if (data.away.uid === user.uid) {
+            if (data.away.user.uid === user.uid) {
               totalPoints += data.away.points;
-              totalScored += data.away.score;
-              totalConceded += data.home.score;
+              totalScored += data.away.score === '-' ? 0 : data.away.score;
+              totalConceded += data.home.score === '-' ? 0 : data.home.score;
             }
           });
 
@@ -338,4 +340,16 @@ export const updateMatch = async (
   } catch (e) {
     console.log('Transaction failed: ', e);
   }
+};
+
+//
+export const endTournament = async (eventId: string | undefined) => {
+  // update Tournament
+  // await updateEvent(eventId, 'completed', true);
+
+  const eventDoc = doc(firestore, `events/${eventId}`);
+  updateDoc(eventDoc, { completed: true });
+
+  const standingDoc = doc(firestore, `standings/${eventId}`);
+  updateDoc(standingDoc, { completed: true });
 };

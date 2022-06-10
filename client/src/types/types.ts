@@ -21,8 +21,8 @@ export interface MatchInterface {
 }
 
 export interface ScoreInterface {
-  uid: string;
-  score: number;
+  user: UserInterface;
+  score: number | string;
   points: number;
 }
 

@@ -1,15 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getFirebase } from './firebase';
-import {
-  ChakraProvider,
-  Button,
-  Flex,
-  Grid,
-  GridItem,
-  Box,
-  IconButton,
-  position,
-} from '@chakra-ui/react';
+import { ChakraProvider, Button, Grid, GridItem, Box } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import SignIn from './components/SignIn';
 import SignOut from './components/SignOut';
@@ -104,7 +95,8 @@ export const App: FC = () => {
               <GridItem colSpan={3}>
                 <Button
                   leftIcon={<AddIcon />}
-                  colorScheme='twitter'
+                  backgroundColor='gray.300'
+                  color='black'
                   size='md'
                   w='100%'
                   mb={5}

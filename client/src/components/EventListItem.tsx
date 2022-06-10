@@ -11,11 +11,9 @@ import {
   Text,
   Avatar,
   Badge,
-  Flex,
   Tag,
   TagLabel,
   TagCloseButton,
-  IconButton,
 } from '@chakra-ui/react';
 import { ExternalLinkIcon, SmallAddIcon, CheckIcon } from '@chakra-ui/icons';
 import { addPlayer, createSchedule, deleteEntry } from '../utils/firestore';
@@ -37,9 +35,6 @@ interface Props {
 }
 
 const EventListItem: FC<Props> = ({ eve, updateCurrent, current }) => {
-  console.log(eve.eventId);
-  console.log(current?.eve?.eventId);
-
   return (
     <Box
       bgColor='gray.100'

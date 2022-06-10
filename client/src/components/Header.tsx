@@ -21,12 +21,17 @@ const Header: FC<Props> = ({ setAuthed, currentUser }) => {
       paddingX='20px'
       justify='space-between'
     >
-      <Avatar
-        width={8}
-        maxH={8}
-        name={currentUser.displayName}
-        src={currentUser.photoURL}
-      />
+      <Flex align='center'>
+        <Avatar
+          width={8}
+          maxH={8}
+          name={currentUser.displayName}
+          src={currentUser.photoURL}
+        />
+        <Text ml={2} color='white' fontWeight='bold'>
+          {currentUser.displayName}
+        </Text>
+      </Flex>
 
       <SignOut setAuthed={setAuthed} />
     </Flex>

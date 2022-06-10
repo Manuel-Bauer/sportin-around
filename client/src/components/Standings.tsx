@@ -39,6 +39,7 @@ const Standings: FC<Props> = ({ standings }) => {
           {sortStandings(standings.standing).map((player) => {
             return (
               <Tr
+                key={player.user.uid}
                 fontWeight={
                   player.user.uid === auth.currentUser.uid ? 'bold' : 'normal'
                 }
