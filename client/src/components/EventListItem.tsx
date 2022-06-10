@@ -58,18 +58,47 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
 
       <Box mt={2}>
         {eve.entries.map((entry: any) => {
-          return (
-            <Tag
-              size='sm'
-              key={entry.uid}
-              borderRadius='full'
-              variant='subtle'
-              colorScheme='green'
-            >
-              <TagLabel>{entry.username}</TagLabel>
-              <TagCloseButton />
-            </Tag>
-          );
+          if (entry.uid === auth.currentUser.uid) {
+            return (
+              <Tag
+                size='sm'
+                key={entry.uid}
+                borderRadius='full'
+                variant='subtle'
+                colorScheme='green'
+                fontWeight='bold'
+              >
+                <TagLabel>{entry.username}</TagLabel>
+                <TagCloseButton />
+              </Tag>
+            );
+          }
+          if (eve.owner.uid === auth.currentUser.uid) {
+            return (
+              <Tag
+                size='sm'
+                key={entry.uid}
+                borderRadius='full'
+                variant='subtle'
+                colorScheme='green'
+              >
+                <TagLabel>{entry.username}</TagLabel>
+                <TagCloseButton />
+              </Tag>
+            );
+          } else {
+            return (
+              <Tag
+                size='sm'
+                key={entry.uid}
+                borderRadius='full'
+                variant='subtle'
+                colorScheme='green'
+              >
+                <TagLabel>{entry.username}</TagLabel>
+              </Tag>
+            );
+          }
         })}
       </Box>
 
