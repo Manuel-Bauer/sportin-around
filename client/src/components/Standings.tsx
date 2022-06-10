@@ -21,10 +21,9 @@ const { auth } = getFirebase();
 
 interface Props {
   standings: StandingsInterface;
-  entries: UserInterface[];
 }
 
-const Standings: FC<Props> = ({ entries, standings }) => {
+const Standings: FC<Props> = ({ standings }) => {
   return (
     <TableContainer>
       <Table size={['sm', 'sm', 'sm', 'sm', 'md']} variant='striped'>

@@ -110,12 +110,7 @@ const EventDetails: FC<Props> = ({
             <Text mx={5}>Current Standings</Text>
           </Flex>
 
-          {currentStandings && (
-            <Standings
-              entries={currentEvent.entries}
-              standings={currentStandings}
-            />
-          )}
+          {currentStandings && <Standings standings={currentStandings} />}
         </GridItem>
       </Grid>
     </Box>

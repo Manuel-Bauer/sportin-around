@@ -1,7 +1,6 @@
 import { getFirebase } from '../firebase';
 import {
   doc,
-  updateDoc,
   runTransaction,
   setDoc,
   collection,
@@ -10,7 +9,6 @@ import {
   where,
   getDocs,
   getDoc,
-  Transaction,
 } from 'firebase/firestore';
 import {
   MatchInterface,
@@ -18,7 +16,6 @@ import {
   ResultInterface,
   UserInterface,
 } from '../types/types';
-import { nanoid } from 'nanoid';
 
 const robin = require('roundrobin');
 
@@ -328,7 +325,7 @@ export const updateMatch = async (
 
       if (side === 'away') {
         const awayPoints = calcPoints(score, data.home.score);
-        const homePoints = calcPoints(data.away.score, score);
+        const homePoints = calcPoints(data.home.score, score);
         const newAway = { ...data.away, score: score, points: awayPoints };
         const newHome = { ...data.home, points: homePoints };
         transaction.update(matchToUpdate, {
