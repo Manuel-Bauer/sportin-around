@@ -1,4 +1,4 @@
-import { ResultInterface } from '../types/types';
+import { ResultInterface, EventInterface } from '../types/types';
 
 export const sortStandings = (
   standings: ResultInterface[]
@@ -12,4 +12,8 @@ export const sortStandings = (
       return 1;
     else return b.totalScored - a.totalScored;
   });
+};
+
+export const isUserSignedUp = (eve: EventInterface, uid: string) => {
+  return eve.entries.map((entry) => entry.uid).includes(uid);
 };

@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { ExternalLinkIcon, SmallAddIcon, CheckIcon } from '@chakra-ui/icons';
 import { addPlayer, createSchedule, deleteEntry } from '../utils/firestore';
+import { isUserSignedUp } from '../utils/helpers';
 import { getFirebase } from '../firebase';
 import moment from 'moment';
 
@@ -111,7 +112,7 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
       </Box>
 
       <Stack mt={4} direction='row' spacing={4} align='left'>
-        {!eve.started && (
+        {!eve.started && !isUserSignedUp(eve, auth.currentUser.uid) && (
           <Button
             leftIcon={<SmallAddIcon />}
             colorScheme='gray'
