@@ -46,8 +46,14 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent, current }) => {
       borderColor='twitter.800'
     >
       <Box position='absolute' top='5px' right='5px'>
-        {eve.completed && <Badge colorScheme='gray'>Done</Badge>}
-        {eve.started && <Badge colorScheme='yellow'>Started</Badge>}
+        {eve.completed && (
+          <Badge backgroundColor='gray.800' color='white'>
+            Done
+          </Badge>
+        )}
+        {eve.started && !eve.completed && (
+          <Badge colorScheme='yellow'>On</Badge>
+        )}
         {!eve.started && !eve.completed && (
           <Badge colorScheme='green'>Open</Badge>
         )}

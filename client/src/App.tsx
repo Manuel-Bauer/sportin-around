@@ -1,20 +1,25 @@
 import { useEffect, useState } from 'react';
 import { getFirebase } from './firebase';
-import { ChakraProvider, Button, Grid, GridItem, Box } from '@chakra-ui/react';
+import {
+  ChakraProvider,
+  Button,
+  Grid,
+  GridItem,
+  Box,
+  useToast,
+} from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import SignIn from './components/SignIn';
-import SignOut from './components/SignOut';
 import EventForm from './components/EventForm';
 import EventList from './components/EventList';
 import EventDetails from './components/EventDetails';
 import Header from './components/Header';
-import { FC, useContext, createContext } from 'react';
-import { EventInterface, MainContextInterface } from './types/types';
+import { FC } from 'react';
+import { EventInterface } from './types/types';
 import theme from './theme';
 import {
   onSnapshot,
   collection,
-  doc,
   query,
   where,
   getDocs,
@@ -30,8 +35,22 @@ export const App: FC = () => {
   // If I not use any it says: Argument of type 'DocumentData[]' is not assignable to parameter of type 'SetStateAction<undefined>'. How to deal with that within typescript react?
   const [eves, setEves] = useState<any>();
   const [current, setCurrent] = useState<any>({});
+  const [preventInitialRender, setPreventInitialRender] = useState(0);
+
+  const toast = useToast();
 
   // Set current User on auth change
+
+  useEffect(() => {
+    if (!showEventForm && preventInitialRender > 0) {
+      toast({
+        title: 'Tournament created.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [showEventForm]);
 
   // Load all existing Events on initial render
   useEffect(() => {
@@ -40,6 +59,7 @@ export const App: FC = () => {
       if (user) setCurrentUser(user);
       else setCurrentUser(null);
     });
+    setPreventInitialRender((prev) => (prev += 1));
   }, []);
 
   const getAllEvents = () => {

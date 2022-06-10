@@ -27,6 +27,8 @@ interface Props {
 }
 
 const EventForm: FC<Props> = ({ setShowEventForm }) => {
+
+
   const formik = useFormik({
     initialValues: {
       title: '',

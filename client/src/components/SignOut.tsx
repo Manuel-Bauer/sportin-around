@@ -17,8 +17,9 @@ const SignOut: FC<props> = ({ setAuthed }) => {
   return (
     <Button
       size='xs'
-      colorScheme='gray'
-      variant='outline'
+      colorScheme='twitter'
+      backgroundColor='twitter.900'
+      variant='solid'
       onClick={() => signOut()}
     >
       Sign Out
