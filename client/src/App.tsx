@@ -96,26 +96,26 @@ export const App: FC = () => {
       {currentUser && (
         <Box>
           <Header setAuthed={setAuthed} currentUser={currentUser} />
-          <Button
-            leftIcon={<AddIcon />}
-            colorScheme='twitter'
-            size='md'
-            ml={4}
-            mt={5}
-            onClick={() => {
-              setShowEventForm((prev) => {
-                return !prev;
-              });
-            }}
-          >
-            Create new Tournament
-          </Button>
 
           {showEventForm && <EventForm setShowEventForm={setShowEventForm} />}
 
           {!showEventForm && (
             <Grid m='20px' templateColumns='repeat(12, 1fr)' gap='20px'>
               <GridItem colSpan={3}>
+                <Button
+                  leftIcon={<AddIcon />}
+                  colorScheme='twitter'
+                  size='md'
+                  w='100%'
+                  mb={5}
+                  onClick={() => {
+                    setShowEventForm((prev) => {
+                      return !prev;
+                    });
+                  }}
+                >
+                  Create Tournament
+                </Button>
                 <EventList
                   eves={eves}
                   current={current}

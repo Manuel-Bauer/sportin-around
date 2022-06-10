@@ -15,6 +15,9 @@ import {
 } from '@chakra-ui/react';
 import { StandingsInterface, UserInterface } from '../types/types';
 import { sortStandings } from '../utils/helpers';
+import { getFirebase } from '../firebase';
+
+const { auth } = getFirebase();
 
 interface Props {
   standings: StandingsInterface;
@@ -36,9 +39,19 @@ const Standings: FC<Props> = ({ entries, standings }) => {
         <Tbody>
           {sortStandings(standings.standing).map((player) => {
             return (
-              <Tr>
+              <Tr
+                fontWeight={
+                  player.user.uid === auth.currentUser.uid ? 'bold' : 'normal'
+                }
+              >
                 <Td>
-                  {<Avatar width={[3, 3, 3, 5, 7]} maxH={[3, 3, 3, 5, 7]} />}
+                  {
+                    <Avatar
+                      width={[3, 3, 3, 5, 7]}
+                      maxH={[3, 3, 3, 5, 7]}
+                      src={player.user.avatar}
+                    />
+                  }
                   {'  '}
                   {player.user.username}
                 </Td>

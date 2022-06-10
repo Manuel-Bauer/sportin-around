@@ -12,6 +12,7 @@ import {
   GridItem,
   Flex,
   Badge,
+  IconButton,
 } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { nanoid } from 'nanoid';
@@ -62,12 +63,23 @@ const EventDetails: FC<Props> = ({
             align='center'
             bgColor='gray.100'
             shadow='base'
+            mb={5}
+            h='40px'
           >
-            <ChevronLeftIcon onClick={() => prevMatchday()} />
+            <IconButton
+              aria-label='Search database'
+              icon={<ChevronLeftIcon />}
+              onClick={() => prevMatchday()}
+            />
+
             <Text mx={5} align='center'>
               Matchday {matchday}
             </Text>
-            <ChevronRightIcon onClick={() => nextMatchday()} />
+            <IconButton
+              aria-label='Search database'
+              icon={<ChevronRightIcon />}
+              onClick={() => nextMatchday()}
+            />
           </Flex>
 
           <VStack mt={3}>
@@ -87,6 +99,17 @@ const EventDetails: FC<Props> = ({
           </VStack>
         </GridItem>
         <GridItem colSpan={4}>
+          <Flex
+            justify='center'
+            align='center'
+            h='40px'
+            bgColor='gray.100'
+            shadow='base'
+            mb={5}
+          >
+            <Text mx={5}>Current Standings</Text>
+          </Flex>
+
           {currentStandings && (
             <Standings
               entries={currentEvent.entries}
