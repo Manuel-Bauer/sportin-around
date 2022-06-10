@@ -13,7 +13,6 @@ import {
   Stack,
   Radio,
   RadioGroup,
-  Flex,
 } from '@chakra-ui/react';
 import { getFirebase } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
@@ -56,10 +55,18 @@ const EventForm: FC<Props> = ({ setShowEventForm }) => {
       // Works but you need to specify document name
       // For now: Client side ID generation
       const newDoc = doc(firestore, `events/${newID}`);
+
+      const user = {
+        username: auth.currentUser.displayName,
+        stats: [],
+        uid: auth.currentUser.uid,
+        avatar: auth.currentUser.photoURL,
+      };
+
       const newEvent: EventInterface = {
         title: values.title,
         venue: values.venue,
-        ownerId: auth.currentUser.uid,
+        owner: user,
         date: values.date,
         started: false,
         completed: false,

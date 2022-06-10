@@ -1,19 +1,19 @@
 export interface EventInterface {
   eventId?: string;
-  ownerId: string;
+  owner: UserInterface;
   title: string;
   venue: string;
   date: Date;
   started: boolean;
   completed: boolean;
   type: string;
-  entries: any;
+  entries: UserInterface[];
 }
 
 export interface MatchInterface {
   matchId?: string;
   eventId?: string;
-  ownerId: string;
+  owner: UserInterface;
   matchday: number;
   started: boolean;
   home: ScoreInterface | undefined;
@@ -44,7 +44,7 @@ export interface UserInterface {
   uid: string;
   username: string;
   avatar: string;
-  stats: [];
+  stats: never[];
 }
 
 export interface MainContextInterface {

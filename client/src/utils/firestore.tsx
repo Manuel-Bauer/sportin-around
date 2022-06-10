@@ -10,6 +10,7 @@ import {
   where,
   getDocs,
   getDoc,
+  Transaction,
 } from 'firebase/firestore';
 import {
   MatchInterface,
@@ -48,7 +49,7 @@ export const addUser = () => {
   const newUser = {
     uid: user.uid,
     username: user.displayName,
-    avatar: '',
+    avatar: user.photoURL,
     stats: [],
   };
   setDoc(userDoc, newUser);
@@ -168,7 +169,7 @@ export const createSchedule = async (eve: EventInterface) => {
       }
 
       const match: MatchInterface = {
-        ownerId: eve.ownerId,
+        owner: eve.owner,
         matchday: matchday,
         home: home,
         away: away,
@@ -178,8 +179,35 @@ export const createSchedule = async (eve: EventInterface) => {
 
       // Save Individual Matches to Match document
       await saveMatch(match, eve.eventId);
+
+      await updateEvent(eve.eventId, 'started', true);
     });
   });
+};
+
+export const updateEvent = async (
+  eventId: string | undefined,
+  updateField: string,
+  updateValue: any
+) => {
+  console.log('update Event');
+  console.log(eventId);
+  const eventToUpdate = doc(firestore, `events/${eventId}`);
+
+  try {
+    await runTransaction(firestore, async (transaction) => {
+      const eventDoc = await transaction.get(eventToUpdate);
+      if (!eventDoc.exists()) throw 'Tournament does not exist!';
+      const data = eventDoc.data();
+
+      transaction.update(eventToUpdate, {
+        ...data,
+        [updateField]: updateValue,
+      });
+    });
+  } catch (err) {
+    console.log('Transaction failed: ', err);
+  }
 };
 
 export const updateStandings = async (eventId: string | undefined) => {
@@ -188,7 +216,7 @@ export const updateStandings = async (eventId: string | undefined) => {
   try {
     await runTransaction(firestore, async (transaction) => {
       const standingDoc = await transaction.get(standingToUpdate);
-      if (!standingDoc.exists()) throw 'Event does not exist!';
+      if (!standingDoc.exists()) throw 'Standing does not exist!';
       const data = standingDoc.data();
 
       const newStanding = await data.standing.map(
@@ -244,8 +272,6 @@ export const updateStandings = async (eventId: string | undefined) => {
 };
 
 const calcPoints = (score1: number, score2: number) => {
-  console.log('score1', score1);
-  console.log('score2', score2);
   if (score1 > score2) return 3;
   if (score1 === score2) return 1;
   else return 0;
@@ -269,11 +295,9 @@ export const updateMatch = async (
 
       if (side === 'home') {
         const homePoints = calcPoints(score, data.away.score);
-        const awayPoints = calcPoints(data.home.score, score);
+        const awayPoints = calcPoints(data.away.score, score);
         const newHome = { ...data.home, score: score, points: homePoints };
         const newAway = { ...data.away, points: awayPoints };
-        console.log('home', newHome);
-        console.log('away', newAway);
         transaction.update(matchToUpdate, {
           started: true,
           home: newHome,
@@ -282,7 +306,7 @@ export const updateMatch = async (
       }
 
       if (side === 'away') {
-        const awayPoints = calcPoints(score, data.away.score);
+        const awayPoints = calcPoints(score, data.home.score);
         const homePoints = calcPoints(data.away.score, score);
         const newAway = { ...data.away, score: score, points: awayPoints };
         const newHome = { ...data.home, points: homePoints };
