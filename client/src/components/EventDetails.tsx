@@ -55,9 +55,6 @@ const EventDetails: FC<Props> = ({
 
   return (
     <Box>
-      <Text align='center' fontSize='3xl'>
-        {currentEvent?.title}
-      </Text>
       <Grid mt={5} templateColumns='repeat(8, 1fr)' gap='20px'>
         <GridItem colSpan={4}>
           <Flex

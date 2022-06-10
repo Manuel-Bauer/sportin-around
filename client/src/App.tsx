@@ -110,12 +110,16 @@ export const App: FC = () => {
           >
             Create new Event
           </IconButton>
-          {showEventForm && <EventForm setShowEventForm={setShowEventForm}/>}
+          {showEventForm && <EventForm setShowEventForm={setShowEventForm} />}
 
           {!showEventForm && (
             <Grid m='20px' templateColumns='repeat(12, 1fr)' gap='20px'>
               <GridItem colSpan={3}>
-                <EventList eves={eves} updateCurrent={updateCurrent} />
+                <EventList
+                  eves={eves}
+                  current={current}
+                  updateCurrent={updateCurrent}
+                />
               </GridItem>
               <GridItem colStart={4} colEnd={13}>
                 {current.eve && (

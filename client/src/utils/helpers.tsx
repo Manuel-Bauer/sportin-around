@@ -14,6 +14,16 @@ export const sortStandings = (
   });
 };
 
+export const sortEventList = (
+  currentEvent: EventInterface,
+  eventList: EventInterface[]
+) => {
+  return [
+    currentEvent,
+    ...eventList.filter((eve) => eve.eventId !== currentEvent.eventId),
+  ];
+};
+
 export const isUserSignedUp = (eve: EventInterface, uid: string) => {
   return eve.entries.map((entry) => entry.uid).includes(uid);
 };

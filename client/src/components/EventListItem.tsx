@@ -1,5 +1,9 @@
 import { FC, useState, useContext, useEffect } from 'react';
-import { EventInterface, MatchInterface } from '../types/types';
+import {
+  EventInterface,
+  MatchInterface,
+  StandingsInterface,
+} from '../types/types';
 import {
   Box,
   Button,
@@ -18,17 +22,34 @@ import { addPlayer, createSchedule, deleteEntry } from '../utils/firestore';
 import { isUserSignedUp } from '../utils/helpers';
 import { getFirebase } from '../firebase';
 import moment from 'moment';
+import WalkthroughPopover from './WalkthroughPopover';
 
 const { auth } = getFirebase();
 
 interface Props {
   eve: EventInterface;
   updateCurrent: Function;
+  current: {
+    eve: EventInterface;
+    matches: MatchInterface[];
+    standings: StandingsInterface;
+  };
 }
 
-const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
+const EventListItem: FC<Props> = ({ eve, updateCurrent, current }) => {
+  console.log(eve.eventId);
+  console.log(current?.eve?.eventId);
+
   return (
-    <Box bgColor='gray.100' boxShadow='base' mb={3} p={2} position='relative'>
+    <Box
+      bgColor='gray.100'
+      boxShadow='base'
+      mb={3}
+      p={2}
+      position='relative'
+      border={eve.eventId === current?.eve?.eventId ? '2px' : 'none'}
+      borderColor='twitter.800'
+    >
       <Box position='absolute' top='5px' right='5px'>
         {eve.completed && <Badge colorScheme='gray'>Done</Badge>}
         {eve.started && <Badge colorScheme='yellow'>Started</Badge>}
@@ -54,7 +75,11 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
           ml={-1}
           mr={2}
         />
-        <TagLabel>{eve.owner.username}</TagLabel>
+        <TagLabel>
+          {isUserSignedUp(eve, auth.currentUser.uid)
+            ? 'You are Admin'
+            : eve.owner.username}
+        </TagLabel>
       </Tag>
 
       <Box mt={2}>
@@ -116,7 +141,7 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
           <Button
             leftIcon={<SmallAddIcon />}
             colorScheme='gray'
-            size='xs'
+            size='sm'
             onClick={() => addPlayer(eve.eventId)}
             variant='solid'
             border='1px'
@@ -125,16 +150,6 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
           </Button>
         )}
 
-        {!eve.started && eve.owner.uid === auth.currentUser.uid && (
-          <Button
-            leftIcon={<CheckIcon />}
-            size='xs'
-            onClick={() => createSchedule(eve)}
-            border='1px'
-          >
-            Start
-          </Button>
-        )}
         {eve.started && (
           <Button
             leftIcon={<ExternalLinkIcon />}
@@ -142,10 +157,42 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
             colorScheme='gray'
             variant='solid'
             onClick={() => updateCurrent(eve)}
-            size='xs'
+            size='sm'
           >
             Details
           </Button>
+        )}
+        {!eve.started && eve.owner.uid === auth.currentUser.uid && (
+          <WalkthroughPopover
+            popoverStyles={{ placement: 'right', closeOnBlur: false }}
+            triggerText='Start'
+            triggerStyles={{
+              leftIcon: <CheckIcon />,
+              border: '1px',
+              size: 'sm',
+            }}
+            popoverContentStyles={{
+              color: 'white',
+              bg: 'twitter.800',
+              borderColor: 'blue.800',
+            }}
+            popoverHeaderStyles={{ pt: '4px', fontWeight: 'bold', border: '0' }}
+            popoverHeaderText='Start the Tournament'
+            popoverBodyText="After the tournament has been started, the schedule is created and users won't be able to sign up anymore."
+            popoverFooterStyles={{
+              border: '0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              pb: '4px',
+            }}
+            buttonGroupStyles={{ size: 'sm' }}
+            buttonStyles={{
+              colorScheme: 'twitter',
+              onClick: () => createSchedule(eve),
+            }}
+            buttonText='Start Tournament'
+          />
         )}
       </Stack>
     </Box>

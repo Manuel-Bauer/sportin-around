@@ -110,6 +110,8 @@ const saveStanding = async (eve: EventInterface) => {
 
 // Creates schedule based on signed up participant for Event and if it is single round robin or double round robin
 export const createSchedule = async (eve: EventInterface) => {
+  console.log('createSchedule');
+
   // Save Standings for Tournaement in Standings collection
   await saveStanding(eve);
 
