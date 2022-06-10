@@ -11,13 +11,14 @@ import {
   Tag,
   TagLabel,
   TagCloseButton,
+  IconButton,
 } from '@chakra-ui/react';
-import { LockIcon, TimeIcon, UnlockIcon } from '@chakra-ui/icons';
+import { ExternalLinkIcon, SmallAddIcon, CheckIcon } from '@chakra-ui/icons';
 import { addPlayer, createSchedule, getUser } from '../utils/firestore';
 import { getFirebase } from '../firebase';
 import moment from 'moment';
 
-const { firestore } = getFirebase();
+const { auth } = getFirebase();
 
 interface Props {
   eve: EventInterface;
@@ -72,19 +73,42 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent }) => {
         })}
       </Box>
 
-      <Stack direction='row' spacing={4} align='left'>
-        <Button size='xs' onClick={() => addPlayer(eve.eventId)}>
-          Sign Up
-        </Button>
+      <Stack mt={4} direction='row' spacing={4} align='left'>
         {!eve.started && (
-          <Button size='xs' onClick={() => createSchedule(eve)}>
-            Start Event
+          <Button
+            leftIcon={<SmallAddIcon />}
+            colorScheme='gray'
+            size='xs'
+            onClick={() => addPlayer(eve.eventId)}
+            variant='solid'
+            border='1px'
+          >
+            Add me
           </Button>
         )}
 
-        <Button size='xs' onClick={() => updateCurrent(eve)}>
-          Details
-        </Button>
+        {!eve.started && eve.owner.uid === auth.currentUser.uid && (
+          <Button
+            leftIcon={<CheckIcon />}
+            size='xs'
+            onClick={() => createSchedule(eve)}
+            border='1px'
+          >
+            Start
+          </Button>
+        )}
+        {eve.started && (
+          <Button
+            leftIcon={<ExternalLinkIcon />}
+            border='1px'
+            colorScheme='gray'
+            variant='solid'
+            onClick={() => updateCurrent(eve)}
+            size='xs'
+          >
+            Details
+          </Button>
+        )}
       </Stack>
     </Box>
   );
