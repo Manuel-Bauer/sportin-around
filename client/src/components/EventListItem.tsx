@@ -1,4 +1,4 @@
-import { FC, useRef } from 'react';
+import { FC } from 'react';
 import {
   EventInterface,
   MatchInterface,
@@ -14,6 +14,7 @@ import {
   Tag,
   TagLabel,
   TagCloseButton,
+  useToast,
 } from '@chakra-ui/react';
 import { ExternalLinkIcon, SmallAddIcon, CheckIcon } from '@chakra-ui/icons';
 import { addPlayer, createSchedule, deleteEntry } from '../utils/firestore';
@@ -21,11 +22,7 @@ import { isUserSignedUp } from '../utils/helpers';
 import { getFirebase } from '../firebase';
 import moment from 'moment';
 import WalkthroughPopover from './WalkthroughPopover';
-import * as Scroll from 'react-scroll';
-
-const ScrollElement = Scroll.Element;
-const scroller = Scroll.scroller;
-const scroll = Scroll.animateScroll;
+import { animateScroll as scroll } from 'react-scroll';
 
 const { auth } = getFirebase();
 
@@ -37,7 +34,7 @@ interface Props {
     matches: MatchInterface[];
     standings: StandingsInterface;
   };
-  scrollToTop: Function;
+  scrollSidebar: Function;
   first: boolean;
 }
 
@@ -45,10 +42,35 @@ const EventListItem: FC<Props> = ({
   eve,
   updateCurrent,
   current,
-  scrollToTop,
+  scrollSidebar,
 }) => {
+  const toast = useToast();
+
+  const handleAddMe = async (eventId: string | undefined) => {
+    await addPlayer(eventId);
+    toast({
+      title: `Signed up for ${eve.title}`,
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+    });
+  };
+
+  const handleRemoveMe = async (
+    eventId: string | undefined,
+    uid: string | undefined
+  ) => {
+    await deleteEntry(eventId, uid);
+    toast({
+      title: `Removed from ${eve.title}`,
+      status: 'warning',
+      duration: 5000,
+      isClosable: true,
+    });
+  };
+
   const handleShowDetails = async (eve: EventInterface) => {
-    scrollToTop();
+    scrollSidebar();
     scroll.scrollToTop();
     await updateCurrent(eve);
   };
@@ -74,7 +96,6 @@ const EventListItem: FC<Props> = ({
           <Badge colorScheme='yellow'>Open</Badge>
         )}
       </Box>
-      <ScrollElement name='test1'></ScrollElement>
 
       <Text fontSize={['sm', 'sm', 'sm', 'md', '2xl']} fontWeight='bold'>
         {eve.title}
@@ -115,7 +136,7 @@ const EventListItem: FC<Props> = ({
                 <TagLabel>{entry.username}</TagLabel>
                 {!eve.started && (
                   <TagCloseButton
-                    onClick={() => deleteEntry(eve.eventId, entry.uid)}
+                    onClick={() => handleRemoveMe(eve.eventId, entry.uid)}
                   />
                 )}
               </Tag>
@@ -133,7 +154,7 @@ const EventListItem: FC<Props> = ({
                 <TagLabel>{entry.username}</TagLabel>
                 {!eve.started && (
                   <TagCloseButton
-                    onClick={() => deleteEntry(eve.eventId, entry.uid)}
+                    onClick={() => handleRemoveMe(eve.eventId, entry.uid)}
                   />
                 )}
               </Tag>
@@ -160,7 +181,7 @@ const EventListItem: FC<Props> = ({
             leftIcon={<SmallAddIcon />}
             colorScheme='gray'
             size='sm'
-            onClick={() => addPlayer(eve.eventId)}
+            onClick={() => handleAddMe(eve.eventId)}
             variant='solid'
             border='1px'
           >
