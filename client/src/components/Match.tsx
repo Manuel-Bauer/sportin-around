@@ -26,13 +26,12 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
   const update = async (
     eventId: string | undefined,
     matchId: string | undefined,
-    homeScore: number | string | undefined,
-    awayScore: number | string | undefined
+    homeScore: any,
+    awayScore: any
   ) => {
     try {
       // post Match and Standings to Database
-      await updateMatch(matchId, homeScore, awayScore);
-      await updateStandings(eventId);
+      await updateMatch(eventId, matchId, homeScore, awayScore);
       // get current from database
       await updateCurrent(eve);
     } catch (err) {

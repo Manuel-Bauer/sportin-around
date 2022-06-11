@@ -11,12 +11,7 @@ import {
   getDoc,
   updateDoc,
 } from 'firebase/firestore';
-import {
-  MatchInterface,
-  EventInterface,
-  ResultInterface,
-  UserInterface,
-} from '../types/types';
+import { MatchInterface, EventInterface, UserInterface } from '../types/types';
 
 const robin = require('roundrobin');
 
@@ -38,6 +33,13 @@ export const getStanding = async (eventId: string | undefined) => {
 export const getUser = async (uid: string) => {
   const userRef = doc(firestore, 'users', uid);
   const snap = await getDoc(userRef);
+  if (snap.exists()) return snap.data();
+};
+
+// Get Match
+export const getMatch = async (matchId: string | undefined) => {
+  const matchRef = doc(firestore, `matches/${matchId}`);
+  const snap = await getDoc(matchRef);
   if (snap.exists()) return snap.data();
 };
 
@@ -108,8 +110,6 @@ const saveStanding = async (eve: EventInterface) => {
 
 // Creates schedule based on signed up participant for Event and if it is single round robin or double round robin
 export const createSchedule = async (eve: EventInterface) => {
-  console.log('createSchedule');
-
   // Save Standings for Tournaement in Standings collection
   await saveStanding(eve);
 
@@ -139,12 +139,12 @@ export const createSchedule = async (eve: EventInterface) => {
         // We need to adjust indexes because robin library starts with 1
         home = {
           user: eve.entries[players[0] - 1],
-          score: '-',
+          score: 0,
           points: 0,
         };
         away = {
           user: eve.entries[players[1] - 1],
-          score: '-',
+          score: 0,
           points: 0,
         };
       }
@@ -180,7 +180,6 @@ export const createSchedule = async (eve: EventInterface) => {
 
       // Save Individual Matches to Match document
       await saveMatch(match, eve.eventId);
-
       await updateEvent(eve.eventId, 'started', true);
     });
   });
@@ -229,67 +228,142 @@ export const updateEvent = async (
   }
 };
 
-export const updateStandings = async (eventId: string | undefined) => {
-  const standingToUpdate = doc(firestore, `standings/${eventId}`);
+export const updateStandings = async (
+  eventId: string | undefined,
+  matchId: string | undefined,
+  homePointsDiff: number,
+  homeScoreDiff: number,
+  awayPointsDiff: number,
+  awayScoreDiff: number
+) => {
+  console.log('homePointsDiff', homePointsDiff);
+  console.log('homeScoreDiff', homeScoreDiff);
+  console.log('awayPointsDiff', awayPointsDiff);
+  console.log('awayScoreDiff', awayScoreDiff);
 
+  const standingToUpdate = doc(firestore, `standings/${eventId}`);
   try {
     await runTransaction(firestore, async (transaction) => {
       const standingDoc = await transaction.get(standingToUpdate);
       if (!standingDoc.exists()) throw 'Standing does not exist!';
-      const data = standingDoc.data();
+      const standingData = standingDoc.data();
+      const matchData = await getMatch(matchId);
 
-      const newStanding = await data.standing.map(
-        async (player: ResultInterface) => {
-          let totalPlayed = 0;
-          let totalPoints = 0;
-          let totalScored = 0;
-          let totalConceded = 0;
-          let user = player.user;
+      const standingToKeep = standingDoc
+        .data()
+        .standing.filter(
+          (player: any) =>
+            player.user.uid !== matchData?.home.user.uid &&
+            player.user.uid !== matchData?.away.user.uid
+        );
 
-          // Query through all matches with the given event id
-          const matchesCol = collection(firestore, 'matches');
-          const matchQuery = query(matchesCol, where('eventId', '==', eventId));
-          const querySnapshot = await getDocs(matchQuery);
+      // console.log(standingToKeep, 'standingToKeep'); // CHECK
 
-          querySnapshot.forEach((match: any) => {
-            const data = match.data();
-            if (
-              (data.home.user.uid === user.uid ||
-                data.away.user.uid === user.uid) &&
-              data.started
-            ) {
-              totalPlayed++;
-            }
-            if (data.home.user.uid === user.uid) {
-              totalPoints += data.home.points;
-              totalScored += data.home.score === '-' ? 0 : data.home.score;
-              totalConceded += data.away.score === '-' ? 0 : data.away.score;
-            }
-            if (data.away.user.uid === user.uid) {
-              totalPoints += data.away.points;
-              totalScored += data.away.score === '-' ? 0 : data.away.score;
-              totalConceded += data.home.score === '-' ? 0 : data.home.score;
-            }
-          });
+      const standingHome = standingDoc.data().standing.filter((player: any) => {
+        return player.user.uid === matchData?.home.user.uid;
+      })[0];
 
-          return {
-            user,
-            totalPlayed,
-            totalPoints,
-            totalScored,
-            totalConceded,
-          };
-        }
-      );
+      // console.log(standingHome) CHECK
 
-      return Promise.all(newStanding).then((values) => {
-        transaction.update(standingToUpdate, { standing: values });
+      const standingAway = standingDoc.data().standing.filter((player: any) => {
+        return player.user.uid === matchData?.away.user.uid;
+      })[0];
+
+      const totalPointsHomeNew = standingHome.totalPoints + homePointsDiff;
+      const totalScoredHomeNew = standingHome.totalScored + homeScoreDiff;
+      const totalConcededHomeNew = standingHome.totalConceded + awayScoreDiff;
+
+      const totalPointsAwayNew = standingAway.totalPoints + awayPointsDiff;
+      const totalScoredAwayNew = standingAway.totalScored + awayScoreDiff;
+      const totalConcededAwayNew = standingAway.totalConceded + homeScoreDiff;
+
+      const standingHomeNew = {
+        ...standingHome,
+        totalPoints: totalPointsHomeNew,
+        totalScored: totalScoredHomeNew,
+        totalConceded: totalConcededHomeNew,
+      };
+
+      const standingAwayNew = {
+        ...standingAway,
+        totalPoints: totalPointsAwayNew,
+        totalScored: totalScoredAwayNew,
+        totalConceded: totalConcededAwayNew,
+      };
+
+      const newStanding = [...standingToKeep, standingHomeNew, standingAwayNew];
+
+      transaction.update(standingToUpdate, {
+        ...standingData,
+        standing: newStanding,
       });
     });
   } catch (err) {
     console.log('Transaction failed: ', err);
   }
 };
+
+// export const updateStandings = async (eventId: string | undefined) => {
+//   const standingToUpdate = doc(firestore, `standings/${eventId}`);
+
+//   try {
+//     await runTransaction(firestore, async (transaction) => {
+//       const standingDoc = await transaction.get(standingToUpdate);
+//       if (!standingDoc.exists()) throw 'Standing does not exist!';
+//       const data = standingDoc.data();
+
+//       const newStanding = await data.standing.map(
+//         async (player: ResultInterface) => {
+//           let totalPlayed = 0;
+//           let totalPoints = 0;
+//           let totalScored = 0;
+//           let totalConceded = 0;
+//           let user = player.user;
+
+//           // Query through all matches with the given event id
+//           const matchesCol = collection(firestore, 'matches');
+//           const matchQuery = query(matchesCol, where('eventId', '==', eventId));
+//           const querySnapshot = await getDocs(matchQuery);
+
+//           querySnapshot.forEach((match: any) => {
+//             const data = match.data();
+//             if (
+//               (data.home.user.uid === user.uid ||
+//                 data.away.user.uid === user.uid) &&
+//               data.started
+//             ) {
+//               totalPlayed++;
+//             }
+//             if (data.home.user.uid === user.uid) {
+//               totalPoints += data.home.points;
+//               totalScored += data.home.score === '-' ? 0 : data.home.score;
+//               totalConceded += data.away.score === '-' ? 0 : data.away.score;
+//             }
+//             if (data.away.user.uid === user.uid) {
+//               totalPoints += data.away.points;
+//               totalScored += data.away.score === '-' ? 0 : data.away.score;
+//               totalConceded += data.home.score === '-' ? 0 : data.home.score;
+//             }
+//           });
+
+//           return {
+//             user,
+//             totalPlayed,
+//             totalPoints,
+//             totalScored,
+//             totalConceded,
+//           };
+//         }
+//       );
+
+//       return Promise.all(newStanding).then((values) => {
+//         transaction.update(standingToUpdate, { standing: values });
+//       });
+//     });
+//   } catch (err) {
+//     console.log('Transaction failed: ', err);
+//   }
+// };
 
 const calcPoints = (
   score1: number | string | undefined,
@@ -304,13 +378,11 @@ const calcPoints = (
 
 // Update Match
 export const updateMatch = async (
+  eventId: string | undefined,
   matchId: string | undefined,
-  homeScore: number | string | undefined,
-  awayScore: number | string | undefined
+  homeScoreNew: number,
+  awayScoreNew: number
 ) => {
-  const homePoints = calcPoints(homeScore, awayScore);
-  const awayPoints = calcPoints(awayScore, homeScore);
-
   const matchToUpdate = doc(firestore, `matches/${matchId}`);
 
   try {
@@ -320,63 +392,48 @@ export const updateMatch = async (
 
       const data = matchDoc.data();
 
-      const newHome = { ...data.home, score: homeScore, points: homePoints };
-      const newAway = { ...data.away, score: awayScore, points: awayPoints };
+      const homePointsOld = data.home.points;
+      const awayPointsOld = data.away.points;
+
+      const homePointsNew = calcPoints(homeScoreNew, awayScoreNew);
+      const awayPointsNew = calcPoints(awayScoreNew, homeScoreNew);
+
+      const homePointsDiff = homePointsNew - homePointsOld;
+      const awayPointsDiff = awayPointsNew - awayPointsOld;
+
+      const homeScoreDiff = homeScoreNew - data.home.score;
+      const awayScoreDiff = awayScoreNew - data.away.score;
+
+      const newHome = {
+        ...data.home,
+        score: homeScoreNew,
+        points: homePointsNew,
+      };
+      const newAway = {
+        ...data.away,
+        score: awayScoreNew,
+        points: awayPointsNew,
+      };
 
       transaction.update(matchToUpdate, {
         started: true,
         home: newHome,
         away: newAway,
       });
+
+      updateStandings(
+        eventId,
+        matchId,
+        homePointsDiff,
+        homeScoreDiff,
+        awayPointsDiff,
+        awayScoreDiff
+      );
     });
   } catch (e) {
     console.log('Transaction failed: ', e);
   }
 };
-
-// export const updateMatch = async (
-//   matchId: string | undefined,
-//   score: number,
-//   side: string,
-//   eventId: string | undefined
-// ) => {
-//   const matchToUpdate = doc(firestore, `matches/${matchId}`);
-
-//   try {
-//     await runTransaction(firestore, async (transaction) => {
-//       const matchDoc = await transaction.get(matchToUpdate);
-//       if (!matchDoc.exists()) throw 'Match does not exist!';
-
-//       const data = matchDoc.data();
-
-//       if (side === 'home') {
-//         const homePoints = calcPoints(score, data.away.score);
-//         const awayPoints = calcPoints(data.away.score, score);
-//         const newHome = { ...data.home, score: score, points: homePoints };
-//         const newAway = { ...data.away, points: awayPoints };
-//         transaction.update(matchToUpdate, {
-//           started: true,
-//           home: newHome,
-//           away: newAway,
-//         });
-//       }
-
-//       if (side === 'away') {
-//         const awayPoints = calcPoints(score, data.home.score);
-//         const homePoints = calcPoints(data.home.score, score);
-//         const newAway = { ...data.away, score: score, points: awayPoints };
-//         const newHome = { ...data.home, points: homePoints };
-//         transaction.update(matchToUpdate, {
-//           started: true,
-//           home: newHome,
-//           away: newAway,
-//         });
-//       }
-//     });
-//   } catch (e) {
-//     console.log('Transaction failed: ', e);
-//   }
-// };
 
 //
 export const endTournament = async (eventId: string | undefined) => {
