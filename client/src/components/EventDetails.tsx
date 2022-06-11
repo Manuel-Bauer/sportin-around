@@ -18,7 +18,8 @@ import { ChevronLeftIcon, ChevronRightIcon, LockIcon } from '@chakra-ui/icons';
 import { nanoid } from 'nanoid';
 import Match from '../components/Match';
 import Standings from './Standings';
-import { endTournament } from '../utils/firestore';
+import { saveTournamentStandings } from '../utils/firestore';
+import WalkthroughPopover from './WalkthroughPopover';
 
 interface Props {
   currentEvent: EventInterface;
@@ -49,6 +50,10 @@ const EventDetails: FC<Props> = ({
 
   const prevMatchday = () => {
     if (matchday > 1) setMatchday((prev) => prev - 1);
+  };
+
+  const lockTournamentHandler = (eventId: string | undefined) => {
+    saveTournamentStandings(currentEvent.eventId);
   };
 
   return (
@@ -84,14 +89,12 @@ const EventDetails: FC<Props> = ({
               .filter((match) => match.matchday === matchday)
               .map((match: MatchInterface) => {
                 return (
-                  
-                    <Match
-                      key={nanoid()}
-                      match={match}
-                      eve={currentEvent}
-                      updateCurrent={updateCurrent}
-                    />
-                
+                  <Match
+                    key={nanoid()}
+                    match={match}
+                    eve={currentEvent}
+                    updateCurrent={updateCurrent}
+                  />
                 );
               })}
         </GridItem>
@@ -111,17 +114,47 @@ const EventDetails: FC<Props> = ({
           {currentStandings && <Standings standings={currentStandings} />}
         </GridItem>
       </Grid>
-      <Flex justify='end' align='center' mt={5} mr={5} pb='20px'>
-        <Button
-          leftIcon={<LockIcon />}
-          border='1px'
-          colorScheme='gray'
-          variant='solid'
-          onClick={() => endTournament(currentEvent.eventId)}
-          size='sm'
-        >
-          Lock Tournament
-        </Button>
+      <Flex justify='space-between' align='center'>
+        {currentEvent.completed && (
+          <Flex>
+            <Text fontSize='3xl' fontStyle='italic' ml={3}>
+              Tournament is finished
+            </Text>
+          </Flex>
+        )}
+
+        <Flex justify='end' align='center' mt={5} mr={5} pb='20px'>
+          <WalkthroughPopover
+            popoverStyles={{ placement: 'bottom', closeOnBlur: false }}
+            triggerText='Lock Tournament Result'
+            triggerStyles={{
+              leftIcon: <LockIcon />,
+              border: '1px',
+              size: 'sm',
+            }}
+            popoverContentStyles={{
+              color: 'white',
+              bg: 'twitter.800',
+              borderColor: 'blue.800',
+            }}
+            popoverHeaderStyles={{ pt: '4px', fontWeight: 'bold', border: '0' }}
+            popoverHeaderText='Lock Tournament Result'
+            popoverBodyText="Do you want to lock the tournament and save the result? Match scores can't be edited after this."
+            popoverFooterStyles={{
+              border: '0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              pb: '4px',
+            }}
+            buttonGroupStyles={{ size: 'sm' }}
+            buttonStyles={{
+              colorScheme: 'twitter',
+              onClick: () => lockTournamentHandler(currentEvent.eventId),
+            }}
+            buttonText='Lock Tournament'
+          />
+        </Flex>
       </Flex>
     </Box>
   );

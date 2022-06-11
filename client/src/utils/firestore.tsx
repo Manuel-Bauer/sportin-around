@@ -375,7 +375,7 @@ export const updateMatch = async (
 };
 
 //
-export const endTournament = async (eventId: string | undefined) => {
+export const saveTournamentStandings = async (eventId: string | undefined) => {
   // update Tournament
   // await updateEvent(eventId, 'completed', true);
 

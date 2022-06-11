@@ -51,11 +51,9 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent, current }) => {
             Done
           </Badge>
         )}
-        {eve.started && !eve.completed && (
-          <Badge colorScheme='yellow'>On</Badge>
-        )}
+        {eve.started && !eve.completed && <Badge colorScheme='green'>On</Badge>}
         {!eve.started && !eve.completed && (
-          <Badge colorScheme='green'>Open</Badge>
+          <Badge colorScheme='yellow'>Open</Badge>
         )}
       </Box>
 

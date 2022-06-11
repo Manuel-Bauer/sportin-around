@@ -46,7 +46,9 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
       minW='100%'
       templateColumns='repeat(23, 1fr )'
       fontSize={['sm', 'sm', 'sm', 'sm', 'md']}
-      backgroundColor={match.started ? 'green.50' : 'gray.50'}
+      backgroundColor={
+        eve.completed ? 'gray.300' : match.started ? 'green.50' : 'gray.50'
+      }
     >
       <GridItem colSpan={2}>
         <Flex align='center' h='100%' w='100%' justify='start'>
@@ -85,10 +87,18 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
             {' '}
             <Flex justify='center'>
               <EditablePreview
-                backgroundColor={match.started ? 'green.100' : 'gray.200'}
+                backgroundColor={
+                  eve.completed
+                    ? 'black'
+                    : match.started
+                    ? 'green.100'
+                    : 'gray.200'
+                }
                 w={6}
                 minH={6}
-                color={match.started ? 'black' : 'gray'}
+                color={
+                  eve.completed ? 'gray.300' : match.started ? 'black' : 'gray'
+                }
                 padding={1}
                 fontStyle={match.started ? 'normal' : 'italic'}
               />
@@ -127,9 +137,17 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
             defaultValue={match?.away?.score.toString()}
           >
             <EditablePreview
-              backgroundColor={match.started ? 'green.100' : 'gray.200'}
+              backgroundColor={
+                eve.completed
+                  ? 'black'
+                  : match.started
+                  ? 'green.100'
+                  : 'gray.200'
+              }
               w='100%'
-              color={match.started ? 'black' : 'gray'}
+              color={
+                eve.completed ? 'gray.300' : match.started ? 'black' : 'gray'
+              }
               padding={1}
               fontStyle={match.started ? 'normal' : 'italic'}
             />
