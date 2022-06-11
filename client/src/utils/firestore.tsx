@@ -291,7 +291,12 @@ export const updateStandings = async (eventId: string | undefined) => {
   }
 };
 
-const calcPoints = (score1: number, score2: number) => {
+const calcPoints = (
+  score1: number | string | undefined,
+  score2: number | string | undefined
+) => {
+  if (!score2 || score2 === '-') return 3;
+  if (!score1) return 0;
   if (score1 > score2) return 3;
   if (score1 === score2) return 1;
   else return 0;
@@ -300,10 +305,12 @@ const calcPoints = (score1: number, score2: number) => {
 // Update Match
 export const updateMatch = async (
   matchId: string | undefined,
-  score: number,
-  side: string,
-  eventId: string | undefined
+  homeScore: number | string | undefined,
+  awayScore: number | string | undefined
 ) => {
+  const homePoints = calcPoints(homeScore, awayScore);
+  const awayPoints = calcPoints(awayScore, homeScore);
+
   const matchToUpdate = doc(firestore, `matches/${matchId}`);
 
   try {
@@ -313,34 +320,63 @@ export const updateMatch = async (
 
       const data = matchDoc.data();
 
-      if (side === 'home') {
-        const homePoints = calcPoints(score, data.away.score);
-        const awayPoints = calcPoints(data.away.score, score);
-        const newHome = { ...data.home, score: score, points: homePoints };
-        const newAway = { ...data.away, points: awayPoints };
-        transaction.update(matchToUpdate, {
-          started: true,
-          home: newHome,
-          away: newAway,
-        });
-      }
+      const newHome = { ...data.home, score: homeScore, points: homePoints };
+      const newAway = { ...data.away, score: awayScore, points: awayPoints };
 
-      if (side === 'away') {
-        const awayPoints = calcPoints(score, data.home.score);
-        const homePoints = calcPoints(data.home.score, score);
-        const newAway = { ...data.away, score: score, points: awayPoints };
-        const newHome = { ...data.home, points: homePoints };
-        transaction.update(matchToUpdate, {
-          started: true,
-          home: newHome,
-          away: newAway,
-        });
-      }
+      transaction.update(matchToUpdate, {
+        started: true,
+        home: newHome,
+        away: newAway,
+      });
     });
   } catch (e) {
     console.log('Transaction failed: ', e);
   }
 };
+
+// export const updateMatch = async (
+//   matchId: string | undefined,
+//   score: number,
+//   side: string,
+//   eventId: string | undefined
+// ) => {
+//   const matchToUpdate = doc(firestore, `matches/${matchId}`);
+
+//   try {
+//     await runTransaction(firestore, async (transaction) => {
+//       const matchDoc = await transaction.get(matchToUpdate);
+//       if (!matchDoc.exists()) throw 'Match does not exist!';
+
+//       const data = matchDoc.data();
+
+//       if (side === 'home') {
+//         const homePoints = calcPoints(score, data.away.score);
+//         const awayPoints = calcPoints(data.away.score, score);
+//         const newHome = { ...data.home, score: score, points: homePoints };
+//         const newAway = { ...data.away, points: awayPoints };
+//         transaction.update(matchToUpdate, {
+//           started: true,
+//           home: newHome,
+//           away: newAway,
+//         });
+//       }
+
+//       if (side === 'away') {
+//         const awayPoints = calcPoints(score, data.home.score);
+//         const homePoints = calcPoints(data.home.score, score);
+//         const newAway = { ...data.away, score: score, points: awayPoints };
+//         const newHome = { ...data.home, points: homePoints };
+//         transaction.update(matchToUpdate, {
+//           started: true,
+//           home: newHome,
+//           away: newAway,
+//         });
+//       }
+//     });
+//   } catch (e) {
+//     console.log('Transaction failed: ', e);
+//   }
+// };
 
 //
 export const endTournament = async (eventId: string | undefined) => {

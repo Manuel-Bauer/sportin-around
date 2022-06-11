@@ -24,14 +24,14 @@ interface Props {
 
 const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
   const update = async (
+    eventId: string | undefined,
     matchId: string | undefined,
-    value: number,
-    side: string,
-    eventId: string | undefined
+    homeScore: number | string | undefined,
+    awayScore: number | string | undefined
   ) => {
     try {
       // post Match and Standings to Database
-      await updateMatch(matchId, value, side, eventId);
+      await updateMatch(matchId, homeScore, awayScore);
       await updateStandings(eventId);
       // get current from database
       await updateCurrent(eve);
@@ -58,7 +58,12 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
           </Text>
           <Editable
             onSubmit={(value) =>
-              update(match.matchId, Number(value), 'home', match.eventId)
+              update(
+                match.eventId,
+                match.matchId,
+                Number(value),
+                match?.away?.score
+              )
             }
             defaultValue={match?.home?.score.toString()}
           >
@@ -73,7 +78,12 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
         <Flex justify='start' align='center'>
           <Editable
             onSubmit={(value) =>
-              update(match.matchId, Number(value), 'away', match.eventId)
+              update(
+                match.eventId,
+                match.matchId,
+                match?.home?.score,
+                Number(value)
+              )
             }
             defaultValue={match?.away?.score.toString()}
           >
