@@ -46,6 +46,7 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
       minW='100%'
       templateColumns='repeat(23, 1fr )'
       fontSize={['sm', 'sm', 'sm', 'sm', 'md']}
+      backgroundColor={match.started ? 'green.50' : 'gray.50'}
     >
       <GridItem colSpan={2}>
         <Flex align='center' h='100%' w='100%' justify='start'>
@@ -66,8 +67,11 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
         </Flex>
       </GridItem>
       <GridItem colSpan={1}>
-        <Flex justify='center' align='center' h='100%'>
+        <Flex justify='center' align='center' h='100%' w='100%'>
           <Editable
+            textAlign='center'
+            w={6}
+            minH={6}
             onSubmit={(value) =>
               update(
                 match.eventId,
@@ -79,8 +83,25 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
             defaultValue={match?.home?.score.toString()}
           >
             {' '}
-            <EditablePreview w='100%' />
-            <EditableInput backgroundColor='twitter.400' w={[2, 2, 2, 3, 5]} />
+            <Flex justify='center'>
+              <EditablePreview
+                backgroundColor={match.started ? 'green.100' : 'gray.200'}
+                w={6}
+                minH={6}
+                color={match.started ? 'black' : 'gray'}
+                padding={1}
+                fontStyle={match.started ? 'normal' : 'italic'}
+              />
+            </Flex>
+            <Flex justify='center'>
+              <EditableInput
+                alignSelf='center'
+                w={6}
+                minH={6}
+                backgroundColor='gray.400'
+                borderColor='black'
+              />
+            </Flex>
           </Editable>
         </Flex>
       </GridItem>
@@ -92,6 +113,9 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
       <GridItem colSpan={1}>
         <Flex align='center' justify='center' h='100%'>
           <Editable
+            textAlign='center'
+            w={6}
+            minH={6}
             onSubmit={(value) =>
               update(
                 match.eventId,
@@ -102,8 +126,20 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
             }
             defaultValue={match?.away?.score.toString()}
           >
-            <EditablePreview />
-            <EditableInput w={[2, 2, 2, 3, 5]} />
+            <EditablePreview
+              backgroundColor={match.started ? 'green.100' : 'gray.200'}
+              w='100%'
+              color={match.started ? 'black' : 'gray'}
+              padding={1}
+              fontStyle={match.started ? 'normal' : 'italic'}
+            />
+            <EditableInput
+              alignSelf='center'
+              w={6}
+              minH={6}
+              backgroundColor='gray.400'
+              borderColor='black'
+            />
           </Editable>
         </Flex>
       </GridItem>
@@ -121,7 +157,7 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
       </GridItem>
       <GridItem colSpan={2}>
         <Flex align='center' h='100%' w='100%' justify='end'>
-          <Avatar w={5} maxH={5} ml={2} src={match?.away?.user.avatar} />
+          <Avatar w={5} maxH={5} mr={2} src={match?.away?.user.avatar} />
         </Flex>
       </GridItem>
     </Grid>
