@@ -23,7 +23,22 @@ const EventList: FC<Props> = ({ eves, updateCurrent, current }) => {
   const eventList = current.eve ? sortEventList(current.eve, eves) : eves;
 
   return (
-    <Box>
+    <Box
+      maxH='100vh'
+      overflowY='scroll'
+      css={{
+        '&::-webkit-scrollbar': {
+          width: '4px',
+        },
+        '&::-webkit-scrollbar-track': {
+          width: '6px',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          background: 'lightgray',
+          borderRadius: '24px',
+        },
+      }}
+    >
       {eves &&
         eventList.map((eve) => {
           return (
