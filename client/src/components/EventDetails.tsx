@@ -79,22 +79,23 @@ const EventDetails: FC<Props> = ({
             />
           </Flex>
 
-          <VStack mt={3}>
-            {currentMatches?.length > 0 &&
-              currentMatches
-                .filter((match) => match.matchday === matchday)
-                .map((match: MatchInterface) => {
-                  return (
+          {currentMatches?.length > 0 &&
+            currentMatches
+              .filter((match) => match.matchday === matchday)
+              .map((match: MatchInterface) => {
+                return (
+                  
                     <Match
                       key={nanoid()}
                       match={match}
                       eve={currentEvent}
                       updateCurrent={updateCurrent}
                     />
-                  );
-                })}
-          </VStack>
+                
+                );
+              })}
         </GridItem>
+
         <GridItem colSpan={4}>
           <Flex
             justify='center'

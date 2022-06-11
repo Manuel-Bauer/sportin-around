@@ -3,6 +3,7 @@ import { useState, useEffect, FC } from 'react';
 import { getFirebase } from '../firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 import {
+  Box,
   Flex,
   Text,
   Editable,
@@ -41,13 +42,20 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
 
   return (
     <Grid
-      templateColumns='repeat(2, 1fr)'
+      mt={3}
+      minW='100%'
+      templateColumns='repeat(23, 1fr )'
       fontSize={['sm', 'sm', 'sm', 'sm', 'md']}
     >
-      <GridItem>
-        <Flex justify='end' align='center'>
-          <Avatar w={5} maxH={5} mr={2} src={match?.home?.user.avatar} />
+      <GridItem colSpan={2}>
+        <Flex align='center' h='100%' w='100%' justify='start'>
+          <Avatar w={5} maxH={5} ml={2} src={match?.home?.user.avatar} />
+        </Flex>
+      </GridItem>
+      <GridItem colSpan={8}>
+        <Flex align='center' justify='end' w='100%' h='100%'>
           <Text
+            align='center'
             fontWeight={
               auth.currentUser.uid === match.home?.user.uid ? 'bold' : 'normal'
             }
@@ -55,6 +63,10 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
           >
             {match?.home?.user.username}
           </Text>
+        </Flex>
+      </GridItem>
+      <GridItem colSpan={1}>
+        <Flex justify='center' align='center' h='100%'>
           <Editable
             onSubmit={(value) =>
               update(
@@ -70,11 +82,15 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
             <EditablePreview w='100%' />
             <EditableInput backgroundColor='twitter.400' w={[2, 2, 2, 3, 5]} />
           </Editable>
+        </Flex>
+      </GridItem>
+      <GridItem colSpan={1}>
+        <Flex justify='center' align='center' h='100%'>
           <Text>:</Text>
         </Flex>
       </GridItem>
-      <GridItem>
-        <Flex justify='start' align='center'>
+      <GridItem colSpan={1}>
+        <Flex align='center' justify='center' h='100%'>
           <Editable
             onSubmit={(value) =>
               update(
@@ -89,6 +105,10 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
             <EditablePreview />
             <EditableInput w={[2, 2, 2, 3, 5]} />
           </Editable>
+        </Flex>
+      </GridItem>
+      <GridItem colSpan={8}>
+        <Flex align='center' justify='start' w='100%' h='100%'>
           <Text
             fontWeight={
               auth.currentUser.uid === match.away?.user.uid ? 'bold' : 'normal'
@@ -97,6 +117,10 @@ const Match: FC<Props> = ({ match, eve, updateCurrent }) => {
           >
             {match?.away?.user.username}
           </Text>
+        </Flex>
+      </GridItem>
+      <GridItem colSpan={2}>
+        <Flex align='center' h='100%' w='100%' justify='end'>
           <Avatar w={5} maxH={5} ml={2} src={match?.away?.user.avatar} />
         </Flex>
       </GridItem>
