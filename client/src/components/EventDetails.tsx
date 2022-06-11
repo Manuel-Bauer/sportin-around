@@ -114,7 +114,10 @@ const EventDetails: FC<Props> = ({
           {currentStandings && <Standings standings={currentStandings} />}
         </GridItem>
       </Grid>
-      <Flex justify='space-between' align='center'>
+      <Flex
+        justify={currentEvent.completed ? 'space-between' : 'end'}
+        align='center'
+      >
         {currentEvent.completed && (
           <Flex>
             <Text fontSize='3xl' fontStyle='italic' ml={3}>

@@ -1,4 +1,4 @@
-import { FC, useState, useContext, useEffect } from 'react';
+import { FC, useRef } from 'react';
 import {
   EventInterface,
   MatchInterface,
@@ -21,6 +21,11 @@ import { isUserSignedUp } from '../utils/helpers';
 import { getFirebase } from '../firebase';
 import moment from 'moment';
 import WalkthroughPopover from './WalkthroughPopover';
+import * as Scroll from 'react-scroll';
+
+const ScrollElement = Scroll.Element;
+const scroller = Scroll.scroller;
+const scroll = Scroll.animateScroll;
 
 const { auth } = getFirebase();
 
@@ -32,9 +37,22 @@ interface Props {
     matches: MatchInterface[];
     standings: StandingsInterface;
   };
+  scrollToTop: Function;
+  first: boolean;
 }
 
-const EventListItem: FC<Props> = ({ eve, updateCurrent, current }) => {
+const EventListItem: FC<Props> = ({
+  eve,
+  updateCurrent,
+  current,
+  scrollToTop,
+}) => {
+  const handleShowDetails = async (eve: EventInterface) => {
+    scrollToTop();
+    scroll.scrollToTop();
+    await updateCurrent(eve);
+  };
+
   return (
     <Box
       bgColor='gray.100'
@@ -56,6 +74,7 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent, current }) => {
           <Badge colorScheme='yellow'>Open</Badge>
         )}
       </Box>
+      <ScrollElement name='test1'></ScrollElement>
 
       <Text fontSize={['sm', 'sm', 'sm', 'md', '2xl']} fontWeight='bold'>
         {eve.title}
@@ -155,7 +174,7 @@ const EventListItem: FC<Props> = ({ eve, updateCurrent, current }) => {
             border='1px'
             colorScheme='gray'
             variant='solid'
-            onClick={() => updateCurrent(eve)}
+            onClick={() => handleShowDetails(eve)}
             size='sm'
           >
             Details

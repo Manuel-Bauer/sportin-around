@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "firebase": "^9.8.2",
-    "formik": "^2.2.9"
+    "formik": "^2.2.9",
+    "react-scroll": "^1.8.7"
   }
 }
