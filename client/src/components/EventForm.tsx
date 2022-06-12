@@ -1,3 +1,5 @@
+import * as ReactDOM from 'react-dom/client';
+
 import { FC, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -20,6 +22,8 @@ import {
   DrawerContent,
   DrawerCloseButton,
   useToast,
+  UnorderedList,
+  ListItem,
 } from '@chakra-ui/react';
 import { getFirebase } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
@@ -77,19 +81,33 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
       });
     };
 
-  const renderSuggestions = () =>
-    data.map((suggestion) => {
-      const {
-        place_id,
-        structured_formatting: { main_text, secondary_text },
-      } = suggestion;
+  const renderSuggestions = () => {
+    return (
+      <div style={{ zIndex: '9999' }}>
+        <UnorderedList
+          p={3}
+          styleType='none'
+          position='fixed'
+          background='black'
+          color='white'
+          opacity='1'
+        >
+          {data.map((suggestion) => {
+            const {
+              place_id,
+              structured_formatting: { main_text, secondary_text },
+            } = suggestion;
 
-      return (
-        <li key={place_id} onClick={handleSelect(suggestion)}>
-          <strong>{main_text}</strong> <small>{secondary_text}</small>
-        </li>
-      );
-    });
+            return (
+              <ListItem p={1} key={place_id} onClick={handleSelect(suggestion)}>
+                {main_text}
+              </ListItem>
+            );
+          })}
+        </UnorderedList>
+      </div>
+    );
+  };
 
   const toast = useToast();
 
