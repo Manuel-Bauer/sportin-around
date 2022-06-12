@@ -96,7 +96,7 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
   const formik = useFormik({
     initialValues: {
       title: '',
-      venue: value,
+      // venue: '',
       date: '',
       type: '',
       image: null,
@@ -106,10 +106,10 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
         .required('Title required')
         .min(6, 'Title is too short')
         .max(23, 'Title is too long'),
-      venue: Yup.string()
-        .required('Venue required')
-        .min(6, 'Venue is too short')
-        .max(23, 'Title is too long'),
+      // venue: Yup.string()
+      //   .required('Venue required')
+      //   .min(6, 'Venue is too short')
+      //   .max(23, 'Title is too long'),
       date: Yup.date().required('Date required'),
       type: Yup.string().required('Type required'),
     }),
@@ -126,7 +126,7 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
 
       const newEvent: EventInterface = {
         title: values.title,
-        venue: values.venue,
+        venue: value,
         owner: user,
         date: values.date,
         started: false,
@@ -135,6 +135,8 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
         entries: [],
         image: values.image,
       };
+
+      console.log('newEvent', newEvent);
 
       setDoc(newDoc, newEvent);
 
@@ -148,6 +150,9 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
       });
     },
   });
+
+  console.log(value);
+  console.log(formik.values);
 
   return (
     <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
@@ -174,21 +179,21 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
                   <FormErrorMessage>{formik.errors.title}</FormErrorMessage>
                 </FormControl>
                 <FormControl
-                  isInvalid={
-                    formik.errors.venue && formik.touched.venue ? true : false
-                  }
+                // isInvalid={
+                //   formik.errors.venue && formik.touched.venue ? true : false
+                // }
                 >
                   <FormLabel>Venue</FormLabel>
                   <Input
+                    // {...formik.getFieldProps('venue')}
                     size='sm'
                     placeholder='Enter Venue...'
-                    // {...formik.getFieldProps('venue')}
                     value={value}
                     onChange={handleInput}
                     disabled={!ready}
                   ></Input>
                   {status === 'OK' && <ul>{renderSuggestions()}</ul>}
-                  <FormErrorMessage>{formik.errors.venue}</FormErrorMessage>
+                  {/* <FormErrorMessage>{formik.errors.venue}</FormErrorMessage> */}
                 </FormControl>
 
                 <FormControl
