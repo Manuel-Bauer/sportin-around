@@ -8,6 +8,7 @@ export interface EventInterface {
   completed: boolean;
   type: string;
   entries: UserInterface[];
+  image: string;
 }
 
 export interface MatchInterface {

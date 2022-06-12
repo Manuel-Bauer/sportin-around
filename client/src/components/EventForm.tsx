@@ -44,6 +44,7 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
       venue: '',
       date: '',
       type: '',
+      image: null,
     },
     validationSchema: Yup.object({
       title: Yup.string()
@@ -58,13 +59,7 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
       type: Yup.string().required('Type required'),
     }),
     onSubmit: async (values: any, actions: any) => {
-      // Use server side saving of IDs
-      // Create Result array
-
       const newID = nanoid();
-
-      // Works but you need to specify document name
-      // For now: Client side ID generation
       const newDoc = doc(firestore, `events/${newID}`);
 
       const user = {
@@ -83,6 +78,7 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
         completed: false,
         type: values.type,
         entries: [],
+        image: values.image,
       };
 
       setDoc(newDoc, newEvent);
@@ -116,6 +112,7 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
                 >
                   <FormLabel>Title</FormLabel>
                   <Input
+                    size='sm'
                     placeholder='Enter Title...'
                     {...formik.getFieldProps('title')}
                   ></Input>
@@ -128,6 +125,7 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
                 >
                   <FormLabel>Venue</FormLabel>
                   <Input
+                    size='sm'
                     placeholder='Enter Venue...'
                     {...formik.getFieldProps('venue')}
                   ></Input>
@@ -140,7 +138,11 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
                   }
                 >
                   <FormLabel>Date</FormLabel>
-                  <Input type='date' {...formik.getFieldProps('date')}></Input>
+                  <Input
+                    size='sm'
+                    type='date'
+                    {...formik.getFieldProps('date')}
+                  ></Input>
                   <FormErrorMessage>{formik.errors.date}</FormErrorMessage>
                 </FormControl>
 
@@ -153,12 +155,14 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
                   <RadioGroup>
                     <Stack direction='column'>
                       <Radio
+                        size='sm'
                         {...formik.getFieldProps('type')}
                         value='Single Round-Robin'
                       >
                         Single Round-Robin
                       </Radio>
                       <Radio
+                        size='sm'
                         {...formik.getFieldProps('type')}
                         value='Double Round-Robin'
                       >
@@ -167,6 +171,21 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
                     </Stack>
                   </RadioGroup>
                   <FormErrorMessage>{formik.errors.type}</FormErrorMessage>
+                  <FormControl
+                    isInvalid={
+                      formik.errors.date && formik.touched.date ? true : false
+                    }
+                  >
+                    <FormLabel>Add Image</FormLabel>
+                    <Flex>
+                      <Input
+                        variant='unstyled'
+                        size='sm'
+                        type='file'
+                        {...formik.getFieldProps('image')}
+                      ></Input>
+                    </Flex>
+                  </FormControl>
                 </FormControl>
               </VStack>
               <Flex mt={20} justify='end' w='100%' align='end'>

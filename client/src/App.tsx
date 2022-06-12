@@ -16,6 +16,7 @@ import EventList from './components/EventList';
 import EventDetails from './components/EventDetails';
 import Header from './components/Header';
 import NextEvent from './components/NextEvent';
+import PlacesAutocomplete from './components/PlacesAutocomplete';
 import { FC } from 'react';
 import { EventInterface } from './types/types';
 import theme from './theme';
@@ -27,6 +28,7 @@ import {
   getDocs,
 } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
+import { autocompleteLocation } from './api/geocoding';
 
 const { auth, firestore } = getFirebase();
 
@@ -157,6 +159,7 @@ export const App: FC = () => {
               )}
             </GridItem>
           </Grid>
+          <PlacesAutocomplete />
         </Box>
       )}
     </ChakraProvider>

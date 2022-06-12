@@ -1,7 +1,13 @@
 {
   "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.3.15",
+    "axios": "^0.27.2",
     "firebase": "^9.8.2",
     "formik": "^2.2.9",
-    "react-scroll": "^1.8.7"
+    "react-scroll": "^1.8.7",
+    "use-places-autocomplete": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/googlemaps": "^3.43.3"
   }
 }

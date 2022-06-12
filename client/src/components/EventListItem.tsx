@@ -102,7 +102,7 @@ const EventListItem: FC<Props> = ({
         <Image
           boxSize='60px'
           objectFit='cover'
-          src='https://lifebun.com/wp-content/uploads/2019/06/Cornhole.jpg'
+          src={eve.image}
           alt='Dan Abramov'
         />
       </Box>
