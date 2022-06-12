@@ -83,29 +83,30 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
 
   const renderSuggestions = () => {
     return (
-      <div style={{ zIndex: '9999' }}>
-        <UnorderedList
-          p={3}
-          styleType='none'
-          position='fixed'
-          background='black'
-          color='white'
-          opacity='1'
-        >
-          {data.map((suggestion) => {
-            const {
-              place_id,
-              structured_formatting: { main_text, secondary_text },
-            } = suggestion;
+      <UnorderedList
+        p={3}
+        minW='200px'
+        styleType='none'
+        position='fixed'
+        top='210px'
+        left='290px'
+        background='gray.50'
+        color='black'
+        opacity='1'
+      >
+        {data.map((suggestion) => {
+          const {
+            place_id,
+            structured_formatting: { main_text, secondary_text },
+          } = suggestion;
 
-            return (
-              <ListItem p={1} key={place_id} onClick={handleSelect(suggestion)}>
-                {main_text}
-              </ListItem>
-            );
-          })}
-        </UnorderedList>
-      </div>
+          return (
+            <ListItem p={1} key={place_id} onClick={handleSelect(suggestion)}>
+              {main_text}-{secondary_text}
+            </ListItem>
+          );
+        })}
+      </UnorderedList>
     );
   };
 
@@ -114,7 +115,6 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
   const formik = useFormik({
     initialValues: {
       title: '',
-      // venue: '',
       date: '',
       type: '',
       image: null,
@@ -124,10 +124,6 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
         .required('Title required')
         .min(6, 'Title is too short')
         .max(23, 'Title is too long'),
-      // venue: Yup.string()
-      //   .required('Venue required')
-      //   .min(6, 'Venue is too short')
-      //   .max(23, 'Title is too long'),
       date: Yup.date().required('Date required'),
       type: Yup.string().required('Type required'),
     }),
@@ -154,8 +150,6 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
         image: values.image,
       };
 
-      console.log('newEvent', newEvent);
-
       setDoc(newDoc, newEvent);
 
       actions.resetForm();
@@ -169,11 +163,8 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
     },
   });
 
-  console.log(value);
-  console.log(formik.values);
-
   return (
-    <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
+    <Drawer isOpen={isOpen} placement='left' onClose={onClose}>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
