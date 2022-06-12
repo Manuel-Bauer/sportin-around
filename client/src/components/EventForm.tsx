@@ -24,6 +24,10 @@ import {
 import { getFirebase } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { nanoid } from 'nanoid';
+import usePlacesAutocomplete, {
+  getGeocode,
+  getLatLng,
+} from 'use-places-autocomplete';
 
 import { EventInterface } from '../types/types';
 
@@ -36,12 +40,63 @@ interface Props {
 }
 
 const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
+  const {
+    ready,
+    value,
+    suggestions: { status, data },
+    setValue,
+    clearSuggestions,
+  } = usePlacesAutocomplete({
+    requestOptions: {
+      /* Define search scope here */
+    },
+    debounce: 300,
+  });
+
+  const handleInput = (e: any) => {
+    // Update the keyword of the input element
+    setValue(e.target.value);
+  };
+
+  const handleSelect =
+    ({ description }: any) =>
+    () => {
+      // When user selects a place, we can replace the keyword without request data from API
+      // by setting the second parameter to "false"
+      setValue(description, false);
+      clearSuggestions();
+
+      // Get latitude and longitude via utility functions
+      getGeocode({ address: description }).then((results) => {
+        try {
+          const { lat, lng } = getLatLng(results[0]);
+          console.log('📍 Coordinates: ', { lat, lng });
+        } catch (error) {
+          console.log('😱 Error: ', error);
+        }
+      });
+    };
+
+  const renderSuggestions = () =>
+    data.map((suggestion) => {
+      const {
+        place_id,
+        structured_formatting: { main_text, secondary_text },
+      } = suggestion;
+
+      return (
+        <li key={place_id} onClick={handleSelect(suggestion)}>
+          <strong>{main_text}</strong> <small>{secondary_text}</small>
+        </li>
+      );
+    });
+
   const toast = useToast();
 
   const formik = useFormik({
     initialValues: {
       title: '',
-      venue: '',
+      venue: value,
       date: '',
       type: '',
       image: null,
@@ -127,8 +182,12 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
                   <Input
                     size='sm'
                     placeholder='Enter Venue...'
-                    {...formik.getFieldProps('venue')}
+                    // {...formik.getFieldProps('venue')}
+                    value={value}
+                    onChange={handleInput}
+                    disabled={!ready}
                   ></Input>
+                  {status === 'OK' && <ul>{renderSuggestions()}</ul>}
                   <FormErrorMessage>{formik.errors.venue}</FormErrorMessage>
                 </FormControl>
 
