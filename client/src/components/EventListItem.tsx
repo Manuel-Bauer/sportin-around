@@ -15,6 +15,8 @@ import {
   TagLabel,
   TagCloseButton,
   useToast,
+  Image,
+  Flex,
 } from '@chakra-ui/react';
 import { ExternalLinkIcon, SmallAddIcon, CheckIcon } from '@chakra-ui/icons';
 import { addPlayer, createSchedule, deleteEntry } from '../utils/firestore';
@@ -75,6 +77,16 @@ const EventListItem: FC<Props> = ({
     await updateCurrent(eve);
   };
 
+  const handleStartTournament = async (eve: EventInterface) => {
+    toast({
+      title: `${eve.title} has started. See schedule in the tournament details.`,
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+    });
+    createSchedule(eve);
+  };
+
   return (
     <Box
       bgColor='gray.100'
@@ -84,8 +96,17 @@ const EventListItem: FC<Props> = ({
       position='relative'
       border={eve.eventId === current?.eve?.eventId ? '2px' : 'none'}
       borderColor='twitter.800'
+      z-index='1'
     >
-      <Box position='absolute' top='5px' right='5px'>
+      <Box position='absolute' shadow='base' top={2} right={2}>
+        <Image
+          boxSize='60px'
+          objectFit='cover'
+          src='https://lifebun.com/wp-content/uploads/2019/06/Cornhole.jpg'
+          alt='Dan Abramov'
+        />
+      </Box>
+      <Box position='absolute' opacity='0.7' top={2} right={3}>
         {eve.completed && (
           <Badge backgroundColor='gray.800' color='white'>
             Done
@@ -97,9 +118,11 @@ const EventListItem: FC<Props> = ({
         )}
       </Box>
 
-      <Text fontSize={['sm', 'sm', 'sm', 'md', '2xl']} fontWeight='bold'>
-        {eve.title}
-      </Text>
+      <Flex>
+        <Text fontSize={['sm', 'sm', 'sm', 'md', '2xl']} fontWeight='bold'>
+          {eve.title}
+        </Text>
+      </Flex>
 
       <Text fontSize={['xs', 'xs', 'xs', 'xs', 'md']}>{eve.venue}</Text>
       <Text fontSize={['xs', 'xs', 'xs', 'xs', 'md']}>
@@ -228,7 +251,7 @@ const EventListItem: FC<Props> = ({
             buttonGroupStyles={{ size: 'sm' }}
             buttonStyles={{
               colorScheme: 'twitter',
-              onClick: () => createSchedule(eve),
+              onClick: () => handleStartTournament(eve),
             }}
             buttonText='Start Tournament'
           />

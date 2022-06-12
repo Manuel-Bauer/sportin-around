@@ -14,6 +14,7 @@ import EventForm from './components/EventForm';
 import EventList from './components/EventList';
 import EventDetails from './components/EventDetails';
 import Header from './components/Header';
+import NextEvent from './components/NextEvent';
 import { FC } from 'react';
 import { EventInterface } from './types/types';
 import theme from './theme';
@@ -135,6 +136,9 @@ export const App: FC = () => {
                 />
               </GridItem>
               <GridItem colStart={4} colEnd={13}>
+                {!current.eve && eves?.length > 0 && (
+                  <NextEvent eve={eves[0]} />
+                )}
                 {current.eve && (
                   <EventDetails
                     currentEvent={current.eve}
