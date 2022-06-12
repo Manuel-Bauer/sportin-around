@@ -44,17 +44,16 @@ export const App: FC = () => {
   const toast = useToast();
 
   // Set current User on auth change
-
-  useEffect(() => {
-    if (!showEventForm && preventInitialRender > 0) {
-      toast({
-        title: 'Tournament created.',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  }, [showEventForm]);
+  // useEffect(() => {
+  //   if (!showEventForm && preventInitialRender > 0) {
+  //     toast({
+  //       title: 'Tournament created.',
+  //       status: 'success',
+  //       duration: 5000,
+  //       isClosable: true,
+  //     });
+  //   }
+  // }, [showEventForm]);
 
   console.log(showEventForm);
 
@@ -120,14 +119,6 @@ export const App: FC = () => {
       {currentUser && (
         <Box>
           <Header setAuthed={setAuthed} currentUser={currentUser} />
-
-          {/* {showEventForm && (
-            <ModalComp
-              show={showEventForm}
-              handleClose={() => setShowEventForm(false)}
-              body={<EventForm />}
-            />
-          )} */}
           <EventForm onClose={onClose} isOpen={isOpen} onOpen={onOpen} />
           <Grid
             style={{ zIndex: '0' }}

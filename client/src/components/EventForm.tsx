@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import {
   VStack,
   Box,
-  Heading,
+  Flex,
   FormLabel,
   FormControl,
   Input,
@@ -15,12 +15,11 @@ import {
   RadioGroup,
   Drawer,
   DrawerBody,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
-  useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import { getFirebase } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
@@ -37,7 +36,7 @@ interface Props {
 }
 
 const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
-  const btnRef = useRef();
+  const toast = useToast();
 
   const formik = useFormik({
     initialValues: {
@@ -89,16 +88,18 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
       setDoc(newDoc, newEvent);
 
       actions.resetForm();
+
+      toast({
+        title: 'Tournament created.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
     },
   });
 
   return (
-    <Drawer
-      isOpen={isOpen}
-      placement='right'
-      onClose={onClose}
-      // finalFocusRef={btnRef}
-    >
+    <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
@@ -107,12 +108,7 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
         <DrawerBody>
           <Box>
             <form onSubmit={formik.handleSubmit}>
-              <VStack
-              // mx='auto'
-              // w={{ base: '90%', md: 300 }}
-              // justifyContent='center'
-              // h='100vh'
-              >
+              <VStack>
                 <FormControl
                   isInvalid={
                     formik.errors.title && formik.touched.title ? true : false
@@ -172,20 +168,28 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
                   </RadioGroup>
                   <FormErrorMessage>{formik.errors.type}</FormErrorMessage>
                 </FormControl>
-
-                <Button type='submit' variant='outline'>
+              </VStack>
+              <Flex mt={20} justify='end' w='100%' align='end'>
+                <Button
+                  variant='outline'
+                  colorScheme='twitter'
+                  mr={3}
+                  onClick={onClose}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={onClose}
+                  type='submit'
+                  colorScheme='twitter'
+                  variant='solid'
+                >
                   Create Event
                 </Button>
-              </VStack>
+              </Flex>
             </form>
           </Box>
         </DrawerBody>
-        <DrawerFooter>
-          <Button variant='outline' mr={3} onClick={onClose}>
-            Cancel
-          </Button>
-          <Button colorScheme='blue'>Save</Button>
-        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   );
