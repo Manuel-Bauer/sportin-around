@@ -7,6 +7,7 @@ import {
   GridItem,
   Box,
   useToast,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import SignIn from './components/SignIn';
@@ -38,6 +39,8 @@ export const App: FC = () => {
   const [current, setCurrent] = useState<any>({});
   const [preventInitialRender, setPreventInitialRender] = useState(0);
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const toast = useToast();
 
   // Set current User on auth change
@@ -52,6 +55,8 @@ export const App: FC = () => {
       });
     }
   }, [showEventForm]);
+
+  console.log(showEventForm);
 
   // Load all existing Events on initial render
   useEffect(() => {
@@ -102,6 +107,13 @@ export const App: FC = () => {
     setCurrent({ matches, eve, standings });
   };
 
+  const handleCreateTournament = () => {
+    setShowEventForm((prev) => {
+      return !prev;
+    });
+    onOpen();
+  };
+
   return (
     <ChakraProvider theme={theme}>
       {!currentUser && <SignIn setAuthed={setAuthed} />}
@@ -109,47 +121,51 @@ export const App: FC = () => {
         <Box>
           <Header setAuthed={setAuthed} currentUser={currentUser} />
 
-          {showEventForm && <EventForm setShowEventForm={setShowEventForm} />}
+          {/* {showEventForm && (
+            <ModalComp
+              show={showEventForm}
+              handleClose={() => setShowEventForm(false)}
+              body={<EventForm />}
+            />
+          )} */}
+          <EventForm onClose={onClose} isOpen={isOpen} onOpen={onOpen} />
+          <Grid
+            style={{ zIndex: '0' }}
+            m='20px'
+            templateColumns='repeat(12, 1fr)'
+            gap='20px'
+          >
+            <GridItem colSpan={3}>
+              <Button
+                leftIcon={<AddIcon />}
+                backgroundColor='gray.300'
+                color='black'
+                size='md'
+                w='100%'
+                mb={5}
+                onClick={() => handleCreateTournament()}
+              >
+                Create Tournament
+              </Button>
 
-          {!showEventForm && (
-            <Grid m='20px' templateColumns='repeat(12, 1fr)' gap='20px'>
-              <GridItem colSpan={3}>
-                <Button
-                  leftIcon={<AddIcon />}
-                  backgroundColor='gray.300'
-                  color='black'
-                  size='md'
-                  w='100%'
-                  mb={5}
-                  onClick={() => {
-                    setShowEventForm((prev) => {
-                      return !prev;
-                    });
-                  }}
-                >
-                  Create Tournament
-                </Button>
-                <EventList
-                  eves={eves}
-                  current={current}
+              <EventList
+                eves={eves}
+                current={current}
+                updateCurrent={updateCurrent}
+              />
+            </GridItem>
+            <GridItem colStart={4} colEnd={13}>
+              {!current.eve && eves?.length > 0 && <NextEvent eve={eves[0]} />}
+              {current.eve && (
+                <EventDetails
+                  currentEvent={current.eve}
+                  currentMatches={current.matches}
+                  currentStandings={current.standings}
                   updateCurrent={updateCurrent}
                 />
-              </GridItem>
-              <GridItem colStart={4} colEnd={13}>
-                {!current.eve && eves?.length > 0 && (
-                  <NextEvent eve={eves[0]} />
-                )}
-                {current.eve && (
-                  <EventDetails
-                    currentEvent={current.eve}
-                    currentMatches={current.matches}
-                    currentStandings={current.standings}
-                    updateCurrent={updateCurrent}
-                  />
-                )}
-              </GridItem>
-            </Grid>
-          )}
+              )}
+            </GridItem>
+          </Grid>
         </Box>
       )}
     </ChakraProvider>
