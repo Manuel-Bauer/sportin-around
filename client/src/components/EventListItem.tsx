@@ -57,7 +57,7 @@ const EventListItem: FC<Props> = ({
     toast({
       title: `Signed up for ${eve.title}`,
       status: 'success',
-      duration: 5000,
+      duration: 3000,
       isClosable: true,
     });
   };
@@ -70,7 +70,7 @@ const EventListItem: FC<Props> = ({
     toast({
       title: `Removed from ${eve.title}`,
       status: 'warning',
-      duration: 5000,
+      duration: 3000,
       isClosable: true,
     });
   };
@@ -85,7 +85,7 @@ const EventListItem: FC<Props> = ({
     toast({
       title: `${eve.title} has started. See schedule in the tournament details.`,
       status: 'success',
-      duration: 5000,
+      duration: 3000,
       isClosable: true,
     });
     createSchedule(eve);
@@ -146,7 +146,7 @@ const EventListItem: FC<Props> = ({
           mr={2}
         />
         <TagLabel>
-          {isUserSignedUp(eve, auth.currentUser.uid)
+          {auth.currentUser.uid === eve.owner.uid
             ? 'You are Admin'
             : eve.owner.username}
         </TagLabel>
@@ -222,7 +222,7 @@ const EventListItem: FC<Props> = ({
             variant='solid'
             border='1px'
           >
-            Add me
+            Add Me
           </Button>
         )}
 

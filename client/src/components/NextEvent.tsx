@@ -33,11 +33,20 @@ const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
   const toast = useToast();
 
   const handleAddMe = async (eventId: string | undefined) => {
+    if (eve.entries.map((entry) => entry.uid).includes(auth.currentUser.uid)) {
+      toast({
+        title: `Already signed up for ${eve.title}`,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
     await addPlayer(eventId);
     toast({
       title: `Signed up for ${eve.title}`,
       status: 'success',
-      duration: 5000,
+      duration: 3000,
       isClosable: true,
     });
   };
@@ -46,7 +55,7 @@ const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
     toast({
       title: `${eve.title} has started. See schedule in the tournament details.`,
       status: 'success',
-      duration: 5000,
+      duration: 3000,
       isClosable: true,
     });
     createSchedule(eve);
@@ -132,7 +141,7 @@ const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
             name={eve.owner.username}
           />
           <TagLabel fontWeight='bold' fontSize='lg' paddingX={1}>
-            {isUserSignedUp(eve, auth.currentUser.uid)
+            {auth.currentUser.uid === eve.owner.uid
               ? 'You are Admin'
               : eve.owner.username}
           </TagLabel>
@@ -150,7 +159,13 @@ const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
                 ml={-2}
                 mr={2}
               />
-              <TagLabel fontStyle='italic' paddingX={1}>
+              <TagLabel
+                fontSize='md'
+                fontWeight={
+                  entry.uid === auth.currentUser.uid ? 'bold' : 'none'
+                }
+                paddingX={1}
+              >
                 {entry.username}
               </TagLabel>
               {!eve.started && (
@@ -173,11 +188,11 @@ const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
             variant='solid'
             border='1px'
           >
-            Add me
+            Add Me
           </Button>
         )}
 
-        {!eve.started && isUserSignedUp(eve, auth.currentUser.uid) && (
+        {!eve.started && eve.owner.uid === auth.currentUser.uid && (
           <WalkthroughPopover
             popoverStyles={{ placement: 'right', closeOnBlur: false }}
             triggerText='Start'
