@@ -5,19 +5,24 @@ import {
   StandingsInterface,
 } from '../types/types';
 import { Box, Text, Grid, GridItem, Flex, IconButton } from '@chakra-ui/react';
-import { ChevronLeftIcon, ChevronRightIcon, LockIcon } from '@chakra-ui/icons';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  LockIcon,
+  CloseIcon,
+} from '@chakra-ui/icons';
 import { nanoid } from 'nanoid';
 import Match from '../components/Match';
 import Standings from './Standings';
 import { saveTournamentStandings } from '../utils/firestore';
 import WalkthroughPopover from './WalkthroughPopover';
 
-
 interface Props {
   currentEvent: EventInterface;
   currentMatches: MatchInterface[];
   currentStandings: StandingsInterface;
   updateCurrent: Function;
+  setShowEventDetails: Function;
 }
 
 const EventDetails: FC<Props> = ({
@@ -25,6 +30,7 @@ const EventDetails: FC<Props> = ({
   currentMatches,
   currentStandings,
   updateCurrent,
+  setShowEventDetails,
 }) => {
   const [matchday, setMatchday] = useState(1);
   const [maxMatchday, setMaxMatchday] = useState(0);
@@ -49,7 +55,16 @@ const EventDetails: FC<Props> = ({
   };
 
   return (
-    <Box backgroundColor='white' boxShadow='sm'>
+    <Box backgroundColor='white' boxShadow='sm' position='relative'>
+      <Box
+        onClick={() => setShowEventDetails(false)}
+        position='absolute'
+        bottom={3}
+        left={3}
+      >
+        <CloseIcon color='gray' />
+      </Box>
+
       <Grid templateColumns='repeat(8, 1fr)' gap='20px'>
         <GridItem colSpan={4}>
           <Flex

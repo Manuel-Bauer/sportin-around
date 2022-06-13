@@ -70,7 +70,7 @@ const NextEvent: FC<Props> = ({ eve }) => {
         }
       />
 
-      <Text fontSize='3xl' color='black' fontWeight='bold'>
+      <Text mb={2} fontSize='3xl' color='black' fontWeight='bold'>
         {eve.title}
       </Text>
       {eve.completed && (

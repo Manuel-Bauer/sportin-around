@@ -33,12 +33,16 @@ export const App: FC = () => {
   const [authed, setAuthed] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [showEventForm, setShowEventForm] = useState(false);
+  const [showEventDetails, setShowEventDetails] = useState(false);
+  const [showEventPreview, setShowEventPreview] = useState(true);
   // If I not use any it says: Argument of type 'DocumentData[]' is not assignable to parameter of type 'SetStateAction<undefined>'. How to deal with that within typescript react?
   const [eves, setEves] = useState<any>();
   const [current, setCurrent] = useState<any>({});
   const [preventInitialRender, setPreventInitialRender] = useState(0);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  console.log(showEventDetails);
 
   // Load all existing Events on initial render
   useEffect(() => {
@@ -87,6 +91,7 @@ export const App: FC = () => {
     });
 
     setCurrent({ matches, eve, standings });
+    setShowEventDetails(true);
   };
 
   const handleCreateTournament = () => {
@@ -129,14 +134,16 @@ export const App: FC = () => {
               />
             </GridItem>
             <GridItem colStart={4} colEnd={13}>
-              {!current.eve && eves?.length > 0 && <NextEvent eve={eves[0]} />}
-              {current.eve && (
+              {showEventDetails ? (
                 <EventDetails
                   currentEvent={current.eve}
                   currentMatches={current.matches}
                   currentStandings={current.standings}
                   updateCurrent={updateCurrent}
+                  setShowEventDetails={setShowEventDetails}
                 />
+              ) : (
+                eves && eves?.length > 0 && <NextEvent eve={eves[0]} />
               )}
             </GridItem>
           </Grid>
