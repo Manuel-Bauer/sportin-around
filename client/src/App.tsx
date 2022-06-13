@@ -42,8 +42,6 @@ export const App: FC = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  console.log(showEventDetails);
-
   // Load all existing Events on initial render
   useEffect(() => {
     getAllEvents();
@@ -143,7 +141,10 @@ export const App: FC = () => {
                   setShowEventDetails={setShowEventDetails}
                 />
               ) : (
-                eves && eves?.length > 0 && <NextEvent eve={eves[0]} />
+                eves &&
+                eves?.length > 0 && (
+                  <NextEvent updateCurrent={updateCurrent} eve={eves[0]} />
+                )
               )}
             </GridItem>
           </Grid>

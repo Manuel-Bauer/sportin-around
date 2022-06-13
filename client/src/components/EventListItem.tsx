@@ -229,7 +229,7 @@ const EventListItem: FC<Props> = ({
             onClick={() => handleShowDetails(eve)}
             size='sm'
           >
-            Details
+            Schedule
           </Button>
         )}
         {!eve.started && eve.owner.uid === auth.currentUser.uid && (

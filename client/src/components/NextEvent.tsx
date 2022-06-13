@@ -12,7 +12,7 @@ import {
   Badge,
   Image,
 } from '@chakra-ui/react';
-import { CheckIcon, PlusSquareIcon } from '@chakra-ui/icons';
+import { CheckIcon, PlusSquareIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 import moment from 'moment';
 import { addPlayer, createSchedule } from '../utils/firestore';
 import WalkthroughPopover from './WalkthroughPopover';
@@ -25,9 +25,10 @@ const { auth } = getFirebase();
 
 interface Props {
   eve: EventInterface;
+  updateCurrent: Function;
 }
 
-const NextEvent: FC<Props> = ({ eve }) => {
+const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
   const toast = useToast();
 
   const handleAddMe = async (eventId: string | undefined) => {
@@ -48,6 +49,10 @@ const NextEvent: FC<Props> = ({ eve }) => {
       isClosable: true,
     });
     createSchedule(eve);
+  };
+
+  const handleShowDetails = async (eve: EventInterface) => {
+    await updateCurrent(eve);
   };
 
   return (
@@ -140,48 +145,64 @@ const NextEvent: FC<Props> = ({ eve }) => {
       </Flex>
 
       <Flex mt={5} gap={3}>
-        <Button
-          leftIcon={<PlusSquareIcon />}
-          colorScheme='twitter'
-          size='sm'
-          onClick={() => handleAddMe(eve.eventId)}
-          variant='solid'
-          border='1px'
-        >
-          Add me
-        </Button>
+        {!eve.started && (
+          <Button
+            leftIcon={<PlusSquareIcon />}
+            colorScheme='twitter'
+            size='sm'
+            onClick={() => handleAddMe(eve.eventId)}
+            variant='solid'
+            border='1px'
+          >
+            Add me
+          </Button>
+        )}
 
-        <WalkthroughPopover
-          popoverStyles={{ placement: 'right', closeOnBlur: false }}
-          triggerText='Start'
-          triggerStyles={{
-            leftIcon: <CheckIcon />,
-            border: '1px',
-            size: 'sm',
-            colorScheme: 'twitter',
-          }}
-          popoverContentStyles={{
-            color: 'white',
-            bg: 'twitter.800',
-            borderColor: 'blue.800',
-          }}
-          popoverHeaderStyles={{ pt: '4px', fontWeight: 'bold', border: '0' }}
-          popoverHeaderText='Start the Tournament'
-          popoverBodyText="After the tournament has been started, the schedule is created and users won't be able to sign up anymore."
-          popoverFooterStyles={{
-            border: '0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            pb: '4px',
-          }}
-          buttonGroupStyles={{ size: 'sm' }}
-          buttonStyles={{
-            colorScheme: 'twitter',
-            onClick: () => handleStartTournament(eve),
-          }}
-          buttonText='Start Tournament'
-        />
+        {!eve.started && isUserSignedUp(eve, auth.currentUser.uid) && (
+          <WalkthroughPopover
+            popoverStyles={{ placement: 'right', closeOnBlur: false }}
+            triggerText='Start'
+            triggerStyles={{
+              leftIcon: <CheckIcon />,
+              border: '1px',
+              size: 'sm',
+              colorScheme: 'twitter',
+            }}
+            popoverContentStyles={{
+              color: 'white',
+              bg: 'twitter.800',
+              borderColor: 'blue.800',
+            }}
+            popoverHeaderStyles={{ pt: '4px', fontWeight: 'bold', border: '0' }}
+            popoverHeaderText='Start the Tournament'
+            popoverBodyText="After the tournament has been started, the schedule is created and users won't be able to sign up anymore."
+            popoverFooterStyles={{
+              border: '0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              pb: '4px',
+            }}
+            buttonGroupStyles={{ size: 'sm' }}
+            buttonStyles={{
+              colorScheme: 'twitter',
+              onClick: () => handleStartTournament(eve),
+            }}
+            buttonText='Start Tournament'
+          />
+        )}
+        {eve.started && (
+          <Button
+            leftIcon={<ExternalLinkIcon />}
+            border='1px'
+            colorScheme='twitter'
+            variant='solid'
+            onClick={() => handleShowDetails(eve)}
+            size='sm'
+          >
+            Schedule
+          </Button>
+        )}
       </Flex>
     </Box>
   );
