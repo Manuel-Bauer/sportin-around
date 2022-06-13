@@ -7,7 +7,7 @@ import {
 import EventListItem from './EventListItem';
 import { nanoid } from 'nanoid';
 import { Box } from '@chakra-ui/react';
-import { sortEventList } from '../utils/helpers';
+import { sortEventList, sortEventListDate } from '../utils/helpers';
 
 import './styles.css';
 
@@ -19,10 +19,20 @@ interface Props {
     standings: StandingsInterface;
   };
   updateCurrent: Function;
+  showEventDetails: boolean;
 }
 
-const EventList: FC<Props> = ({ eves, updateCurrent, current }) => {
-  const eventList = current.eve ? sortEventList(current.eve, eves) : eves;
+const EventList: FC<Props> = ({
+  eves,
+  updateCurrent,
+  current,
+  showEventDetails,
+}) => {
+  const eventList = showEventDetails
+    ? eves && sortEventList(current.eve, eves)
+    : eves && sortEventListDate(eves);
+
+  console.log(eventList);
 
   const topRef = useRef<any>();
 
@@ -37,7 +47,7 @@ const EventList: FC<Props> = ({ eves, updateCurrent, current }) => {
     >
       <Box ref={topRef} maxH='100vh'>
         {eves &&
-          eventList.map((eve, index) => {
+          eventList.map((eve: any, index: any) => {
             return (
               <EventListItem
                 first={index === 0 ? true : false}
@@ -46,6 +56,7 @@ const EventList: FC<Props> = ({ eves, updateCurrent, current }) => {
                 updateCurrent={updateCurrent}
                 key={nanoid()}
                 scrollSidebar={scrollSidebar}
+                showEventDetails={showEventDetails}
               />
             );
           })}

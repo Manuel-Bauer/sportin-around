@@ -14,13 +14,21 @@ export const sortStandings = (
   });
 };
 
+export const sortEventListDate = (eventList: any) => {
+  return eventList.sort((a: any, b: any) => {
+    return new Date(a.date).valueOf() - new Date(b.date).valueOf();
+  });
+};
+
 export const sortEventList = (
   currentEvent: EventInterface,
   eventList: EventInterface[]
 ) => {
   return [
     currentEvent,
-    ...eventList.filter((eve) => eve.eventId !== currentEvent.eventId),
+    ...sortEventListDate(
+      eventList.filter((eve) => eve.eventId !== currentEvent.eventId)
+    ),
   ];
 };
 

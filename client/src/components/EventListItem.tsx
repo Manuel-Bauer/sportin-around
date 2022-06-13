@@ -40,6 +40,7 @@ interface Props {
   };
   scrollSidebar: Function;
   first: boolean;
+  showEventDetails: boolean;
 }
 
 const EventListItem: FC<Props> = ({
@@ -47,6 +48,7 @@ const EventListItem: FC<Props> = ({
   updateCurrent,
   current,
   scrollSidebar,
+  showEventDetails,
 }) => {
   const toast = useToast();
 
@@ -96,7 +98,11 @@ const EventListItem: FC<Props> = ({
       mb={3}
       p={2}
       position='relative'
-      border={eve.eventId === current?.eve?.eventId ? '2px' : 'none'}
+      border={
+        eve.eventId === current?.eve?.eventId && showEventDetails
+          ? '2px'
+          : 'none'
+      }
       borderColor='twitter.800'
       z-index='1'
     >

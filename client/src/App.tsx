@@ -26,6 +26,7 @@ import {
   getDocs,
 } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
+import { sortEventListDate } from './utils/helpers';
 
 const { auth, firestore } = getFirebase();
 
@@ -37,6 +38,7 @@ export const App: FC = () => {
   const [showEventPreview, setShowEventPreview] = useState(true);
   // If I not use any it says: Argument of type 'DocumentData[]' is not assignable to parameter of type 'SetStateAction<undefined>'. How to deal with that within typescript react?
   const [eves, setEves] = useState<any>();
+  const [nextEvent, setNextEvent] = useState<any>();
   const [current, setCurrent] = useState<any>({});
   const [preventInitialRender, setPreventInitialRender] = useState(0);
 
@@ -55,15 +57,18 @@ export const App: FC = () => {
   const getAllEvents = () => {
     const eventsCol = collection(firestore, 'events');
     onSnapshot(eventsCol, (snapshot) => {
-      const data = snapshot.docs.map((d) => {
+      const data = snapshot.docs.map((d: any) => {
         return {
           ...d.data(),
           eventId: d.id,
         };
       });
       setEves(data);
+      setNextEvent(sortEventListDate(data)[0]);
     });
   };
+
+  console.log(eves);
 
   const updateCurrent = async (eve: EventInterface) => {
     const matchesCol = collection(firestore, 'matches');
@@ -129,6 +134,7 @@ export const App: FC = () => {
                 eves={eves}
                 current={current}
                 updateCurrent={updateCurrent}
+                showEventDetails={showEventDetails}
               />
             </GridItem>
             <GridItem colStart={4} colEnd={13}>
@@ -143,7 +149,7 @@ export const App: FC = () => {
               ) : (
                 eves &&
                 eves?.length > 0 && (
-                  <NextEvent updateCurrent={updateCurrent} eve={eves[0]} />
+                  <NextEvent updateCurrent={updateCurrent} eve={nextEvent} />
                 )
               )}
             </GridItem>
