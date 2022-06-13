@@ -18,7 +18,7 @@ import {
   Image,
   Flex,
 } from '@chakra-ui/react';
-import { ExternalLinkIcon, SmallAddIcon, CheckIcon } from '@chakra-ui/icons';
+import { ExternalLinkIcon, CheckIcon, PlusSquareIcon } from '@chakra-ui/icons';
 import { addPlayer, createSchedule, deleteEntry } from '../utils/firestore';
 import { isUserSignedUp } from '../utils/helpers';
 import { getFirebase } from '../firebase';
@@ -98,15 +98,10 @@ const EventListItem: FC<Props> = ({
       borderColor='twitter.800'
       z-index='1'
     >
-      <Box position='absolute' shadow='base' top={2} right={2}>
-        <Image
-          boxSize='60px'
-          objectFit='cover'
-          src={eve.image}
-          alt='Dan Abramov'
-        />
+      <Box position='absolute' shadow='base' bottom={0} right={0}>
+       
       </Box>
-      <Box position='absolute' opacity='0.7' top={2} right={3}>
+      <Box position='absolute' top={1} right={1}>
         {eve.completed && (
           <Badge backgroundColor='gray.800' color='white'>
             Done
@@ -134,7 +129,7 @@ const EventListItem: FC<Props> = ({
           src={eve.owner.avatar}
           size='xs'
           name={eve.owner.username}
-          ml={-1}
+          ml={-2}
           mr={2}
         />
         <TagLabel>
@@ -143,6 +138,12 @@ const EventListItem: FC<Props> = ({
             : eve.owner.username}
         </TagLabel>
       </Tag>
+
+      {eve.entries.length === 0 && (
+        <Text mt={2} fontSize='xs' fontStyle='italic'>
+          No entries yet.
+        </Text>
+      )}
 
       <Box mt={2}>
         {eve.entries.map((entry: any) => {
@@ -198,12 +199,12 @@ const EventListItem: FC<Props> = ({
         })}
       </Box>
 
-      <Stack mt={4} direction='row' spacing={4} align='left'>
-        {!eve.started && !isUserSignedUp(eve, auth.currentUser.uid) && (
+      <Stack mt={4} direction='row' spacing={2} align='left'>
+        {!eve.started && (
           <Button
-            leftIcon={<SmallAddIcon />}
-            colorScheme='gray'
-            size='sm'
+            leftIcon={<PlusSquareIcon />}
+            colorScheme='twitter'
+            size='xs'
             onClick={() => handleAddMe(eve.eventId)}
             variant='solid'
             border='1px'
@@ -216,7 +217,7 @@ const EventListItem: FC<Props> = ({
           <Button
             leftIcon={<ExternalLinkIcon />}
             border='1px'
-            colorScheme='gray'
+            colorScheme='twitter'
             variant='solid'
             onClick={() => handleShowDetails(eve)}
             size='sm'
@@ -231,7 +232,8 @@ const EventListItem: FC<Props> = ({
             triggerStyles={{
               leftIcon: <CheckIcon />,
               border: '1px',
-              size: 'sm',
+              size: 'xs',
+              colorScheme: 'twitter',
             }}
             popoverContentStyles={{
               color: 'white',

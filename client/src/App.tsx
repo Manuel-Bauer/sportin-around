@@ -141,7 +141,6 @@ export const App: FC = () => {
               )}
             </GridItem>
           </Grid>
-          <PlacesAutocomplete />
         </Box>
       )}
     </ChakraProvider>

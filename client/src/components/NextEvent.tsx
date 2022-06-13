@@ -9,11 +9,15 @@ import {
   TagLabel,
   Button,
   useToast,
+  Badge,
+  Image,
 } from '@chakra-ui/react';
 import { SmallAddIcon, CheckIcon } from '@chakra-ui/icons';
 import moment from 'moment';
 import { addPlayer, createSchedule } from '../utils/firestore';
 import WalkthroughPopover from './WalkthroughPopover';
+import pin from '../assets/pin.svg';
+import clock from '../assets/clock.svg';
 
 interface Props {
   eve: EventInterface;
@@ -43,15 +47,53 @@ const NextEvent: FC<Props> = ({ eve }) => {
   };
 
   return (
-    <Box backgroundColor='gray.50' px={5} shadow='base'>
-      <Text fontSize='3xl' fontStyle='italic' color='black' fontWeight='bold'>
-        Upcoming Tournament
-      </Text>
-      <Flex align='center' gap={10}>
-        <Text mt={5} fontSize='3xl' color='black' fontWeight='bold'>
-          {eve.title}
-        </Text>
+    <Box backgroundColor='gray.50' px={5} shadow='base' position='relative'>
+      <Image
+        position='absolute'
+        top={0}
+        right={0}
+        boxSize='135px'
+        objectFit='cover'
+        src={
+          eve.image ||
+          'https://img.freepik.com/free-vector/tournament-sports-league-logo-emblem_1366-202.jpg?w=2000'
+        }
+      />
 
+      <Text fontSize='3xl' fontStyle='italic' color='black' fontWeight='bold'>
+        Upcoming
+      </Text>
+
+      <Text mt={5} fontSize='3xl' color='black' fontWeight='bold'>
+        {eve.title}
+      </Text>
+      {eve.completed && (
+        <Badge backgroundColor='gray.800' color='white' size='lg'>
+          Done
+        </Badge>
+      )}
+      {eve.started && !eve.completed && <Badge colorScheme='green'>On</Badge>}
+      {!eve.started && !eve.completed && (
+        <Badge colorScheme='yellow' fontSize='lg'>
+          Open for registration
+        </Badge>
+      )}
+
+      <Flex mt={3} alignItems='center' gap={2}>
+        <Image src={pin} boxSize='25px'></Image>
+        <Text fontSize='lg' color='black'>
+          {eve.venue}
+        </Text>
+      </Flex>
+
+      <Flex gap={2} alignItems='center' mt={1}>
+        <Image src={clock} boxSize='25px'></Image>
+        <Text fontSize='lg' color='black'>
+          {moment(eve.date).format('YYYY-MM-DD')}
+        </Text>
+      </Flex>
+
+      <Flex w='100%'>
         <Tag mt={5} size='md' colorScheme='purple' borderRadius='full'>
           <Avatar
             src={eve.owner.avatar}
@@ -60,25 +102,11 @@ const NextEvent: FC<Props> = ({ eve }) => {
             size='md'
             name={eve.owner.username}
           />
-          <TagLabel
-            fontStyle='italic'
-            fontWeight='bold'
-            fontSize='lg'
-            paddingX={2}
-          >
+          <TagLabel fontWeight='bold' fontSize='md' paddingX={2}>
             {eve.owner.username}
           </TagLabel>
         </Tag>
       </Flex>
-
-      <Text mt={-2} fontSize='lg' color='black'>
-        {eve.venue}
-      </Text>
-      <Text fontSize='md' color='black'>
-        {moment(eve.date).format('YYYY-MM-DD')}
-      </Text>
-
-      <Text fontSize='md' color='black'></Text>
 
       <Flex gap={2}>
         {eve.entries.map((entry) => {

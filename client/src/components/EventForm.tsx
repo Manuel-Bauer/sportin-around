@@ -22,6 +22,7 @@ import {
   useToast,
   UnorderedList,
   ListItem,
+  Image,
 } from '@chakra-ui/react';
 import { getFirebase } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
@@ -32,6 +33,7 @@ import usePlacesAutocomplete, {
 } from 'use-places-autocomplete';
 
 import { EventInterface } from '../types/types';
+import { setValues } from 'framer-motion/types/render/utils/setters';
 
 const { firestore, auth } = getFirebase();
 
@@ -115,7 +117,7 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
       title: '',
       date: '',
       type: '',
-      image: null,
+      image: '',
     },
     validationSchema: Yup.object({
       title: Yup.string()
@@ -171,7 +173,7 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
         <DrawerBody>
           <Box>
             <form onSubmit={formik.handleSubmit}>
-              <VStack>
+              <VStack gap={3}>
                 <FormControl
                   isInvalid={
                     formik.errors.title && formik.touched.title ? true : false
@@ -242,12 +244,8 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
                     </Stack>
                   </RadioGroup>
                   <FormErrorMessage>{formik.errors.type}</FormErrorMessage>
-                  <FormControl
-                    isInvalid={
-                      formik.errors.date && formik.touched.date ? true : false
-                    }
-                  >
-                    <FormLabel>Add Image</FormLabel>
+
+                  {/* <FormLabel>Add Image</FormLabel>
                     <Flex>
                       <Input
                         variant='unstyled'
@@ -255,10 +253,18 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
                         type='file'
                         {...formik.getFieldProps('image')}
                       ></Input>
-                    </Flex>
-                  </FormControl>
+                    </Flex> */}
+                  <FormLabel>Image URL</FormLabel>
+                  <Flex>
+                    <Input
+                      size='sm'
+                      placeholder='Enter Image URL...'
+                      {...formik.getFieldProps('image')}
+                    ></Input>
+                  </Flex>
                 </FormControl>
               </VStack>
+
               <Flex mt={20} justify='end' w='100%' align='end'>
                 <Button
                   variant='outline'
