@@ -12,6 +12,7 @@ import {
   Badge,
   Image,
   TagCloseButton,
+  useDisclosure,
 } from '@chakra-ui/react';
 import {
   PlusSquareIcon,
@@ -20,7 +21,7 @@ import {
 } from '@chakra-ui/icons';
 import moment from 'moment';
 import { addPlayer, createSchedule, deleteEntry } from '../utils/firestore';
-import WalkthroughPopover from './WalkthroughPopover';
+import Transition from './Transition';
 import pin from '../assets/pin.svg';
 import clock from '../assets/clock.svg';
 import { getFirebase } from '../firebase';
@@ -33,6 +34,8 @@ interface Props {
 }
 
 const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const toast = useToast();
 
   const handleAddMe = async (eventId: string | undefined) => {
@@ -151,10 +154,18 @@ const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
         </Tag>
       </Flex>
 
-      <Flex gap={2}>
+      <Text mt={2} ml={2} fontSize='md'>
+        {eve.entries.length === 0
+          ? 'No entries yet.'
+          : `${eve.entries.length} player${
+              eve.entries.length === 1 ? '' : 's'
+            } signed up`}
+      </Text>
+
+      <Flex gap={2} flexWrap='wrap'>
         {eve.entries.map((entry) => {
           return (
-            <Tag mt={5} size='sm' colorScheme='green' borderRadius='full'>
+            <Tag mt={2} size='sm' colorScheme='green' borderRadius='full'>
               <Avatar
                 src={entry.avatar}
                 size='sm'
@@ -181,6 +192,20 @@ const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
         })}
       </Flex>
 
+      {eve.started && (
+        <Button
+          mt={5}
+          leftIcon={<ExternalLinkIcon />}
+          border='1px'
+          colorScheme='twitter'
+          variant='solid'
+          onClick={() => handleShowDetails(eve)}
+          size='md'
+        >
+          Schedule
+        </Button>
+      )}
+
       <Flex mt={5} gap={3}>
         {!eve.started && (
           <Button
@@ -196,49 +221,22 @@ const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
         )}
 
         {!eve.started && eve.owner.uid === auth.currentUser.uid && (
-          <WalkthroughPopover
-            popoverStyles={{ placement: 'right', closeOnBlur: false }}
-            triggerText='Start'
-            triggerStyles={{
-              leftIcon: <RepeatClockIcon />,
-              border: '1px',
-              size: 'sm',
-              colorScheme: 'twitter',
-            }}
-            popoverContentStyles={{
-              color: 'white',
-              bg: 'twitter.800',
-              borderColor: 'blue.800',
-            }}
-            popoverHeaderStyles={{ pt: '4px', fontWeight: 'bold', border: '0' }}
-            popoverHeaderText='Start the Tournament'
-            popoverBodyText="After the tournament has been started, the schedule is created and users won't be able to sign up anymore."
-            popoverFooterStyles={{
-              border: '0',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              pb: '4px',
-            }}
-            buttonGroupStyles={{ size: 'sm' }}
-            buttonStyles={{
-              colorScheme: 'twitter',
-              onClick: () => handleStartTournament(eve),
-            }}
-            buttonText='Start Tournament'
-          />
-        )}
-        {eve.started && (
-          <Button
-            leftIcon={<ExternalLinkIcon />}
-            border='1px'
-            colorScheme='twitter'
-            variant='solid'
-            onClick={() => handleShowDetails(eve)}
-            size='sm'
-          >
-            Schedule
-          </Button>
+          <>
+            <Button
+              leftIcon={<RepeatClockIcon />}
+              onClick={onOpen}
+              colorScheme='twitter'
+              size='sm'
+            >
+              Start
+            </Button>
+            <Transition
+              isOpen={isOpen}
+              onClose={onClose}
+              handleStartTournament={handleStartTournament}
+              eve={eve}
+            />
+          </>
         )}
       </Flex>
     </Box>

@@ -165,11 +165,11 @@ const EventListItem: FC<Props> = ({
         </TagLabel>
       </Tag>
 
-      {eve.entries.length === 0 && (
-        <Text mt={2} fontSize='xs' fontStyle='italic'>
-          No entries yet.
-        </Text>
-      )}
+      <Text mt={2} ml={2} fontSize='xs' fontStyle='italic'>
+        {eve.entries.length === 0
+          ? 'No entries yet.'
+          : `${eve.entries.length} players signed up`}
+      </Text>
 
       <Box mt={2}>
         {eve.entries.map((entry: any) => {
