@@ -22,7 +22,6 @@ import {
   useToast,
   UnorderedList,
   ListItem,
-  Image,
 } from '@chakra-ui/react';
 import { getFirebase } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
@@ -33,7 +32,6 @@ import usePlacesAutocomplete, {
 } from 'use-places-autocomplete';
 
 import { EventInterface } from '../types/types';
-import { setValues } from 'framer-motion/types/render/utils/setters';
 
 const { firestore, auth } = getFirebase();
 
@@ -69,16 +67,6 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
       // by setting the second parameter to "false"
       setValue(description, false);
       clearSuggestions();
-
-      // Get latitude and longitude via utility functions
-      getGeocode({ address: description }).then((results) => {
-        try {
-          const { lat, lng } = getLatLng(results[0]);
-          console.log('📍 Coordinates: ', { lat, lng });
-        } catch (error) {
-          console.log('😱 Error: ', error);
-        }
-      });
     };
 
   const renderSuggestions = () => {
@@ -187,14 +175,9 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
                   ></Input>
                   <FormErrorMessage>{formik.errors.title}</FormErrorMessage>
                 </FormControl>
-                <FormControl
-                // isInvalid={
-                //   formik.errors.venue && formik.touched.venue ? true : false
-                // }
-                >
+                <FormControl>
                   <FormLabel>Venue</FormLabel>
                   <Input
-                    // {...formik.getFieldProps('venue')}
                     size='sm'
                     placeholder='Enter Venue...'
                     value={value}
@@ -202,7 +185,6 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
                     disabled={!ready}
                   ></Input>
                   {status === 'OK' && <ul>{renderSuggestions()}</ul>}
-                  {/* <FormErrorMessage>{formik.errors.venue}</FormErrorMessage> */}
                 </FormControl>
 
                 <FormControl
@@ -245,15 +227,6 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
                   </RadioGroup>
                   <FormErrorMessage>{formik.errors.type}</FormErrorMessage>
 
-                  {/* <FormLabel>Add Image</FormLabel>
-                    <Flex>
-                      <Input
-                        variant='unstyled'
-                        size='sm'
-                        type='file'
-                        {...formik.getFieldProps('image')}
-                      ></Input>
-                    </Flex> */}
                   <FormLabel>Image URL</FormLabel>
                   <Flex>
                     <Input
@@ -265,7 +238,7 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
                 </FormControl>
               </VStack>
 
-              <Flex mt={20} justify='end' w='100%' align='end'>
+              <Flex mt={10} justify='end' align='start'>
                 <Button
                   variant='outline'
                   colorScheme='twitter'

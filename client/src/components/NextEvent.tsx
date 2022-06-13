@@ -94,8 +94,9 @@ const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
     >
       <Image
         position='absolute'
-        top={0}
-        right={0}
+        shadow='lg'
+        top={10}
+        right={5}
         boxSize='135px'
         objectFit='cover'
         src={
@@ -194,7 +195,7 @@ const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
 
       {eve.started && (
         <Button
-          mt={5}
+          mt={6}
           leftIcon={<ExternalLinkIcon />}
           border='1px'
           colorScheme='twitter'
