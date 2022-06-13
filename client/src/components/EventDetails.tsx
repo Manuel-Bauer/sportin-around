@@ -12,6 +12,7 @@ import Standings from './Standings';
 import { saveTournamentStandings } from '../utils/firestore';
 import WalkthroughPopover from './WalkthroughPopover';
 
+
 interface Props {
   currentEvent: EventInterface;
   currentMatches: MatchInterface[];

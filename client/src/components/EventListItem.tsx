@@ -15,8 +15,8 @@ import {
   TagLabel,
   TagCloseButton,
   useToast,
-  Image,
   Flex,
+  Image,
 } from '@chakra-ui/react';
 import { ExternalLinkIcon, CheckIcon, PlusSquareIcon } from '@chakra-ui/icons';
 import { addPlayer, createSchedule, deleteEntry } from '../utils/firestore';
@@ -25,6 +25,8 @@ import { getFirebase } from '../firebase';
 import moment from 'moment';
 import WalkthroughPopover from './WalkthroughPopover';
 import { animateScroll as scroll } from 'react-scroll';
+import clock from '../assets/clock.svg';
+import pin from '../assets/pin.svg';
 
 const { auth } = getFirebase();
 
@@ -98,9 +100,7 @@ const EventListItem: FC<Props> = ({
       borderColor='twitter.800'
       z-index='1'
     >
-      <Box position='absolute' shadow='base' bottom={0} right={0}>
-       
-      </Box>
+      <Box position='absolute' shadow='base' bottom={0} right={0}></Box>
       <Box position='absolute' top={1} right={1}>
         {eve.completed && (
           <Badge backgroundColor='gray.800' color='white'>
@@ -113,16 +113,23 @@ const EventListItem: FC<Props> = ({
         )}
       </Box>
 
-      <Flex>
-        <Text fontSize={['sm', 'sm', 'sm', 'md', '2xl']} fontWeight='bold'>
-          {eve.title}
+      <Text fontSize={['sm', 'sm', 'sm', 'md', '2xl']} fontWeight='bold'>
+        {eve.title}
+      </Text>
+
+      <Flex alignItems='center' gap={1} mt={1}>
+        <Image src={pin} boxSize='15px'></Image>
+        <Text fontSize={['xs', 'xs', 'xs', 'xs', 'md']}>
+          {eve.venue.split(', ').slice(0, 2).join(', ')}
         </Text>
       </Flex>
 
-      <Text fontSize={['xs', 'xs', 'xs', 'xs', 'md']}>{eve.venue}</Text>
-      <Text fontSize={['xs', 'xs', 'xs', 'xs', 'md']}>
-        {moment(eve.date).format('YYYY-MM-DD')}
-      </Text>
+      <Flex alignItems='center' gap={1}>
+        <Image src={clock} boxSize='15px'></Image>
+        <Text fontSize={['xs', 'xs', 'xs', 'xs', 'md']}>
+          {moment(eve.date).format('YYYY-MM-DD')}
+        </Text>
+      </Flex>
 
       <Tag mt={5} size='md' colorScheme='purple' borderRadius='full'>
         <Avatar

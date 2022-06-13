@@ -15,7 +15,6 @@ import EventList from './components/EventList';
 import EventDetails from './components/EventDetails';
 import Header from './components/Header';
 import NextEvent from './components/NextEvent';
-import PlacesAutocomplete from './components/PlacesAutocomplete';
 import { FC } from 'react';
 import { EventInterface } from './types/types';
 import theme from './theme';
