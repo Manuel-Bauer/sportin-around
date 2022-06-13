@@ -1,6 +1,4 @@
-import * as ReactDOM from 'react-dom/client';
-
-import { FC, useRef } from 'react';
+import { FC } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import {

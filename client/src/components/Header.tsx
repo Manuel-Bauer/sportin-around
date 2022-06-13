@@ -1,10 +1,7 @@
-import { FC, useContext } from 'react';
-import { Box, Flex, Text, Button } from '@chakra-ui/react';
+import { FC } from 'react';
+import { Flex, Text } from '@chakra-ui/react';
 import { Avatar } from '@chakra-ui/react';
-import { getFirebase } from '../firebase';
 import SignOut from '../components/SignOut';
-
-const { auth } = getFirebase();
 
 interface Props {
   setAuthed: Function;

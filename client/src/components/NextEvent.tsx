@@ -9,7 +9,6 @@ import {
   TagLabel,
   Button,
   useToast,
-  Image,
 } from '@chakra-ui/react';
 import { SmallAddIcon, CheckIcon } from '@chakra-ui/icons';
 import moment from 'moment';

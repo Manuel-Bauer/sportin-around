@@ -63,7 +63,7 @@ export const addPlayer = async (eventId: String | undefined) => {
   try {
     await runTransaction(firestore, async (transaction) => {
       const eventDoc = await transaction.get(thisEvent);
-      if (!eventDoc.exists()) throw 'Event does not exist!';
+      if (!eventDoc.exists()) throw new Error('Event does not exist!');
 
       const data = eventDoc.data();
       const user = await getUser(auth.currentUser.uid);
@@ -113,7 +113,7 @@ export const createSchedule = async (eve: EventInterface) => {
   // Save Standings for Tournaement in Standings collection
   await saveStanding(eve);
 
-  if (!eve.entries) throw 'Must have at least two entries';
+  if (!eve.entries) throw new Error('Must have at least two entries');
   const numEntries = eve.entries.length;
 
   let scheduler: any;
@@ -193,7 +193,7 @@ export const deleteEntry = async (
   try {
     await runTransaction(firestore, async (transaction) => {
       const eventDoc = await transaction.get(eventToUpdate);
-      if (!eventDoc.exists()) throw 'Tournament does not exist!';
+      if (!eventDoc.exists()) throw new Error('Tournament does not exist!');
       const data = eventDoc.data();
       const newEntries = data.entries.filter(
         (entry: UserInterface) => entry.uid !== uid
@@ -215,7 +215,7 @@ export const updateEvent = async (
   try {
     await runTransaction(firestore, async (transaction) => {
       const eventDoc = await transaction.get(eventToUpdate);
-      if (!eventDoc.exists()) throw 'Tournament does not exist!';
+      if (!eventDoc.exists()) throw new Error('Tournament does not exist!');
       const data = eventDoc.data();
 
       transaction.update(eventToUpdate, {
@@ -241,7 +241,7 @@ export const updateStandings = async (
   try {
     await runTransaction(firestore, async (transaction) => {
       const standingDoc = await transaction.get(standingToUpdate);
-      if (!standingDoc.exists()) throw 'Standing does not exist!';
+      if (!standingDoc.exists()) throw new Error('Standing does not exist!');
       const standingData = standingDoc.data();
       const matchData = await getMatch(matchId);
 
@@ -322,7 +322,7 @@ export const updateMatch = async (
   try {
     await runTransaction(firestore, async (transaction) => {
       const matchDoc = await transaction.get(matchToUpdate);
-      if (!matchDoc.exists()) throw 'Match does not exist!';
+      if (!matchDoc.exists()) throw new Error('Match does not exist!');
 
       const data = matchDoc.data();
 

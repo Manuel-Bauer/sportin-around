@@ -1,19 +1,18 @@
 import { FC } from 'react';
 
 import {
-  Box,
+
   Table,
   Thead,
   Tbody,
-  Tfoot,
+
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
   Avatar,
 } from '@chakra-ui/react';
-import { StandingsInterface, UserInterface } from '../types/types';
+import { StandingsInterface } from '../types/types';
 import { sortStandings } from '../utils/helpers';
 import { getFirebase } from '../firebase';
 

@@ -6,7 +6,6 @@ import {
   Grid,
   GridItem,
   Box,
-  useToast,
   useDisclosure,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
@@ -41,22 +40,6 @@ export const App: FC = () => {
   const [preventInitialRender, setPreventInitialRender] = useState(0);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const toast = useToast();
-
-  // Set current User on auth change
-  // useEffect(() => {
-  //   if (!showEventForm && preventInitialRender > 0) {
-  //     toast({
-  //       title: 'Tournament created.',
-  //       status: 'success',
-  //       duration: 5000,
-  //       isClosable: true,
-  //     });
-  //   }
-  // }, [showEventForm]);
-
-  console.log(showEventForm);
 
   // Load all existing Events on initial render
   useEffect(() => {

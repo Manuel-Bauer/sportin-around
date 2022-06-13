@@ -1,9 +1,8 @@
 import { MatchInterface, EventInterface } from '../types/types';
-import { useState, useEffect, FC } from 'react';
+import { FC } from 'react';
 import { getFirebase } from '../firebase';
-import { doc, onSnapshot } from 'firebase/firestore';
+
 import {
-  Box,
   Flex,
   Text,
   Editable,
@@ -13,7 +12,7 @@ import {
   GridItem,
   Avatar,
 } from '@chakra-ui/react';
-import { updateMatch, updateStandings } from '../utils/firestore';
+import { updateMatch } from '../utils/firestore';
 
 const { auth } = getFirebase();
 

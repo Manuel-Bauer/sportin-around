@@ -1,19 +1,10 @@
-import { FC, useEffect, useState, useContext } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
   EventInterface,
   MatchInterface,
   StandingsInterface,
 } from '../types/types';
-import {
-  Box,
-  Text,
-  VStack,
-  Grid,
-  GridItem,
-  Flex,
-  Button,
-  IconButton,
-} from '@chakra-ui/react';
+import { Box, Text, Grid, GridItem, Flex, IconButton } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon, LockIcon } from '@chakra-ui/icons';
 import { nanoid } from 'nanoid';
 import Match from '../components/Match';

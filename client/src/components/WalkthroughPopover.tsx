@@ -11,7 +11,6 @@ import {
   PopoverBody,
   PopoverFooter,
   ButtonGroup,
-  Box,
 } from '@chakra-ui/react';
 
 interface Props {
@@ -62,6 +61,5 @@ const WalkthroughPopover: FC<Props> = ({
     </Popover>
   );
 };
-
 
 export default WalkthroughPopover;
