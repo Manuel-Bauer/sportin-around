@@ -28,7 +28,6 @@ import {
   getDocs,
 } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
-import { autocompleteLocation } from './api/geocoding';
 
 const { auth, firestore } = getFirebase();
 
