@@ -13,13 +13,16 @@ import {
   Image,
   TagCloseButton,
 } from '@chakra-ui/react';
-import { CheckIcon, PlusSquareIcon, ExternalLinkIcon } from '@chakra-ui/icons';
+import {
+  PlusSquareIcon,
+  ExternalLinkIcon,
+  RepeatClockIcon,
+} from '@chakra-ui/icons';
 import moment from 'moment';
 import { addPlayer, createSchedule, deleteEntry } from '../utils/firestore';
 import WalkthroughPopover from './WalkthroughPopover';
 import pin from '../assets/pin.svg';
 import clock from '../assets/clock.svg';
-import { isUserSignedUp } from '../utils/helpers';
 import { getFirebase } from '../firebase';
 
 const { auth } = getFirebase();
@@ -197,7 +200,7 @@ const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
             popoverStyles={{ placement: 'right', closeOnBlur: false }}
             triggerText='Start'
             triggerStyles={{
-              leftIcon: <CheckIcon />,
+              leftIcon: <RepeatClockIcon />,
               border: '1px',
               size: 'sm',
               colorScheme: 'twitter',

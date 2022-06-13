@@ -17,13 +17,20 @@ import {
   useToast,
   Flex,
   Image,
+  useDisclosure,
 } from '@chakra-ui/react';
-import { ExternalLinkIcon, CheckIcon, PlusSquareIcon } from '@chakra-ui/icons';
+import {
+  ExternalLinkIcon,
+  CheckIcon,
+  PlusSquareIcon,
+  RepeatClockIcon,
+} from '@chakra-ui/icons';
 import { addPlayer, createSchedule, deleteEntry } from '../utils/firestore';
 import { isUserSignedUp } from '../utils/helpers';
 import { getFirebase } from '../firebase';
 import moment from 'moment';
 import WalkthroughPopover from './WalkthroughPopover';
+import Transition from './Transition';
 import { animateScroll as scroll } from 'react-scroll';
 import clock from '../assets/clock.svg';
 import pin from '../assets/pin.svg';
@@ -50,6 +57,8 @@ const EventListItem: FC<Props> = ({
   scrollSidebar,
   showEventDetails,
 }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const toast = useToast();
 
   const handleAddMe = async (eventId: string | undefined) => {
@@ -82,6 +91,10 @@ const EventListItem: FC<Props> = ({
   };
 
   const handleStartTournament = async (eve: EventInterface) => {
+    console.log('startTournament');
+    onClose();
+    console.log('was soll das');
+
     toast({
       title: `${eve.title} has started. See schedule in the tournament details.`,
       status: 'success',
@@ -239,37 +252,54 @@ const EventListItem: FC<Props> = ({
           </Button>
         )}
         {!eve.started && eve.owner.uid === auth.currentUser.uid && (
-          <WalkthroughPopover
-            popoverStyles={{ placement: 'right', closeOnBlur: false }}
-            triggerText='Start'
-            triggerStyles={{
-              leftIcon: <CheckIcon />,
-              border: '1px',
-              size: 'xs',
-              colorScheme: 'twitter',
-            }}
-            popoverContentStyles={{
-              color: 'white',
-              bg: 'twitter.800',
-              borderColor: 'blue.800',
-            }}
-            popoverHeaderStyles={{ pt: '4px', fontWeight: 'bold', border: '0' }}
-            popoverHeaderText='Start the Tournament'
-            popoverBodyText="After the tournament has been started, the schedule is created and users won't be able to sign up anymore."
-            popoverFooterStyles={{
-              border: '0',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              pb: '4px',
-            }}
-            buttonGroupStyles={{ size: 'sm' }}
-            buttonStyles={{
-              colorScheme: 'twitter',
-              onClick: () => handleStartTournament(eve),
-            }}
-            buttonText='Start Tournament'
-          />
+          <>
+            <Button
+              leftIcon={<RepeatClockIcon />}
+              onClick={onOpen}
+              colorScheme='twitter'
+              size='xs'
+            >
+              Start
+            </Button>
+            <Transition
+              isOpen={isOpen}
+              onClose={onClose}
+              handleStartTournament={handleStartTournament}
+              eve={eve}
+            />
+          </>
+
+          // <WalkthroughPopover
+          //   popoverStyles={{ placement: 'bottom', closeOnBlur: false }}
+          //   triggerText='Start'
+          //   triggerStyles={{
+          //     leftIcon: <CheckIcon />,
+          //     border: '1px',
+          //     size: 'xs',
+          //     colorScheme: 'twitter',
+          //   }}
+          //   popoverContentStyles={{
+          //     color: 'white',
+          //     bg: 'twitter.800',
+          //     borderColor: 'blue.800',
+          //   }}
+          //   popoverHeaderStyles={{ pt: '4px', fontWeight: 'bold', border: '0' }}
+          //   popoverHeaderText='Start the Tournament'
+          //   popoverBodyText="After the tournament has been started, the schedule is created and users won't be able to sign up anymore."
+          //   popoverFooterStyles={{
+          //     border: '0',
+          //     display: 'flex',
+          //     alignItems: 'center',
+          //     justifyContent: 'space-between',
+          //     pb: '4px',
+          //   }}
+          //   buttonGroupStyles={{ size: 'sm' }}
+          //   buttonStyles={{
+          //     colorScheme: 'twitter',
+          //     onClick: () => handleStartTournament(eve),
+          //   }}
+          //   buttonText='Start Tournament'
+          // />
         )}
       </Stack>
     </Box>

@@ -43,7 +43,7 @@ const EventList: FC<Props> = ({
   return (
     <div
       className='scrollbar'
-      style={{ overflowY: 'auto', overflowX: 'hidden' }}
+      style={{ overflowX: 'hidden', overflowY: 'auto' }}
     >
       <Box ref={topRef} maxH='100vh'>
         {eves &&
