@@ -123,7 +123,7 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
       title: Yup.string()
         .required('Title required')
         .min(6, 'Title is too short')
-        .max(23, 'Title is too long'),
+        .max(20, 'Title is too long'),
       date: Yup.date().required('Date required'),
       type: Yup.string().required('Type required'),
     }),

@@ -64,11 +64,13 @@ export const App: FC = () => {
         };
       });
       setEves(data);
-      setNextEvent(sortEventListDate(data)[0]);
+      setNextEvent(
+        sortEventListDate(
+          data.filter((eve: any) => new Date(eve.date).valueOf() > Date.now())
+        )[0]
+      );
     });
   };
-
-  console.log(eves);
 
   const updateCurrent = async (eve: EventInterface) => {
     const matchesCol = collection(firestore, 'matches');

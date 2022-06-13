@@ -11,10 +11,11 @@ import {
   useToast,
   Badge,
   Image,
+  TagCloseButton,
 } from '@chakra-ui/react';
 import { CheckIcon, PlusSquareIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 import moment from 'moment';
-import { addPlayer, createSchedule } from '../utils/firestore';
+import { addPlayer, createSchedule, deleteEntry } from '../utils/firestore';
 import WalkthroughPopover from './WalkthroughPopover';
 import pin from '../assets/pin.svg';
 import clock from '../assets/clock.svg';
@@ -55,6 +56,19 @@ const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
     await updateCurrent(eve);
   };
 
+  const handleRemoveMe = async (
+    eventId: string | undefined,
+    uid: string | undefined
+  ) => {
+    await deleteEntry(eventId, uid);
+    toast({
+      title: `Removed from ${eve.title}`,
+      status: 'warning',
+      duration: 5000,
+      isClosable: true,
+    });
+  };
+
   return (
     <Box
       backgroundColor='gray.50'
@@ -76,7 +90,7 @@ const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
       />
 
       <Text mb={2} fontSize='3xl' color='black' fontWeight='bold'>
-        {eve.title}
+        Upcoming: {eve.title}
       </Text>
       {eve.completed && (
         <Badge fontSize='lg' backgroundColor='gray.800' color='white' size='lg'>
@@ -139,6 +153,11 @@ const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
               <TagLabel fontStyle='italic' paddingX={1}>
                 {entry.username}
               </TagLabel>
+              {!eve.started && (
+                <TagCloseButton
+                  onClick={() => handleRemoveMe(eve.eventId, entry.uid)}
+                />
+              )}
             </Tag>
           );
         })}
