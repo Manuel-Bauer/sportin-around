@@ -62,6 +62,16 @@ const EventListItem: FC<Props> = ({
   const toast = useToast();
 
   const handleAddMe = async (eventId: string | undefined) => {
+    if (eve.entries.map((entry) => entry.uid).includes(auth.currentUser.uid)) {
+      toast({
+        title: `Already signed up for ${eve.title}`,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     await addPlayer(eventId);
     toast({
       title: `Signed up for ${eve.title}`,
@@ -246,7 +256,7 @@ const EventListItem: FC<Props> = ({
             onClick={() => handleShowDetails(eve)}
             size='sm'
           >
-            Schedule
+            {eve.completed ? 'Results' : 'Schedule'}
           </Button>
         )}
         {!eve.started && eve.owner.uid === auth.currentUser.uid && (
