@@ -7,6 +7,7 @@ import {
   GridItem,
   Box,
   useDisclosure,
+  Image,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import SignIn from './components/SignIn';
@@ -27,6 +28,7 @@ import {
 } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { sortEventListDate } from './utils/helpers';
+import goobyLogoWhiteCut from './assets/goobyLogoWhiteCut.png';
 
 const { auth, firestore } = getFirebase();
 
@@ -53,6 +55,8 @@ export const App: FC = () => {
     });
     setPreventInitialRender((prev) => (prev += 1));
   }, []);
+
+  console.log(auth.currentUser);
 
   const getAllEvents = () => {
     const eventsCol = collection(firestore, 'events');
@@ -110,7 +114,7 @@ export const App: FC = () => {
     <ChakraProvider theme={theme}>
       {!currentUser && <SignIn setAuthed={setAuthed} />}
       {currentUser && (
-        <Box>
+        <Box position='relative'>
           <Header setAuthed={setAuthed} currentUser={currentUser} />
           <EventForm onClose={onClose} isOpen={isOpen} onOpen={onOpen} />
           <Grid

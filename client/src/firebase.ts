@@ -12,11 +12,12 @@ function initialize() {
 
 function connectToEmulators({ firebaseApp, auth, firestore }: any) {
   // if ((location.hostname = 'localhost')) {
-  //   connectAuthEmulator(auth, 'http://localhost:9099', {
-  //     disableWarnings: true,
-  //   });
-  //   connectFirestoreEmulator(firestore, 'localhost', 8080);
-  // }
+
+  // // }
+  connectAuthEmulator(auth, 'http://localhost:9099', {
+    disableWarnings: true,
+  });
+  connectFirestoreEmulator(firestore, 'localhost', 8080);
   connectAuthEmulator(auth, 'http://localhost:9099', {
     disableWarnings: true,
   });
@@ -26,6 +27,7 @@ function connectToEmulators({ firebaseApp, auth, firestore }: any) {
 
 export function getFirebase() {
   // const existingApp = getApps().at(0);
-  // if (existingApp) return initialize();
+  // if (existingApp)
   return connectToEmulators(initialize());
+  return initialize();
 }

@@ -269,37 +269,7 @@ const EventListItem: FC<Props> = ({
             />
           </>
 
-          // <WalkthroughPopover
-          //   popoverStyles={{ placement: 'bottom', closeOnBlur: false }}
-          //   triggerText='Start'
-          //   triggerStyles={{
-          //     leftIcon: <CheckIcon />,
-          //     border: '1px',
-          //     size: 'xs',
-          //     colorScheme: 'twitter',
-          //   }}
-          //   popoverContentStyles={{
-          //     color: 'white',
-          //     bg: 'twitter.800',
-          //     borderColor: 'blue.800',
-          //   }}
-          //   popoverHeaderStyles={{ pt: '4px', fontWeight: 'bold', border: '0' }}
-          //   popoverHeaderText='Start the Tournament'
-          //   popoverBodyText="After the tournament has been started, the schedule is created and users won't be able to sign up anymore."
-          //   popoverFooterStyles={{
-          //     border: '0',
-          //     display: 'flex',
-          //     alignItems: 'center',
-          //     justifyContent: 'space-between',
-          //     pb: '4px',
-          //   }}
-          //   buttonGroupStyles={{ size: 'sm' }}
-          //   buttonStyles={{
-          //     colorScheme: 'twitter',
-          //     onClick: () => handleStartTournament(eve),
-          //   }}
-          //   buttonText='Start Tournament'
-          // />
+      
         )}
       </Stack>
     </Box>
