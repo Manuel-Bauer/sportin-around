@@ -91,9 +91,7 @@ const EventListItem: FC<Props> = ({
   };
 
   const handleStartTournament = async (eve: EventInterface) => {
-    console.log('startTournament');
     onClose();
-    console.log('was soll das');
 
     toast({
       title: `${eve.title} has started. See schedule in the tournament details.`,
@@ -268,8 +266,6 @@ const EventListItem: FC<Props> = ({
               eve={eve}
             />
           </>
-
-      
         )}
       </Stack>
     </Box>

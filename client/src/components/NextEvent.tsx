@@ -95,9 +95,9 @@ const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
       <Image
         position='absolute'
         shadow='lg'
-        top={10}
+        top={8}
         right={5}
-        boxSize='135px'
+        boxSize='170px'
         objectFit='cover'
         src={
           eve.image ||
@@ -183,11 +183,13 @@ const NextEvent: FC<Props> = ({ eve, updateCurrent }) => {
               >
                 {entry.username}
               </TagLabel>
-              {!eve.started && (
-                <TagCloseButton
-                  onClick={() => handleRemoveMe(eve.eventId, entry.uid)}
-                />
-              )}
+              {!eve.started &&
+                (entry.uid === auth.currentUser.uid ||
+                  eve.owner.uid === auth.currentUser.uid) && (
+                  <TagCloseButton
+                    onClick={() => handleRemoveMe(eve.eventId, entry.uid)}
+                  />
+                )}
             </Tag>
           );
         })}

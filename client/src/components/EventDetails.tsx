@@ -125,14 +125,6 @@ const EventDetails: FC<Props> = ({
         justify={currentEvent.completed ? 'space-between' : 'end'}
         align='center'
       >
-        {currentEvent.completed && (
-          <Flex>
-            <Text fontSize='3xl' fontStyle='italic' ml={3}>
-              Tournament is finished
-            </Text>
-          </Flex>
-        )}
-
         <Flex justify='end' align='center' mt={5} mr={5} pb='20px'>
           <WalkthroughPopover
             popoverStyles={{ placement: 'bottom', closeOnBlur: false }}

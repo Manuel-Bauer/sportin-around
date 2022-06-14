@@ -24,12 +24,19 @@ const SignIn: FC<props> = ({ setAuthed }) => {
 
   return (
     <>
-      <Flex h='100vh' direction='column' justify='center' align='center'>
+      <Flex
+        mt='100px'
+        h='100vh'
+        direction='column'
+        justify='start'
+        align='center'
+      >
         <Image boxSize='200px' src={goobyLogo}></Image>
         <Button
           leftIcon={<Image h={4} src={googleLogo} alt='Google Logo' />}
-          colorScheme='gray'
+          colorScheme='twitter'
           onClick={signInWithGoogle}
+          color='white'
         >
           Sign in with Google
         </Button>
