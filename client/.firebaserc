@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "buzzlokk-01"
-  }
+    "default": "gooby-2",
+    "hosting": "gooby-2"
+  },
+  "targets": {}
 }

@@ -18,6 +18,8 @@ const SignIn: FC<props> = ({ setAuthed }) => {
     await signInWithPopup(auth, provider);
     await setAuthed(true);
 
+    console.log(auth.currentUser, 'authCurrentUser');
+
     const { createdAt, lastLoginAt } = auth.currentUser.metadata;
     if (createdAt === lastLoginAt) addUser();
   };
