@@ -4,7 +4,7 @@ import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import googleLogo from '../assets/google.svg';
 import { FC } from 'react';
 import { addUser } from '../utils/firestore';
-import goobyLogo from '../assets/gooby-logo.png';
+import knptmLogo from '../assets/knptm-logo.jpg';
 
 const { auth } = getFirebase();
 
@@ -33,10 +33,11 @@ const SignIn: FC<props> = ({ setAuthed }) => {
         justify='start'
         align='center'
       >
-        <Image boxSize='200px' src={goobyLogo}></Image>
+        <Image boxSize='200px' src={knptmLogo}></Image>
         <Button
           leftIcon={<Image h={4} src={googleLogo} alt='Google Logo' />}
           colorScheme='twitter'
+          backgroundColor='TU.100'
           onClick={signInWithGoogle}
           color='white'
         >

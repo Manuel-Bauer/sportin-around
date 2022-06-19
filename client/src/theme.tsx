@@ -5,6 +5,12 @@ const fonts = {
   // body: `'Raleway', sans-serif`,
 };
 
-const theme = extendTheme({ fonts });
+const colors = {
+  TU: {
+    100: '#0065bd',
+  },
+};
+
+const theme = extendTheme({ fonts, colors });
 
 export default theme;
