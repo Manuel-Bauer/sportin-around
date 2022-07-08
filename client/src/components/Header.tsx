@@ -1,7 +1,8 @@
-import { FC } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { Flex, Text } from '@chakra-ui/react';
 import { Avatar, Image } from '@chakra-ui/react';
 import SignOut from '../components/SignOut';
+import { getUser } from '../utils/firestore';
 
 interface Props {
   setAuthed: Function;
@@ -9,6 +10,14 @@ interface Props {
 }
 
 const Header: FC<Props> = ({ setAuthed, currentUser }) => {
+  const [userProfile, setUserProfile] = useState<any>(null);
+  useEffect(() => {
+    getUser(currentUser.uid).then((res): any => setUserProfile(res));
+  }, []);
+
+  console.log(currentUser);
+  console.log('header', userProfile);
+
   return (
     <Flex
       mx='auto'
@@ -22,11 +31,11 @@ const Header: FC<Props> = ({ setAuthed, currentUser }) => {
         <Avatar
           width={8}
           maxH={8}
-          name={currentUser.displayName}
-          src={currentUser.photoURL}
+          name={userProfile?.username || ''}
+          src={userProfile?.avatar || ''}
         />
         <Text ml={2} color='white' fontWeight='bold'>
-          {currentUser.displayName}
+          {userProfile?.username || ''}
         </Text>
       </Flex>
 
