@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "sportin-around",
+    "hosting": "sportin-around",
+    "staging": "sportin-around"
+  },
+  "targets": {}
+}
