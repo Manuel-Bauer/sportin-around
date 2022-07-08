@@ -39,9 +39,9 @@ const PlacesAutocomplete = () => {
       getGeocode({ address: description }).then((results) => {
         try {
           const { lat, lng } = getLatLng(results[0]);
-          console.log('📍 Coordinates: ', { lat, lng });
+          return { lat, lng };
         } catch (error) {
-          console.log('😱 Error: ', error);
+          throw { error };
         }
       });
     };

@@ -18,8 +18,6 @@ const SignIn: FC<props> = ({ setAuthed }) => {
     await signInWithPopup(auth, provider);
     await setAuthed(true);
 
-    console.log(auth.currentUser, 'authCurrentUser');
-
     const { createdAt, lastLoginAt } = auth.currentUser.metadata;
     if (createdAt === lastLoginAt) addUser();
   };
@@ -30,10 +28,9 @@ const SignIn: FC<props> = ({ setAuthed }) => {
         mt='100px'
         h='100vh'
         direction='column'
-        justify='start'
+        justify='center'
         align='center'
       >
-        <Image boxSize='200px' src={knptmLogo}></Image>
         <Button
           leftIcon={<Image h={4} src={googleLogo} alt='Google Logo' />}
           colorScheme='twitter'

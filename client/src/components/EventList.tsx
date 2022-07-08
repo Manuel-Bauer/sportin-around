@@ -32,8 +32,6 @@ const EventList: FC<Props> = ({
     ? eves && sortEventList(current.eve, eves)
     : eves && sortEventListDate(eves);
 
-  console.log(eventList);
-
   const topRef = useRef<any>();
 
   const scrollSidebar = () => {

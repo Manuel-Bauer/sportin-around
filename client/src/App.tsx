@@ -56,8 +56,6 @@ export const App: FC = () => {
     setPreventInitialRender((prev) => (prev += 1));
   }, []);
 
-  console.log(auth.currentUser);
-
   const getAllEvents = () => {
     const eventsCol = collection(firestore, 'events');
     onSnapshot(eventsCol, (snapshot) => {
