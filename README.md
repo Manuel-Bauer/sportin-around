@@ -23,3 +23,10 @@ This app runs on Firebase. To set it up follow the instructions at [Firebase](ht
 ## Environment Variables
 
 The app uses [Google Places API](https://developers.google.com/maps/documentation/places/web-service/overview) for the autocompletion of the location. Save the API as REACT_APP_MAPS_API_KEY=*APIKEY* at .env.local in the root folder.
+
+## Built With
+
+* [React.js](https://reactjs.org/)
+* [Firebase](https://firebase.google.com/)
+* [Chakra UI](https://chakra-ui.com/)
+
