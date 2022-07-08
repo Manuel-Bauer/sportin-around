@@ -4,8 +4,11 @@
 
 **Sportin' around** makes it easy and to plan sports tournaments among your friends and track the results. 
 
-You are able to plan a tournament ahead of time and let your friends know about it. 
-Once everyone is signed up, you can start the tournament and **Sportin' around** will automatically create a schedule for it. While playing, the app gives you the opportunity to enter the results as you go - and everyone else full transparency about the current live standings. When you are finished you are able to lock tournament results and finally get rid of endless discussions about who had won!
+* Plan your tournament ahead and let your friends know
+* Start the tournament and create a schedule
+* Track the results as you go and see the live standings
+* Lock tournament results and track history
+
 
 ## Getting started
 
