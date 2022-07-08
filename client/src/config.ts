@@ -1,13 +1,13 @@
 export const config = {
   //gooby2
   firebase: {
-    apiKey: 'AIzaSyCuasazzLh2sMk0_KV_RTgXODu_kTir9VM',
-    authDomain: 'gooby-2.firebaseapp.com',
-    projectId: 'gooby-2',
-    storageBucket: 'gooby-2.appspot.com',
-    messagingSenderId: '273041442815',
-    appId: '1:273041442815:web:0b238e0ad7340229c6c9ca',
-    measurementId: 'G-EMF6NGB76X',
+    apiKey: 'AIzaSyCySHb4DpeRB3DxKUWHaKNEGyBei17bJSo',
+    authDomain: 'sportin-around.firebaseapp.com',
+    projectId: 'sportin-around',
+    storageBucket: 'sportin-around.appspot.com',
+    messagingSenderId: '261128433785',
+    appId: '1:261128433785:web:d01f541b75659250dde4a8',
+    measurementId: 'G-DLWQY48NBW',
 
     // apiKey: 'AIzaSyDznGU_LNiEqWRP1lDiraJi7BVlTZ_zXcg',
     // authDomain: 'buzzlokk-01.firebaseapp.com',

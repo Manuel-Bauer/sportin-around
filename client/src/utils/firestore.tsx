@@ -45,7 +45,6 @@ export const getMatch = async (matchId: string | undefined) => {
 
 // Add User to Firestore on first login. Again: How to add Firebase types
 export const addUser = () => {
-  console.log('auth.currentUser', auth.currentUser);
   const user = auth.currentUser;
   const userDoc = doc(firestore, `users/${user.uid}`);
   const newUser = {

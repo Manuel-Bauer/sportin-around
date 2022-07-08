@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import {
@@ -25,6 +25,7 @@ import {
 } from '@chakra-ui/react';
 import { getFirebase } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
+import { getUser } from '../utils/firestore';
 import { nanoid } from 'nanoid';
 import usePlacesAutocomplete, {
   getGeocode,
@@ -42,6 +43,11 @@ interface Props {
 }
 
 const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
+  const [userProfile, setUserProfile] = useState<any>(null);
+  useEffect(() => {
+    getUser(auth.currentUser.uid).then((res): any => setUserProfile(res));
+  }, []);
+
   const {
     ready,
     value,
@@ -119,17 +125,10 @@ const EventForm: FC<Props> = ({ isOpen, onClose, onOpen }) => {
       const newID = nanoid();
       const newDoc = doc(firestore, `events/${newID}`);
 
-      const user = {
-        username: auth.currentUser.displayName,
-        stats: [],
-        uid: auth.currentUser.uid,
-        avatar: auth.currentUser.photoURL,
-      };
-
       const newEvent: EventInterface = {
         title: values.title,
         venue: value,
-        owner: user,
+        owner: userProfile,
         date: values.date,
         started: false,
         completed: false,
