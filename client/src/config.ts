@@ -8,7 +8,6 @@ export const config = {
     messagingSenderId: '261128433785',
     appId: '1:261128433785:web:d01f541b75659250dde4a8',
     measurementId: 'G-DLWQY48NBW',
-
     // apiKey: 'AIzaSyDznGU_LNiEqWRP1lDiraJi7BVlTZ_zXcg',
     // authDomain: 'buzzlokk-01.firebaseapp.com',
     // projectId: 'buzzlokk-01',

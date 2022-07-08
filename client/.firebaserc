@@ -1,7 +1,8 @@
 {
   "projects": {
-    "default": "gooby-2",
-    "hosting": "gooby-2"
+    "default": "sportin-around",
+    "hosting": "sportin-around",
+    "staging": "sportin-around"
   },
   "targets": {}
 }

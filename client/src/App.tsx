@@ -7,7 +7,6 @@ import {
   GridItem,
   Box,
   useDisclosure,
-  Image,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import SignIn from './components/SignIn';
